@@ -1,0 +1,2 @@
+* Sorts randomly generated longs
+* Compares to serial executation and reports speedup

@@ -1,0 +1,3 @@
+* Sorts randomly generated integers
+* Data generated in memory locally to each rank
+* Compares against sequential execution, reporting speedup

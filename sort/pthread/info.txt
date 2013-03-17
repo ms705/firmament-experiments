@@ -1,0 +1,4 @@
+* Sorts doubles
+* Randomly generates data in memory at startup
+* Sequential + threaded + qsort comparison
+* Up to 500M elements on 12G RAM
