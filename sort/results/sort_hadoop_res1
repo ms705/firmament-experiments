@@ -1,0 +1,125 @@
+input1
+Running on 7 nodes to sort from hdfs://freestyle.private.srg.cl.cam.ac.uk:8020/user/icg27/input1 into hdfs://freestyle.private.srg.cl.cam.ac.uk:8020/user/icg27/sorted1 with 32 reduces.
+Job started: Mon Mar 18 16:28:02 GMT 2013
+Job ended: Mon Mar 18 16:28:23 GMT 2013
+The job took 20 seconds.
+input2
+Running on 7 nodes to sort from hdfs://freestyle.private.srg.cl.cam.ac.uk:8020/user/icg27/input2 into hdfs://freestyle.private.srg.cl.cam.ac.uk:8020/user/icg27/sorted2 with 32 reduces.
+Job started: Mon Mar 18 16:28:24 GMT 2013
+Job ended: Mon Mar 18 16:28:45 GMT 2013
+The job took 20 seconds.
+input4
+Running on 7 nodes to sort from hdfs://freestyle.private.srg.cl.cam.ac.uk:8020/user/icg27/input4 into hdfs://freestyle.private.srg.cl.cam.ac.uk:8020/user/icg27/sorted4 with 32 reduces.
+Job started: Mon Mar 18 16:28:46 GMT 2013
+Job ended: Mon Mar 18 16:29:03 GMT 2013
+The job took 16 seconds.
+input8
+Running on 7 nodes to sort from hdfs://freestyle.private.srg.cl.cam.ac.uk:8020/user/icg27/input8 into hdfs://freestyle.private.srg.cl.cam.ac.uk:8020/user/icg27/sorted8 with 32 reduces.
+Job started: Mon Mar 18 16:29:05 GMT 2013
+Job ended: Mon Mar 18 16:29:24 GMT 2013
+The job took 19 seconds.
+input16
+Running on 7 nodes to sort from hdfs://freestyle.private.srg.cl.cam.ac.uk:8020/user/icg27/input16 into hdfs://freestyle.private.srg.cl.cam.ac.uk:8020/user/icg27/sorted16 with 32 reduces.
+Job started: Mon Mar 18 16:29:26 GMT 2013
+Job ended: Mon Mar 18 16:29:45 GMT 2013
+The job took 18 seconds.
+input32
+Running on 7 nodes to sort from hdfs://freestyle.private.srg.cl.cam.ac.uk:8020/user/icg27/input32 into hdfs://freestyle.private.srg.cl.cam.ac.uk:8020/user/icg27/sorted32 with 32 reduces.
+Job started: Mon Mar 18 16:29:46 GMT 2013
+Job ended: Mon Mar 18 16:30:04 GMT 2013
+The job took 17 seconds.
+input64
+Running on 7 nodes to sort from hdfs://freestyle.private.srg.cl.cam.ac.uk:8020/user/icg27/input64 into hdfs://freestyle.private.srg.cl.cam.ac.uk:8020/user/icg27/sorted64 with 32 reduces.
+Job started: Mon Mar 18 16:30:05 GMT 2013
+Job ended: Mon Mar 18 16:30:23 GMT 2013
+The job took 17 seconds.
+input128
+Running on 7 nodes to sort from hdfs://freestyle.private.srg.cl.cam.ac.uk:8020/user/icg27/input128 into hdfs://freestyle.private.srg.cl.cam.ac.uk:8020/user/icg27/sorted128 with 32 reduces.
+Job started: Mon Mar 18 16:30:25 GMT 2013
+Job ended: Mon Mar 18 16:30:43 GMT 2013
+The job took 18 seconds.
+input256
+Running on 7 nodes to sort from hdfs://freestyle.private.srg.cl.cam.ac.uk:8020/user/icg27/input256 into hdfs://freestyle.private.srg.cl.cam.ac.uk:8020/user/icg27/sorted256 with 32 reduces.
+Job started: Mon Mar 18 16:30:45 GMT 2013
+Job ended: Mon Mar 18 16:31:02 GMT 2013
+The job took 17 seconds.
+input512
+Running on 7 nodes to sort from hdfs://freestyle.private.srg.cl.cam.ac.uk:8020/user/icg27/input512 into hdfs://freestyle.private.srg.cl.cam.ac.uk:8020/user/icg27/sorted512 with 32 reduces.
+Job started: Mon Mar 18 16:31:04 GMT 2013
+Job ended: Mon Mar 18 16:31:22 GMT 2013
+The job took 17 seconds.
+input1024
+Running on 7 nodes to sort from hdfs://freestyle.private.srg.cl.cam.ac.uk:8020/user/icg27/input1024 into hdfs://freestyle.private.srg.cl.cam.ac.uk:8020/user/icg27/sorted1024 with 32 reduces.
+Job started: Mon Mar 18 16:31:23 GMT 2013
+Job ended: Mon Mar 18 16:31:41 GMT 2013
+The job took 17 seconds.
+input2048
+Running on 7 nodes to sort from hdfs://freestyle.private.srg.cl.cam.ac.uk:8020/user/icg27/input2048 into hdfs://freestyle.private.srg.cl.cam.ac.uk:8020/user/icg27/sorted2048 with 32 reduces.
+Job started: Mon Mar 18 16:31:42 GMT 2013
+Job ended: Mon Mar 18 16:32:00 GMT 2013
+The job took 17 seconds.
+input4096
+Running on 7 nodes to sort from hdfs://freestyle.private.srg.cl.cam.ac.uk:8020/user/icg27/input4096 into hdfs://freestyle.private.srg.cl.cam.ac.uk:8020/user/icg27/sorted4096 with 32 reduces.
+Job started: Mon Mar 18 16:32:02 GMT 2013
+Job ended: Mon Mar 18 16:32:19 GMT 2013
+The job took 17 seconds.
+input8192
+Running on 7 nodes to sort from hdfs://freestyle.private.srg.cl.cam.ac.uk:8020/user/icg27/input8192 into hdfs://freestyle.private.srg.cl.cam.ac.uk:8020/user/icg27/sorted8192 with 32 reduces.
+Job started: Mon Mar 18 16:32:21 GMT 2013
+Job ended: Mon Mar 18 16:32:39 GMT 2013
+The job took 17 seconds.
+input16384
+Running on 7 nodes to sort from hdfs://freestyle.private.srg.cl.cam.ac.uk:8020/user/icg27/input16384 into hdfs://freestyle.private.srg.cl.cam.ac.uk:8020/user/icg27/sorted16384 with 32 reduces.
+Job started: Mon Mar 18 16:32:40 GMT 2013
+Job ended: Mon Mar 18 16:33:00 GMT 2013
+The job took 19 seconds.
+input32768
+Running on 7 nodes to sort from hdfs://freestyle.private.srg.cl.cam.ac.uk:8020/user/icg27/input32768 into hdfs://freestyle.private.srg.cl.cam.ac.uk:8020/user/icg27/sorted32768 with 32 reduces.
+Job started: Mon Mar 18 16:33:01 GMT 2013
+Job ended: Mon Mar 18 16:33:21 GMT 2013
+The job took 19 seconds.
+input65536
+Running on 7 nodes to sort from hdfs://freestyle.private.srg.cl.cam.ac.uk:8020/user/icg27/input65536 into hdfs://freestyle.private.srg.cl.cam.ac.uk:8020/user/icg27/sorted65536 with 32 reduces.
+Job started: Mon Mar 18 16:33:23 GMT 2013
+Job ended: Mon Mar 18 16:33:43 GMT 2013
+The job took 20 seconds.
+input131072
+Running on 7 nodes to sort from hdfs://freestyle.private.srg.cl.cam.ac.uk:8020/user/icg27/input131072 into hdfs://freestyle.private.srg.cl.cam.ac.uk:8020/user/icg27/sorted131072 with 32 reduces.
+Job started: Mon Mar 18 16:33:45 GMT 2013
+Job ended: Mon Mar 18 16:34:12 GMT 2013
+The job took 26 seconds.
+input262144
+Running on 7 nodes to sort from hdfs://freestyle.private.srg.cl.cam.ac.uk:8020/user/icg27/input262144 into hdfs://freestyle.private.srg.cl.cam.ac.uk:8020/user/icg27/sorted262144 with 32 reduces.
+Job started: Mon Mar 18 16:34:13 GMT 2013
+Job ended: Mon Mar 18 16:34:47 GMT 2013
+The job took 33 seconds.
+input524288
+Running on 7 nodes to sort from hdfs://freestyle.private.srg.cl.cam.ac.uk:8020/user/icg27/input524288 into hdfs://freestyle.private.srg.cl.cam.ac.uk:8020/user/icg27/sorted524288 with 32 reduces.
+Job started: Mon Mar 18 16:34:48 GMT 2013
+Job ended: Mon Mar 18 16:35:44 GMT 2013
+The job took 55 seconds.
+input1048576
+Running on 7 nodes to sort from hdfs://freestyle.private.srg.cl.cam.ac.uk:8020/user/icg27/input1048576 into hdfs://freestyle.private.srg.cl.cam.ac.uk:8020/user/icg27/sorted1048576 with 32 reduces.
+Job started: Mon Mar 18 16:35:46 GMT 2013
+Job ended: Mon Mar 18 16:37:40 GMT 2013
+The job took 114 seconds.
+input2097152
+Running on 7 nodes to sort from hdfs://freestyle.private.srg.cl.cam.ac.uk:8020/user/icg27/input2097152 into hdfs://freestyle.private.srg.cl.cam.ac.uk:8020/user/icg27/sorted2097152 with 32 reduces.
+Job started: Mon Mar 18 16:37:41 GMT 2013
+Job ended: Mon Mar 18 16:40:04 GMT 2013
+The job took 143 seconds.
+input4194304
+Running on 7 nodes to sort from hdfs://freestyle.private.srg.cl.cam.ac.uk:8020/user/icg27/input4194304 into hdfs://freestyle.private.srg.cl.cam.ac.uk:8020/user/icg27/sorted4194304 with 32 reduces.
+Job started: Mon Mar 18 16:40:06 GMT 2013
+Job ended: Mon Mar 18 16:43:51 GMT 2013
+The job took 225 seconds.
+input8388608
+Running on 7 nodes to sort from hdfs://freestyle.private.srg.cl.cam.ac.uk:8020/user/icg27/input8388608 into hdfs://freestyle.private.srg.cl.cam.ac.uk:8020/user/icg27/sorted8388608 with 32 reduces.
+Job started: Mon Mar 18 16:43:52 GMT 2013
+Job ended: Mon Mar 18 16:49:43 GMT 2013
+The job took 350 seconds.
+input16777216
+Running on 7 nodes to sort from hdfs://freestyle.private.srg.cl.cam.ac.uk:8020/user/icg27/input16777216 into hdfs://freestyle.private.srg.cl.cam.ac.uk:8020/user/icg27/sorted16777216 with 32 reduces.
+Job started: Mon Mar 18 16:49:46 GMT 2013
+Job ended: Mon Mar 18 16:59:29 GMT 2013
+The job took 583 seconds.

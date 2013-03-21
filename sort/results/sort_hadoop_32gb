@@ -1,0 +1,15 @@
+Running on 7 nodes to sort from hdfs://freestyle.private.srg.cl.cam.ac.uk:8020/user/icg27/input33554432 into hdfs://freestyle.private.srg.cl.cam.ac.uk:8020/user/icg27/sorted33554432 with 32 reduces.
+Job started: Tue Mar 19 00:04:15 GMT 2013
+Job ended: Tue Mar 19 00:11:00 GMT 2013
+The job took 405 seconds.
+Deleted /user/icg27/sorted33554432
+Running on 7 nodes to sort from hdfs://freestyle.private.srg.cl.cam.ac.uk:8020/user/icg27/input33554432 into hdfs://freestyle.private.srg.cl.cam.ac.uk:8020/user/icg27/sorted33554432 with 32 reduces.
+Job started: Tue Mar 19 00:11:04 GMT 2013
+Job ended: Tue Mar 19 00:17:56 GMT 2013
+The job took 411 seconds.
+Deleted /user/icg27/sorted33554432
+Running on 7 nodes to sort from hdfs://freestyle.private.srg.cl.cam.ac.uk:8020/user/icg27/input33554432 into hdfs://freestyle.private.srg.cl.cam.ac.uk:8020/user/icg27/sorted33554432 with 32 reduces.
+Job started: Tue Mar 19 00:17:59 GMT 2013
+Job ended: Tue Mar 19 00:24:56 GMT 2013
+The job took 417 seconds.
+Deleted /user/icg27/sorted33554432
