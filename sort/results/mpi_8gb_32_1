@@ -1,0 +1,96 @@
+input1 7
+With Read & Write: 0.015
+With Read: 0.015
+Without Read: 0.006
+input2 15
+With Read & Write: 0.008
+With Read: 0.007
+Without Read: 0.002
+input4 31
+With Read & Write: 0.012
+With Read: 0.012
+Without Read: 0.002
+input8 63
+With Read & Write: 0.003
+With Read: 0.003
+Without Read: 0.002
+input16 128
+With Read & Write: 0.003
+With Read: 0.003
+Without Read: 0.002
+input32 257
+With Read & Write: 0.013
+With Read: 0.013
+Without Read: 0.002
+input64 516
+With Read & Write: 0.019
+With Read: 0.018
+Without Read: 0.003
+input128 1033
+With Read & Write: 0.006
+With Read: 0.005
+Without Read: 0.004
+input256 2067
+With Read & Write: 0.016
+With Read: 0.015
+Without Read: 0.006
+input512 4135
+With Read & Write: 0.014
+With Read: 0.013
+Without Read: 0.009
+input1024 8272
+With Read & Write: 0.030
+With Read: 0.029
+Without Read: 0.013
+input2048 16545
+With Read & Write: 0.061
+With Read: 0.060
+Without Read: 0.024
+input4096 33092
+With Read & Write: 0.098
+With Read: 0.096
+Without Read: 0.046
+input8192 66185
+With Read & Write: 0.180
+With Read: 0.175
+Without Read: 0.087
+input16384 132371
+With Read & Write: 0.335
+With Read: 0.326
+Without Read: 0.169
+input32768 264743
+With Read & Write: 0.634
+With Read: 0.617
+Without Read: 0.334
+input65536 529488
+With Read & Write: 1.272
+With Read: 1.238
+Without Read: 0.658
+input131072 1058977
+With Read & Write: 2.493
+With Read: 2.427
+Without Read: 1.303
+input262144 2117956
+With Read & Write: 5.115
+With Read: 4.981
+Without Read: 2.571
+input524288 4235913
+With Read & Write: 10.107
+With Read: 9.843
+Without Read: 5.226
+input1048576 8471827
+With Read & Write: 20.143
+With Read: 19.595
+Without Read: 10.487
+input2097152 16943655
+With Read & Write: 41.555
+With Read: 40.299
+Without Read: 21.812
+input4194304 33887312
+With Read & Write: 85.078
+With Read: 81.753
+Without Read: 44.367
+input8388608 67774625
+With Read & Write: 172.930
+With Read: 166.894
+Without Read: 93.356

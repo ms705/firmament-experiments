@@ -1,0 +1,100 @@
+input1 7
+With Read & Write: 0.009
+With Read: 0.009
+Without Read: 0.000
+input2 15
+With Read & Write: 0.003
+With Read: 0.002
+Without Read: 0.000
+input4 31
+With Read & Write: 0.012
+With Read: 0.012
+Without Read: 0.000
+input8 63
+With Read & Write: 0.001
+With Read: 0.001
+Without Read: 0.000
+input16 128
+With Read & Write: 0.001
+With Read: 0.001
+Without Read: 0.000
+input32 257
+With Read & Write: 0.015
+With Read: 0.015
+Without Read: 0.001
+input64 516
+With Read & Write: 0.016
+With Read: 0.015
+Without Read: 0.001
+input128 1033
+With Read & Write: 0.004
+With Read: 0.003
+Without Read: 0.001
+input256 2067
+With Read & Write: 0.017
+With Read: 0.017
+Without Read: 0.002
+input512 4135
+With Read & Write: 0.009
+With Read: 0.008
+Without Read: 0.004
+input1024 8272
+With Read & Write: 0.025
+With Read: 0.023
+Without Read: 0.007
+input2048 16545
+With Read & Write: 0.051
+With Read: 0.050
+Without Read: 0.012
+input4096 33092
+With Read & Write: 0.069
+With Read: 0.067
+Without Read: 0.017
+input8192 66185
+With Read & Write: 0.130
+With Read: 0.126
+Without Read: 0.038
+input16384 132371
+With Read & Write: 0.236
+With Read: 0.227
+Without Read: 0.068
+input32768 264743
+With Read & Write: 0.436
+With Read: 0.418
+Without Read: 0.136
+input65536 529488
+With Read & Write: 0.912
+With Read: 0.877
+Without Read: 0.298
+input131072 1058977
+With Read & Write: 1.825
+With Read: 1.754
+Without Read: 0.627
+input262144 2117956
+With Read & Write: 3.773
+With Read: 3.639
+Without Read: 1.331
+input524288 4235913
+With Read & Write: 7.911
+With Read: 7.645
+Without Read: 2.818
+input1048576 8471827
+With Read & Write: 15.723
+With Read: 15.164
+Without Read: 5.984
+input2097152 16943655
+With Read & Write: 32.521
+With Read: 31.430
+Without Read: 13.075
+input4194304 33887312
+With Read & Write: 71.376
+With Read: 68.861
+Without Read: 32.202
+input8388608 67774625
+With Read & Write: 152.060
+With Read: 146.709
+Without Read: 73.287
+input16777216 135549251
+With Read & Write: 346.755
+With Read: 330.294
+Without Read: 185.175
