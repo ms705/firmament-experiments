@@ -1,0 +1,11 @@
+# started on Mon Mar 25 00:03:31 2013
+
+
+ Performance counter stats for './quick_sort input4194304/part1 21798423 /dev/null':
+
+    64,509,316,075 instructions              #    0.84  insns per cycle        
+    76,463,913,318 cycles                    #    0.000 GHz                    
+       610,422,416 cache-misses                                                
+
+      61.765784224 seconds time elapsed
+

@@ -1,0 +1,11 @@
+# started on Mon Mar 25 02:13:55 2013
+
+
+ Performance counter stats for '/home/icg27/shark-0.2.1/bin/shark -i /home/icg27/colocation_test/shark.hql':
+
+    29,451,003,599 instructions              #    0.78  insns per cycle        
+    37,991,207,703 cycles                    #    0.000 GHz                    
+        49,669,169 cache-misses                                                
+
+     125.675469945 seconds time elapsed
+
