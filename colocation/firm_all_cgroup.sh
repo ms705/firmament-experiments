@@ -55,10 +55,6 @@ for t_name1 in ${tests_name}; do
   wait_for_finish ${t_name1}
 
   for t_name2 in ${tests_name}; do
-    if [[ $t_name2 == $t_name1 ]];
-    then
-	continue;
-    fi
     if [[ $t_name1 == $t_name2 && $t_name1 == "shark" ]];
     then
 	continue;
