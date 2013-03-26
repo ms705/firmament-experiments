@@ -1,0 +1,11 @@
+# started on Tue Mar 26 10:24:26 2013
+
+
+ Performance counter stats for 'ssh icg27@michael ab -n 600000 -c 40 http://uriel/index4.html >> lat_4.8.2.ab.quick_sort.1.1st':
+
+        47,933,726 instructions              #    1.02  insns per cycle        
+        46,887,760 cycles                    #    0.000 GHz                    
+           257,320 cache-misses                                                
+
+      46.644624672 seconds time elapsed
+

@@ -1,0 +1,11 @@
+# started on Mon Mar 25 21:19:55 2013
+
+
+ Performance counter stats for './binoptions 100 100 1 0.3 0.03 -1 94000 94000 1':
+
+       149,412,035 instructions              #    0.71  insns per cycle        
+       211,090,536 cycles                    #    0.000 GHz                    
+           236,905 cache-misses                                                
+
+      40.330116520 seconds time elapsed
+

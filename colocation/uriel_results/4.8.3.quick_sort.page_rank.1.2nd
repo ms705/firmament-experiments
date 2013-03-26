@@ -1,0 +1,11 @@
+# started on Mon Mar 25 20:40:44 2013
+
+
+ Performance counter stats for './graphchi/bin/example_apps/pagerank file soc-LiveJournal1.txt':
+
+    54,027,314,024 instructions              #    0.33  insns per cycle        
+   163,048,969,229 cycles                    #    0.000 GHz                    
+        41,188,751 cache-misses                                                
+
+      65.387071591 seconds time elapsed
+
