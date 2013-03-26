@@ -4,9 +4,11 @@ import sys
 import math
 import re
 import matplotlib
+matplotlib.use('Agg')
 import matplotlib.pyplot as plt
 import numpy as np
 from matplotlib import pylab
+from matplotlib.colors import LogNorm
 
 def usage():
   print "plot_csv.py <isolation csv file> <colocation csv file> <filter cpu num>"
@@ -34,7 +36,8 @@ for line in open(iso_file).readlines():
 for bs in baselines:
   baselines[bs] /= num_baselines[bs]
 
-benchmarks = {'ab': 0, 'quick_sort': 1, 'page_rank': 2, 'binoptions': 3, 'shark': 4}
+benchmarks = {'ab': 0, 'quick_sort': 1, 'page_rank': 2, 'binoptions': 3,
+              'shark': 4}
 
 num_vals = np.zeros([len(benchmarks), len(benchmarks)], dtype=float)
 avg_vals = np.zeros([len(benchmarks), len(benchmarks)], dtype=float)
@@ -52,6 +55,7 @@ for line in open(col_file).readlines():
       avg_vals[j][i] += float(vals[8])
 
 bmarks = ['ab', 'quick_sort', 'page_rank', 'binoptions', 'shark']
+bmark_labels = ['HTTP', 'QS', 'PR', 'BOPM', 'SQ']
 
 print "Normalized run times:"
 # Compute normalized run times
@@ -87,21 +91,23 @@ for i in  bmarks:
   print line
 
 # Plotting
-fig = plt.figure(figsize=(5,5))
-pylab.rc('font', size='10.0')
+fig = plt.figure(figsize=(2,2))
+pylab.rc('font', size='8.0')
 
 #plt.matshow(norm_vals, vmax=2.0, vmin=0.0)
-plt.matshow(norm_vals, vmin=0.9)
+plt.matshow(norm_vals, vmin=0.9, fignum=0, cmap='spectral')
+#            norm=LogNorm(vmin=0.9, vmax=2.2))
 
-cb = plt.colorbar(shrink=1.0, format='%.3e')
+cb = plt.colorbar(shrink=0.8, format='%1.1f$\\times$', ticks=[1.0, 1.2, 1.4,
+                                                              1.6, 1.8, 2.0, 2.2])
 cb.set_label('Normalized runtime')
 
-plt.xticks(np.arange(len(bmarks)), bmarks)
+plt.xticks(np.arange(len(bmarks)), bmark_labels)
 for tick in pylab.gca().xaxis.iter_ticks():
   tick[0].label2On = True
   tick[0].label1On = False
-  tick[0].label2.set_rotation('vertical')
-plt.yticks(np.arange(len(bmarks)), bmarks)
+  tick[0].label2.set_rotation(45)
+plt.yticks(np.arange(len(bmarks)), bmark_labels)
 plt.xlim(-0.5, len(baselines)-0.5)
 plt.ylim(-0.5, len(baselines)-0.5)
 
