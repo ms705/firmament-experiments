@@ -17,7 +17,7 @@ if [[ $# -eq 4 ]]; then
 fi
 
 # start local coordinator
-build/engine/coordinator --listen_uri=tcp:$2:9999 --task_lib_path=/home/srguser/firmament/build/engine/ --scheduler=${SCHEDULER} ${COST_MODEL} --log_dir=${LOG_DIR} -task_log_directory=/home/srguser/firmament-logs/ &
+build/engine/coordinator --listen_uri=tcp:$2:9999 --task_lib_path=/home/srguser/firmament/build/engine/ --scheduler=${SCHEDULER} ${COST_MODEL} --log_dir=${LOG_DIR} --task_log_directory=/home/srguser/firmament-logs/ &
 sleep 1
 
 # start other coordinators and link them into local one
