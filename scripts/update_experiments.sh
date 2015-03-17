@@ -3,5 +3,9 @@
 cd firmament-experiments
 git pull
 git submodule init
-git submodule update
-git submodule foreach git pull
+
+# can't do this because of Naiad :(
+#git submodule foreach git pull
+DIR=${PWD}
+cd ${PWD}/helpers/napper
+git pull
