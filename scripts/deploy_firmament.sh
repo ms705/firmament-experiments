@@ -5,7 +5,7 @@ sudo apt-get -y install linux-tools-common
 sudo apt-get -y install linux-tools-`uname -r`
 
 # required for napper
-sudo apt-get -y install python-kazoo
+sudo apt-get -y install python-kazoo python-netifaces
 
 # actual Firmament
 git clone https://github.com/ms705/firmament.git firmament
