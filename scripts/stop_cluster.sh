@@ -6,3 +6,4 @@ if [[ $# -lt 1 ]]; then
 fi
 
 parallel-ssh -t 0 -h $1 "killall coordinator"
+#parallel-ssh -t 0 -h $1 "curl http://localhost:8080/shutdown"
