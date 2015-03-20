@@ -2,6 +2,7 @@
 
 if [[ $# -lt 3 ]]; then
   echo "usage: collect_job_logs.sh <job id> <coordinator URL>"
+  exit 1
 fi
 
 JOB_ID=$1
