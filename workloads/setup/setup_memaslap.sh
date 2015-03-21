@@ -8,6 +8,9 @@ wget https://launchpad.net/libmemcached/1.0/1.0.18/+download/libmemcached-${LIBM
 tar -xvzf libmemcached-${LIBMEMCACHED_VER}.tar.gz
 cd libmemcached-${LIBMEMCACHED_VER}
 
+# patch statistics output
+patch -p1 < ../patch_stats.diff
+
 # configure and compile
 LIBS=-lpthread ./configure --enable-memaslap
 make -j12
