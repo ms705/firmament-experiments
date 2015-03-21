@@ -1,0 +1,11 @@
+--- libmemcached-1.0.18/clients/memaslap.c.orig	2015-03-21 16:21:19.333391227 +0000
++++ libmemcached-1.0.18/clients/memaslap.c	2015-03-21 16:21:43.061390183 +0000
+@@ -698,7 +698,7 @@
+ {
+   int obj_size= (int)(ms_setting.avg_key_size + ms_setting.avg_val_size);
+ 
+-  printf("\033[1;1H\033[2J\n");
++  //printf("\033[1;1H\033[2J\n");
+   ms_dump_format_stats(&ms_statistic.get_stat, in_time,
+                        ms_setting.stat_freq, obj_size);
+   ms_dump_format_stats(&ms_statistic.set_stat, in_time,
