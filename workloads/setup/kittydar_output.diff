@@ -1,0 +1,71 @@
+diff --git a/testing/test.js b/testing/test.js
+index d0d8ee9..fb07a7e 100644
+--- a/testing/test.js
++++ b/testing/test.js
+@@ -1,4 +1,4 @@
+-var fs = require("fs"),
++var fs = require("graceful-fs"),
+     path = require("path"),
+     util = require("util"),
+     async = require("async"),
+@@ -53,12 +53,12 @@ function runTest() {
+ function printResults() {
+   charm.cursor(true);
+ 
+-  console.log("\n\ntrue positives:  ", truePos.toString().green);
+-  console.log("false negatives: ", misses.length.toString().red);
+-  console.log("false positives: ", falsePos.toString().red);
++  console.log("\n\ntrue positives:  ", truePos.toString());
++  console.log("false negatives: ", misses.length.toString());
++  console.log("false positives: ", falsePos.toString());
+ 
+   if (newpasses.length) {
+-    console.log("\nnew passes!".green);
++    console.log("\nnew passes!");
+     for (var i = 0; i < newpasses.length; i++) {
+       console.log(newpasses[i]);
+     }
+@@ -66,7 +66,7 @@ function printResults() {
+   }
+ 
+   if (newfails.length) {
+-    console.log("\nnew failures )=".red);
++    console.log("\nnew failures )=");
+     for (var i = 0; i < newfails.length; i++) {
+       console.log(newfails[i]);
+     }
+@@ -104,6 +104,7 @@ function testImage(image, callback) {
+       var cats = kittydar.detectCats(canvas);
+ 
+       time += Date.now() - t1;
++      console.log(image + ": " + time + ", " + cats.length + " cats");
+ 
+       var found = false;
+       cats.forEach(function(cat) {
+@@ -143,22 +144,19 @@ function testImage(image, callback) {
+ }
+ 
+ function printDots() {
+-  charm.erase("start");
+-  charm.move(-count, 0);
+-
+   var str = "";
+   for (var i = 0; i < results.length; i++) {
+     if (results[i] == "pass") {
+-      str += "•".green.bold;
++      str += "^";
+     }
+     else  {
+-      str += "•".red.bold;
++      str += "v";
+     }
+   }
+   var rest = count - results.length;
+ 
+   for (var i = 0; i < rest; i++) {
+-    str += "·".grey;
++    str += "-";
+   }
+-  charm.write(str);
++  console.log(str);
+ }
