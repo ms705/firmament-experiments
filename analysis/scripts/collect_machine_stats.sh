@@ -11,8 +11,12 @@ TO=$3
 OUT_DIR=$4
 
 CMD="/home/srguser/firmament-experiments/scripts/get_collectl.sh ${DATE} ${FROM} ${TO}"
-parallel-ssh -P -h ~/hosts.all ${CMD}
-parallel-ssh -h ~/hosts.all scp /tmp/collectl-${FROM}-${TO}-'*'-${DATE}.tab caelum-301:/${OUT_DIR}/
+parallel-ssh -P -t 0 -h ~/hosts.all ${CMD}
+for r in 3 4; do
+  for i in `seq -w 1 14`; do
+    scp caelum-${r}${i}:/tmp/collectl-$(printf %q "${FROM}")-$(printf %q "${TO}")-'*'-${DATE}.tab ${OUT_DIR}
+  done
+done
 ${CMD}
-cp /tmp/collectl-${FROM}-${TO}-'*'-${DATE}.tab ${OUT_DIR}/ 
+cp /tmp/collectl-$(printf %s "${FROM}")-$(printf %s "${TO}")-$(hostname)-${DATE}.tab ${OUT_DIR}/ 
 
