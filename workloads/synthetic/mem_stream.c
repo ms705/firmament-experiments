@@ -14,8 +14,8 @@ int main(int argc, char* argv[]) {
   // Iterate over it, reading each word and swapping its bottom bit with the
   // previous word
   uint64_t j = 0;
-  while (j < 100) {
-    printf("Iteration %ju...\n", j);
+  while (j < 100000000000ULL / buf_size) {
+    //printf("Iteration %ju...\n", j);
     for (uint64_t i = 1; i < buf_size / sizeof(uint64_t); ++i) {
       uint64_t tmp = (buffer[i] & 0xfffffffffffffff0ULL) |
                      (buffer[i - 1] & 0xfULL);
