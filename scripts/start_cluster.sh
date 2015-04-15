@@ -8,6 +8,7 @@ fi
 SCHEDULER=simple
 COST_MODEL=""
 LOG_DIR=/tmp
+ROOT=/home/srguser
 
 if [[ $# -ge 3 ]]; then
   SCHEDULER=$3
@@ -17,8 +18,8 @@ if [[ $# -eq 4 ]]; then
 fi
 
 # start local coordinator
-build/engine/coordinator --listen_uri=tcp:$2:9999 --task_lib_path=/home/srguser/firmament/build/engine/ --scheduler=${SCHEDULER} ${COST_MODEL} --log_dir=${LOG_DIR} --task_log_directory=/home/srguser/firmament-logs/ &
+build/engine/coordinator --listen_uri=tcp:$2:9999 --task_lib_dir=${ROOT}/firmament/build/engine/ --scheduler=${SCHEDULER} ${COST_MODEL} --log_dir=${LOG_DIR} --task_log_dir=${ROOT}/firmament-logs/ --task_perf_dir=${ROOT}/firmament-perf --flow_scheduling_solver=cs2 --debug_flow_graph --task_data_dir=/mnt/scratch/ --pin_tasks_to_cores=true --perf_monitoring=false --cs2_binary=ext/cs2-git/cs2.exe &
 sleep 1
 
 # start other coordinators and link them into local one
-parallel-ssh -t 0 -h $1 "cd firmament; build/engine/coordinator --parent_uri=tcp:$2:9999 --task_lib_path=/home/srguser/firmament/build/engine/ --scheduler=${SCHEDULER} ${COST_MODEL} --log_dir=${LOG_DIR} --task_log_directory=/home/srguser/firmament-logs/"
+parallel-ssh -t 0 -h $1 "cd firmament; build/engine/coordinator --parent_uri=tcp:$2:9999 --task_lib_dir=${ROOT}/firmament/build/engine/ --scheduler=simple --log_dir=${LOG_DIR} --task_log_dir=${ROOT}/firmament-logs/ --task_perf_dir=${ROOT}/firmament-perf --task_data_dir=/mnt/scratch/ --pin_tasks_to_cores=true --perf_monitoring=false"

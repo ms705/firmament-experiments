@@ -10,8 +10,8 @@ COORD_URL=$2
 
 STATUS=$(curl -s -L "${COORD_URL}/job/completion/?id=${JOB_ID}&json=1")
 
-while [[ ${STATUS} != "COMPLETED" ]]; do
-  echo "Still running..."
+while [[ ${STATUS} != "COMPLETED" && ${STATUS} != "FAILED" && ${STATUS} != "ABORTED" ]]; do
+  #echo "Still running..."
   sleep 10
   STATUS=$(curl -s -L "${COORD_URL}/job/completion/?id=${JOB_ID}&json=1")
 done
