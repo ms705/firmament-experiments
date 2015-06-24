@@ -1,0 +1,14 @@
+# started on Wed Jun 24 19:52:54 2015
+
+40821.391376,task-clock
+3518,context-switches
+0,cpu-migrations
+639,page-faults
+113452474142,cycles
+137562349127,instructions
+12514299338,branches
+176916,branch-misses
+0,cpu/mem-loads/
+12516192559,cpu/mem-stores/
+96,cache-misses
+81624009,cache-references

@@ -1,0 +1,15 @@
+# started on Wed Jun 24 19:29:25 2015
+
+60020.368703,cpu-clock
+60020.211717,task-clock
+5284,context-switches
+0,cpu-migrations
+137,page-faults
+166804449971,cycles
+333411610941,instructions
+166659240670,branches
+120201,branch-misses
+0,cpu/mem-loads/
+24202474,cpu/mem-stores/
+218,cache-misses
+96569,cache-references
