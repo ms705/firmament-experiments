@@ -1,0 +1,11 @@
+; Read 4 files with aio at different depths
+[global]
+ioengine=libaio
+buffered=0
+rw=write
+bs=128k
+size=512m
+directory=/tmp
+
+[file1]
+iodepth=4

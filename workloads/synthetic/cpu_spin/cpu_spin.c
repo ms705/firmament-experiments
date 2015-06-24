@@ -12,11 +12,18 @@ void catch_timer(int sig) {
 
 int main(int argc, char* argv[]) {
   // One argument: number of seconds to spin for
-  if (argc < 2) {
+  char* duration_env = getenv("DURATION");
+  int64_t secs;
+  if (!duration_env && argc < 2) {
     printf("usage: cpu_spin <seconds>\n");
     exit(1);
+  } else if (argc >= 2) {
+    secs = atol(argv[1]);
+  } else {
+    secs = atol(duration_env);
   }
-  int64_t secs = atol(argv[1]);
+  printf("Spinning for %jds.\n", secs);
+
   // Set up a timer
   struct itimerval timer;
   timer.it_interval.tv_sec = 0;

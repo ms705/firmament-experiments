@@ -1,0 +1,11 @@
+; Read file with aio
+[global]
+ioengine=libaio
+buffered=0
+rw=read
+bs=128k
+size=512m
+directory=/tmp
+
+[file1]
+iodepth=4
