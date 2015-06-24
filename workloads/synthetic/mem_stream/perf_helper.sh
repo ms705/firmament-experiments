@@ -6,4 +6,4 @@ if [ $# -lt 1 ]; then
   exit 1
 fi
 
-perf stat -x "," -o data.perf $(for e in ${EVENTS}; do echo -n "-e ${e} "; done) "$@"
+perf stat -x "," -o mem_stream.${HOSTNAME}${EXPERIMENT}.perf $(for e in ${EVENTS}; do echo -n "-e ${e} "; done) "$@"

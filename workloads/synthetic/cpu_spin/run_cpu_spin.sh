@@ -7,4 +7,4 @@ else
   DURATION=$1
 fi
 
-${DIR}/perf_helper.sh ${DIR}/cpu_spin/cpu_spin ${DURATION}
+${DIR}/perf_helper.sh ${DIR}/cpu_spin ${DURATION} > cpu_spin${DURATION}s.${HOSTNAME}${EXPERIMENT}.out

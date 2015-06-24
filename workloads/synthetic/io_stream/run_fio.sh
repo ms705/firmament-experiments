@@ -7,4 +7,4 @@ else
   CONF=$1
 fi
 
-${DIR}/perf_helper.sh /usr/bin/fio ${CONF}
+${DIR}/../perf_helper.sh /usr/bin/fio --output ${CONF}.${HOSTNAME}${EXPERIMENT}.out ${CONF}
