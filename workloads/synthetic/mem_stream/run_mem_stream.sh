@@ -7,4 +7,4 @@ else
   SIZE=$1
 fi
 
-${DIR}/perf_helper.sh ${DIR}/mem_stream ${SIZE} > mem_stream${SIZE}.${HOSTNAME}${EXPERIMENT}.out
+${DIR}/perf_helper.sh ${DIR}/mem_stream ${SIZE} > mem_stream.${SIZE}B.${HOSTNAME}${EXPERIMENT}.out

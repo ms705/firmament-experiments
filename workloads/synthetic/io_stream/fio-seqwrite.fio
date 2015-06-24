@@ -5,7 +5,8 @@ buffered=0
 rw=write
 bs=128k
 size=512m
-directory=/tmp
+directory=/mnt/data/fiotmp
 
 [file1]
-iodepth=4
+iodepth=8
+unlink=1
