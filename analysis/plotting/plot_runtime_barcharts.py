@@ -3,8 +3,26 @@ import matplotlib.pyplot as plt
 import os, sys
 from utils import *
 
+paper_mode = True
+
+def translate_workload(wl):
+  if "scc" in wl:
+    return "SCC"
+  elif "tpch" in wl:
+    return "TPC-H"
+  elif "kitty" in wl:
+    return "Img.~analysis"
+  elif "join" in wl:
+    return "Sym.~JOIN"
+  elif "pagerank" in wl:
+    return "PageRank"
+  elif "netflix" in wl:
+    return "NetFlix"
+  elif "sssp" in wl:
+    return "SSSP"
+
 if len(sys.argv) < 2:
-  print "usage: plot_normalized_runtime_barchart.py <collated dir> " \
+  print "usage: plot_runtime_barcharts.py <collated dir> " \
         "<baseline name> <setup name> <workload 1> ... <workload N> "
   sys.exit(1)
 
@@ -64,21 +82,33 @@ for wl in workloads:
 #########################################
 # Normed runtimes
 
-plt.figure()
+if paper_mode:
+  plt.figure(figsize=(3, 2))
+else:
+  plt.figure()
 
-plt.bar(np.arange(len(workloads)), normed_runtimes, width=0.8, align="center")
+if paper_mode:
+  set_paper_rcs()
+else:
+  set_rcs()
+
+plt.bar(np.arange(len(workloads)), normed_runtimes, width=0.4, align="center",
+        label="Random first fit")
 print "%s," % (setup_name) + ",".join(["%f" % (x) for x in normed_runtimes])
 
 plt.axhline(1.0, lw=1.0, ls='-', color='k')
 
-#plt.ylim(0, 16000)
+plt.legend(frameon=False, loc="upper left")
+
+plt.ylim(0, 3.5)
+plt.yticks(np.arange(0, 3.6, 0.5), ["%.1f $\\times$" % (x) for x in np.arange(0, 3.6, 0.5)])
 plt.ylabel("Normalized makespan")
 
 #plt.xlabel("Workload")
-plt.xticks(np.arange(len(workloads)), workloads, ha='center')
+plt.xticks(np.arange(len(workloads)), [translate_workload(x) for x in workloads], ha='right', rotation=30)
 
-plt.savefig("%s_normed_runtimes.pdf" % (outname), format="pdf")
-plt.savefig("%s_normed_runtimes.png" % (outname), format="png")
+plt.savefig("%s_normed_runtimes.pdf" % (outname), format="pdf", bbox_inches='tight', pad_inches=0.01)
+plt.savefig("%s_normed_runtimes.png" % (outname), format="png", bbox_inches='tight', pad_inches=0.01)
 
 #########################################
 # Raw runtimes
@@ -87,7 +117,7 @@ plt.clf()
 plt.bar(np.arange(len(workloads)), baseline_runtimes, yerr=baseline_stdevs, ecolor='k', width=0.4, align="center", label="Ideal")
 plt.bar(np.arange(len(workloads)) + 0.4, setup_runtimes, yerr=setup_stdevs, ecolor='k', width=0.4, align="center", label="Shared cluster", color='r')
 
-#plt.ylim(0, 16000)
+#plt.ylim(0, 1000)
 plt.ylabel("Makespan [sec]")
 plt.legend()
 
