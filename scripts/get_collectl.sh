@@ -8,7 +8,7 @@ fi
 DATE=$1
 FROM=$2
 TO=$3
-FILENAME="/var/log/collectl/$(hostname)-${DATE}-000000.raw.gz"
+FILENAME="/var/log/collectl/$(hostname)-${DATE}*.raw.gz"
 
 rm /tmp/collectl-${FROM}-${TO}-$(hostname)-20150323.tab
 collectl -scdmn -p ${FILENAME} --from ${FROM}-${TO} -oTm -P -f /tmp/collectl-${FROM}-${TO} -oz
