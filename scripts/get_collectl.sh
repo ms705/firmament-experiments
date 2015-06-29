@@ -11,5 +11,5 @@ TO=$3
 FILENAME="/var/log/collectl/$(hostname)-${DATE}*.raw.gz"
 
 rm /tmp/collectl-${FROM}-${TO}-$(hostname)-20150323.tab
-collectl -scdmn -p ${FILENAME} --from ${FROM}-${TO} -oTm -P -f /tmp/collectl-${FROM}-${TO}
+collectl -scdmn -p ${FILENAME} --from ${FROM}-${TO} -ozTm -P -f /tmp/collectl-${FROM}-${TO}
 
