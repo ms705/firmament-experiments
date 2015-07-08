@@ -1,6 +1,6 @@
 #!/bin/bash
 
-COMMON_EVENTS="cpu-clock task-clock context-switches cpu-migrations page-faults cycles instructions branches branch-misses cache-misses cache-references stalled-cycles-frontend stalled-cycles-backend"
+COMMON_EVENTS="cpu-clock task-clock context-switches cpu-migrations page-faults cycles instructions branches branch-misses cache-misses cache-references stalled-cycles-frontend stalled-cycles-backend node-loads node-load-misses"
 INTEL_EVENTS="mem-loads mem-stores"
 AMD_EVENTS="LLC-loads LLC-stores LLC-load-misses"
 
