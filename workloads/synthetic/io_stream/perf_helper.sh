@@ -1,5 +1,6 @@
 #!/bin/bash
-EVENTS="cpu-clock task-clock context-switches cpu-migrations page-faults cycles instructions branches branch-misses mem-loads mem-stores cache-misses cache-references"
+DIR=$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )
+source ${DIR}/../perf_conf.sh
 
 if [ $# -lt 1 ]; then
   echo "usage: perf_helper.sh <command with arguments>"

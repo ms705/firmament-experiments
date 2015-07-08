@@ -4,8 +4,8 @@ ioengine=libaio
 buffered=0
 rw=write
 bs=128k
-size=512m
-directory=/mnt/data/fiotmp
+size=4096m
+directory=${HOME}
 
 [file1]
 iodepth=8
