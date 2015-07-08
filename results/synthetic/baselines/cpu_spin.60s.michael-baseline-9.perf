@@ -1,0 +1,17 @@
+# started on Tue Jul  7 16:36:08 2015
+
+60000.000000,cpu-clock
+60000.000000,task-clock
+261,context-switches
+0,cpu-migrations
+155,page-faults
+113747959835,cycles
+135441044752,instructions
+67689474292,branches
+70390,branch-misses
+9000,cpu/mem-loads/
+21294320,cpu/mem-stores/
+22131,cache-misses
+34239,cache-references
+46039845450,stalled-cycles-frontend
+6910089228,stalled-cycles-backend
