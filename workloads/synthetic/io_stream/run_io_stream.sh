@@ -8,4 +8,4 @@ else
 fi
 
 touch io_stream.${CONF}.${HOSTNAME}${EXPERIMENT}.out
-${DIR}/perf_helper.sh /usr/bin/fio --output=io_stream.${CONF}.${HOSTNAME}${EXPERIMENT}.out ${DIR}/${CONF}
+${DIR}/perf_helper.sh /usr/bin/time -o cpu_spin.${DURATION}s.${HOSTNAME}${EXPERIMENT}.time --verbose /usr/bin/fio --output=io_stream.${CONF}.${HOSTNAME}${EXPERIMENT}.out ${DIR}/${CONF}
