@@ -3,27 +3,27 @@ fio-2.1.3
 Starting 1 process
 file1: Laying out IO file(s) (1 file(s) / 4096MB)
 
-file1: (groupid=0, jobs=1): err= 0: pid=6082: Wed Jul  8 15:29:26 2015
-  read : io=4096.0MB, bw=129554KB/s, iops=1012, runt= 32375msec
-    slat (usec): min=24, max=254, avg=63.63, stdev= 7.32
-    clat (msec): min=4, max=57, avg= 7.83, stdev= 1.05
-     lat (msec): min=4, max=57, avg= 7.89, stdev= 1.05
+file1: (groupid=0, jobs=1): err= 0: pid=11017: Thu Jul  9 18:46:18 2015
+  read : io=4096.0MB, bw=110200KB/s, iops=860, runt= 38061msec
+    slat (usec): min=25, max=250, avg=64.77, stdev= 7.69
+    clat (usec): min=4953, max=26024, avg=9217.00, stdev=654.66
+     lat (usec): min=5018, max=26050, avg=9282.61, stdev=654.55
     clat percentiles (usec):
-     |  1.00th=[ 6624],  5.00th=[ 6624], 10.00th=[ 6688], 20.00th=[ 7904],
-     | 30.00th=[ 7904], 40.00th=[ 7904], 50.00th=[ 7968], 60.00th=[ 7968],
-     | 70.00th=[ 7968], 80.00th=[ 8096], 90.00th=[ 8160], 95.00th=[ 8160],
-     | 99.00th=[ 9792], 99.50th=[10048], 99.90th=[16512], 99.95th=[24960],
-     | 99.99th=[56576]
-    bw (KB  /s): min=113152, max=132096, per=100.00%, avg=129703.59, stdev=2749.79
-    lat (msec) : 10=99.51%, 20=0.41%, 50=0.07%, 100=0.02%
-  cpu          : usr=1.73%, sys=10.83%, ctx=33455, majf=0, minf=1346
+     |  1.00th=[ 7840],  5.00th=[ 9024], 10.00th=[ 9152], 20.00th=[ 9152],
+     | 30.00th=[ 9152], 40.00th=[ 9152], 50.00th=[ 9152], 60.00th=[ 9280],
+     | 70.00th=[ 9280], 80.00th=[ 9280], 90.00th=[ 9280], 95.00th=[ 9280],
+     | 99.00th=[11072], 99.50th=[11200], 99.90th=[17536], 99.95th=[21888],
+     | 99.99th=[25984]
+    bw (KB  /s): min=104704, max=112128, per=100.00%, avg=110288.11, stdev=1398.82
+    lat (msec) : 10=97.85%, 20=2.09%, 50=0.06%
+  cpu          : usr=1.51%, sys=9.19%, ctx=33388, majf=0, minf=1343
   IO depths    : 1=0.1%, 2=0.1%, 4=0.1%, 8=100.0%, 16=0.0%, 32=0.0%, >=64=0.0%
      submit    : 0=0.0%, 4=100.0%, 8=0.0%, 16=0.0%, 32=0.0%, 64=0.0%, >=64=0.0%
      complete  : 0=0.0%, 4=100.0%, 8=0.1%, 16=0.0%, 32=0.0%, 64=0.0%, >=64=0.0%
      issued    : total=r=32768/w=0/d=0, short=r=0/w=0/d=0
 
 Run status group 0 (all jobs):
-   READ: io=4096.0MB, aggrb=129553KB/s, minb=129553KB/s, maxb=129553KB/s, mint=32375msec, maxt=32375msec
+   READ: io=4096.0MB, aggrb=110199KB/s, minb=110199KB/s, maxb=110199KB/s, mint=38061msec, maxt=38061msec
 
 Disk stats (read/write):
-  sda: ios=32631/3, merge=12/1, ticks=253680/84, in_queue=253688, util=99.81%
+  sda: ios=32652/4, merge=12/1, ticks=299224/64, in_queue=299240, util=99.87%

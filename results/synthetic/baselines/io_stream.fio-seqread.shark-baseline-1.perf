@@ -1,20 +1,20 @@
-# started on Wed Jul  8 15:21:15 2015
+# started on Thu Jul  9 18:36:51 2015
 
-10592.207505,cpu-clock
-10592.750915,task-clock
-65905,context-switches
-27,cpu-migrations
-8432,page-faults
-11547941578,cycles
-17731006415,instructions
-1847048730,branches
-11924855,branch-misses
-48678500,cache-misses
-2717900691,cache-references
-540021409,stalled-cycles-frontend
-6197335278,stalled-cycles-backend
-195257898,node-loads
-30226034,node-load-misses
-277096851,LLC-loads
-310494213,LLC-stores
-133331651,LLC-load-misses
+10602.984228,cpu-clock
+10603.906038,task-clock
+63546,context-switches
+41,cpu-migrations
+8705,page-faults
+12176405699,cycles
+11730594861,instructions
+1834805733,branches
+10948283,branch-misses
+47691551,cache-misses
+2730776697,cache-references
+530754862,stalled-cycles-frontend
+6109949009,stalled-cycles-backend
+94943456,node-loads
+15361050,node-load-misses
+302197694,LLC-loads
+554950603,LLC-stores
+14782506,LLC-load-misses
