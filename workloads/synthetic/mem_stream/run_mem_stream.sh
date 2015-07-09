@@ -7,4 +7,4 @@ else
   SIZE=$1
 fi
 
-${DIR}/perf_helper.sh /usr/bin/time -o cpu_spin.${DURATION}s.${HOSTNAME}${EXPERIMENT}.time --verbose ${DIR}/mem_stream ${SIZE} > mem_stream.${SIZE}B.${HOSTNAME}${EXPERIMENT}.out
+${DIR}/perf_helper.sh /usr/bin/time -o mem_stream.${DURATION}s.${HOSTNAME}${EXPERIMENT}.time --verbose ${DIR}/mem_stream ${SIZE} > mem_stream.${SIZE}B.${HOSTNAME}${EXPERIMENT}.out
