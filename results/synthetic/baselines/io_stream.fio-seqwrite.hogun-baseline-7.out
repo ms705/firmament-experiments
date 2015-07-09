@@ -3,28 +3,28 @@ fio-2.1.3
 Starting 1 process
 file1: Laying out IO file(s) (1 file(s) / 4096MB)
 
-file1: (groupid=0, jobs=1): err= 0: pid=13992: Wed Jul  8 15:38:49 2015
-  write: io=4096.0MB, bw=96191KB/s, iops=751, runt= 43604msec
-    slat (usec): min=36, max=212094, avg=128.17, stdev=1555.91
-    clat (msec): min=1, max=220, avg=10.51, stdev=11.12
-     lat (msec): min=1, max=380, avg=10.64, stdev=11.34
+file1: (groupid=0, jobs=1): err= 0: pid=22196: Thu Jul  9 18:56:04 2015
+  write: io=4096.0MB, bw=89825KB/s, iops=701, runt= 46694msec
+    slat (usec): min=36, max=188765, avg=121.32, stdev=1050.47
+    clat (msec): min=2, max=232, avg=11.27, stdev=11.33
+     lat (msec): min=2, max=393, avg=11.39, stdev=11.49
     clat percentiles (msec):
-     |  1.00th=[    5],  5.00th=[    5], 10.00th=[   10], 20.00th=[   10],
-     | 30.00th=[   10], 40.00th=[   10], 50.00th=[   10], 60.00th=[   10],
-     | 70.00th=[   10], 80.00th=[   11], 90.00th=[   11], 95.00th=[   12],
-     | 99.00th=[   26], 99.50th=[  117], 99.90th=[  182], 99.95th=[  194],
-     | 99.99th=[  219]
-    bw (KB  /s): min=38656, max=108582, per=100.00%, avg=96497.30, stdev=13671.54
-    lat (msec) : 2=0.01%, 4=0.13%, 10=71.15%, 20=27.47%, 50=0.71%
-    lat (msec) : 250=0.53%
-  cpu          : usr=2.03%, sys=11.61%, ctx=33853, majf=0, minf=1615
+     |  1.00th=[    5],  5.00th=[    5], 10.00th=[   11], 20.00th=[   11],
+     | 30.00th=[   11], 40.00th=[   11], 50.00th=[   11], 60.00th=[   11],
+     | 70.00th=[   12], 80.00th=[   12], 90.00th=[   13], 95.00th=[   13],
+     | 99.00th=[   27], 99.50th=[   65], 99.90th=[  198], 99.95th=[  202],
+     | 99.99th=[  233]
+    bw (KB  /s): min=41233, max=105051, per=100.00%, avg=90207.74, stdev=11796.86
+    lat (msec) : 4=0.13%, 10=15.38%, 20=83.17%, 50=0.78%, 100=0.05%
+    lat (msec) : 250=0.49%
+  cpu          : usr=1.88%, sys=10.88%, ctx=33796, majf=0, minf=1880
   IO depths    : 1=0.1%, 2=0.1%, 4=0.1%, 8=100.0%, 16=0.0%, 32=0.0%, >=64=0.0%
      submit    : 0=0.0%, 4=100.0%, 8=0.0%, 16=0.0%, 32=0.0%, 64=0.0%, >=64=0.0%
      complete  : 0=0.0%, 4=100.0%, 8=0.1%, 16=0.0%, 32=0.0%, 64=0.0%, >=64=0.0%
      issued    : total=r=0/w=32768/d=0, short=r=0/w=0/d=0
 
 Run status group 0 (all jobs):
-  WRITE: io=4096.0MB, aggrb=96190KB/s, minb=96190KB/s, maxb=96190KB/s, mint=43604msec, maxt=43604msec
+  WRITE: io=4096.0MB, aggrb=89825KB/s, minb=89825KB/s, maxb=89825KB/s, mint=46694msec, maxt=46694msec
 
 Disk stats (read/write):
-  sda: ios=0/32550, merge=0/244, ticks=0/338536, in_queue=338484, util=99.91%
+  sda: ios=0/32545, merge=0/301, ticks=0/398024, in_queue=397952, util=99.93%
