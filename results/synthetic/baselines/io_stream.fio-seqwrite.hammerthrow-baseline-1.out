@@ -3,27 +3,27 @@ fio-2.1.3
 Starting 1 process
 file1: Laying out IO file(s) (1 file(s) / 4096MB)
 
-file1: (groupid=0, jobs=1): err= 0: pid=2173: Wed Jul  8 15:01:05 2015
-  write: io=4096.0MB, bw=102488KB/s, iops=800, runt= 40925msec
-    slat (usec): min=21, max=19110, avg=44.71, stdev=215.38
-    clat (msec): min=7, max=194, avg= 9.94, stdev= 3.54
-     lat (msec): min=7, max=194, avg= 9.99, stdev= 3.55
+file1: (groupid=0, jobs=1): err= 0: pid=8766: Thu Jul  9 18:15:10 2015
+  write: io=4096.0MB, bw=103328KB/s, iops=807, runt= 40592msec
+    slat (usec): min=21, max=29102, avg=44.91, stdev=235.50
+    clat (msec): min=7, max=165, avg= 9.86, stdev= 3.30
+     lat (msec): min=7, max=165, avg= 9.91, stdev= 3.31
     clat percentiles (msec):
      |  1.00th=[    8],  5.00th=[    8], 10.00th=[    9], 20.00th=[    9],
      | 30.00th=[   10], 40.00th=[   10], 50.00th=[   10], 60.00th=[   10],
      | 70.00th=[   10], 80.00th=[   10], 90.00th=[   14], 95.00th=[   14],
-     | 99.00th=[   17], 99.50th=[   19], 99.90th=[   31], 99.95th=[   32],
-     | 99.99th=[  194]
-    bw (KB  /s): min=56238, max=126976, per=100.00%, avg=102532.10, stdev=16226.80
-    lat (msec) : 10=80.77%, 20=18.88%, 50=0.32%, 250=0.02%
-  cpu          : usr=1.83%, sys=7.57%, ctx=33216, majf=0, minf=25
+     | 99.00th=[   17], 99.50th=[   20], 99.90th=[   32], 99.95th=[   42],
+     | 99.99th=[  165]
+    bw (KB  /s): min=72448, max=125952, per=100.00%, avg=103416.14, stdev=15195.06
+    lat (msec) : 10=82.88%, 20=16.73%, 50=0.34%, 100=0.02%, 250=0.02%
+  cpu          : usr=1.87%, sys=8.02%, ctx=33225, majf=0, minf=25
   IO depths    : 1=0.1%, 2=0.1%, 4=0.1%, 8=100.0%, 16=0.0%, 32=0.0%, >=64=0.0%
      submit    : 0=0.0%, 4=100.0%, 8=0.0%, 16=0.0%, 32=0.0%, 64=0.0%, >=64=0.0%
      complete  : 0=0.0%, 4=100.0%, 8=0.1%, 16=0.0%, 32=0.0%, 64=0.0%, >=64=0.0%
      issued    : total=r=0/w=32768/d=0, short=r=0/w=0/d=0
 
 Run status group 0 (all jobs):
-  WRITE: io=4096.0MB, aggrb=102487KB/s, minb=102487KB/s, maxb=102487KB/s, mint=40925msec, maxt=40925msec
+  WRITE: io=4096.0MB, aggrb=103328KB/s, minb=103328KB/s, maxb=103328KB/s, mint=40592msec, maxt=40592msec
 
 Disk stats (read/write):
-  sda: ios=0/32837, merge=0/285, ticks=0/337828, in_queue=337820, util=99.84%
+  sda: ios=0/32706, merge=0/289, ticks=0/329476, in_queue=329484, util=99.86%

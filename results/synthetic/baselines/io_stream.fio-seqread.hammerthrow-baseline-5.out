@@ -3,27 +3,27 @@ fio-2.1.3
 Starting 1 process
 file1: Laying out IO file(s) (1 file(s) / 4096MB)
 
-file1: (groupid=0, jobs=1): err= 0: pid=2025: Wed Jul  8 14:53:46 2015
-  read : io=4096.0MB, bw=110371KB/s, iops=862, runt= 38002msec
-    slat (usec): min=15, max=125, avg=26.29, stdev= 4.61
-    clat (msec): min=7, max=39, avg= 9.25, stdev= 1.14
-     lat (msec): min=7, max=39, avg= 9.27, stdev= 1.14
+file1: (groupid=0, jobs=1): err= 0: pid=8612: Thu Jul  9 18:07:51 2015
+  read : io=4096.0MB, bw=110156KB/s, iops=860, runt= 38076msec
+    slat (usec): min=19, max=129, avg=26.39, stdev= 4.60
+    clat (msec): min=6, max=39, avg= 9.26, stdev= 1.15
+     lat (msec): min=6, max=39, avg= 9.29, stdev= 1.15
     clat percentiles (usec):
-     |  1.00th=[ 7840],  5.00th=[ 8032], 10.00th=[ 8096], 20.00th=[ 8896],
-     | 30.00th=[ 9152], 40.00th=[ 9280], 50.00th=[ 9280], 60.00th=[ 9408],
+     |  1.00th=[ 7840],  5.00th=[ 8032], 10.00th=[ 8096], 20.00th=[ 9024],
+     | 30.00th=[ 9280], 40.00th=[ 9280], 50.00th=[ 9280], 60.00th=[ 9408],
      | 70.00th=[ 9536], 80.00th=[ 9536], 90.00th=[ 9536], 95.00th=[ 9536],
-     | 99.00th=[14144], 99.50th=[15552], 99.90th=[24192], 99.95th=[25472],
+     | 99.00th=[14016], 99.50th=[15552], 99.90th=[22656], 99.95th=[26496],
      | 99.99th=[39680]
-    bw (KB  /s): min=102400, max=127488, per=100.00%, avg=110473.73, stdev=5995.38
-    lat (msec) : 10=96.58%, 20=3.31%, 50=0.11%
-  cpu          : usr=0.76%, sys=4.46%, ctx=33148, majf=0, minf=282
+    bw (KB  /s): min=101173, max=127232, per=100.00%, avg=110246.21, stdev=5977.62
+    lat (msec) : 10=96.64%, 20=3.22%, 50=0.14%
+  cpu          : usr=0.78%, sys=4.38%, ctx=33174, majf=0, minf=282
   IO depths    : 1=0.1%, 2=0.1%, 4=0.1%, 8=100.0%, 16=0.0%, 32=0.0%, >=64=0.0%
      submit    : 0=0.0%, 4=100.0%, 8=0.0%, 16=0.0%, 32=0.0%, 64=0.0%, >=64=0.0%
      complete  : 0=0.0%, 4=100.0%, 8=0.1%, 16=0.0%, 32=0.0%, 64=0.0%, >=64=0.0%
      issued    : total=r=32768/w=0/d=0, short=r=0/w=0/d=0
 
 Run status group 0 (all jobs):
-   READ: io=4096.0MB, aggrb=110370KB/s, minb=110370KB/s, maxb=110370KB/s, mint=38002msec, maxt=38002msec
+   READ: io=4096.0MB, aggrb=110156KB/s, minb=110156KB/s, maxb=110156KB/s, mint=38076msec, maxt=38076msec
 
 Disk stats (read/write):
-  sda: ios=32597/9, merge=0/5, ticks=300620/7468, in_queue=308088, util=99.85%
+  sda: ios=32685/9, merge=0/1, ticks=301936/7324, in_queue=309260, util=99.85%
