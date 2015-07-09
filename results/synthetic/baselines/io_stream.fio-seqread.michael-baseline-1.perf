@@ -1,17 +1,19 @@
-# started on Wed Jul  8 10:08:24 2015
+# started on Thu Jul  9 15:08:07 2015
 
-1088.000000,cpu-clock
-1088.000000,task-clock
-4984,context-switches
-33,cpu-migrations
-7987,page-faults
-1748248814,cycles
-1676156561,instructions
-260211390,branches
-725806,branch-misses
-118,cpu/mem-loads/
-289676871,cpu/mem-stores/
-3460442,cache-misses
-12011895,cache-references
-1103332146,stalled-cycles-frontend
-587028518,stalled-cycles-backend
+8180.000000,cpu-clock
+8184.000000,task-clock
+44329,context-switches
+35,cpu-migrations
+8508,page-faults
+12606520680,cycles
+11988186159,instructions
+1887216142,branches
+2945465,branch-misses
+19648927,cache-misses
+106573701,cache-references
+7973845288,stalled-cycles-frontend
+4305132810,stalled-cycles-backend
+2780675,node-loads
+1015794,node-load-misses
+68,cpu/mem-loads/
+2116639551,cpu/mem-stores/
