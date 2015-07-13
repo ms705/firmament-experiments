@@ -1,12 +1,10 @@
-; Read file with aio
+; Read a 4GB file with aio
 [global]
 ioengine=libaio
 buffered=0
 rw=read
 bs=128k
 size=4096m
-directory=${HOME}
 
 [file1]
 iodepth=8
-unlink=1

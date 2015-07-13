@@ -1,11 +1,10 @@
-; Read 4 files with aio at different depths
+; Write a 4 GB file with aio
 [global]
 ioengine=libaio
 buffered=0
 rw=write
 bs=128k
 size=4096m
-directory=${HOME}
 
 [file1]
 iodepth=8
