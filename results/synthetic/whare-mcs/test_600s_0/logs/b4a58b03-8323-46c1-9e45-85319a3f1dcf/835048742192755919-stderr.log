@@ -1,0 +1,9 @@
+WARNING: Logging before InitGoogleLogging() is written to STDERR
+I0713 16:41:01.599906 13901 task_lib_main.cc:80] Starting TaskLib monitor thread for mem_stream
+I0713 16:41:02.623836 13904 task_lib.cc:288] Connecting to coordinator at 
+I0713 16:42:05.911895 13901 task_lib.cc:108] STOP CALLED
+I0713 16:42:06.647582 13904 task_lib.cc:333] STOPPING HEARTBEATS for 13901
+I0713 16:42:06.911995 13901 task_lib.cc:116] Sending finalize message to coordinator...
+I0713 16:42:06.912021 13901 task_lib.cc:345] Sending finalize message (task state change to COMPLETED)!
+I0713 16:42:06.912087 13901 task_lib.cc:350] Done sending message, sleeping before quitting
+I0713 16:42:07.912199 13901 task_lib.cc:118] Finalise message sent
