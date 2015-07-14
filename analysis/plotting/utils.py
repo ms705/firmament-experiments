@@ -25,10 +25,12 @@ def set_paper_rcs():
   rc('lines', linewidth=0.5)
 
 def set_rcs():
-  rc('font',**{'family':'sans-serif','sans-serif':['Helvetica'],
-               'serif':['Times'],'size':12})
+#  rc('font',**{'family':'sans-serif','sans-serif':['Times'],
+#               'serif':['Times'],'size':10})
+  rc('font', family='serif')
+  rc('text.latex', preamble=['\usepackage{times,mathptmx}'])
   rc('text', usetex=True)
-  rc('legend', fontsize=7)
+  rc('legend', fontsize=10)
   rc('figure', figsize=(6,4))
   rc('figure.subplot', left=0.10, top=0.90, bottom=0.12, right=0.95)
   rc('axes', linewidth=0.5)
