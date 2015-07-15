@@ -50,7 +50,7 @@ class boxplotter(object):
                         facecolor="white", edgecolor=box_color, lw=0.5)
         ax.broken_barh([(index - w2, width)],
                         (self.median,0),
-                        facecolor="white", edgecolor=median_color, lw=0.5)
+                        facecolor="white", edgecolor=median_color, lw=1.0)
         if self.whisk_top is not None:
             ax.broken_barh([(index - w2, width)],
                            (self.whisk_top,0),
@@ -88,7 +88,7 @@ def percentile_box_plot(ax, data, indexer=None, index_base=1, index_step=1,
                         get_whisk(x, whisker_top),
                         get_whisk(x, whisker_bottom),
                         scoreatpercentile(x, 100))
-        bp.draw_on(ax, index, box_color=color, median_color=color)
+        bp.draw_on(ax, index, box_color=color, median_color=color, whisker_color=color)
 
 def print_overview(results_dict):
   for wl, v in sorted(results_dict.items(), key=lambda x: x[0]):
@@ -146,6 +146,7 @@ def plot_box_whisker_chart(data, labels, ylabel, scale, outname, ylim=(-1, -1)):
              [translate_workload_name(x) for x in labels], rotation=45,
              ha='right')
   plt.yscale(scale)
+  ax.set_yticklabels(["%d\\times" % (x) for x in ax.get_yticks()])
 
   #plt.setp(bp['whiskers'], color='k',  linestyle='-' )
   #plt.setp(bp['fliers'], markersize=3.0)
@@ -163,7 +164,9 @@ def normalize_by_baseline(workload, runtime):
   return runtime / baseline_best_medians[workload]
 
 def get_runtimes(td, ls):
-  ls.append(to_seconds(get_runtime(td)))
+  runtime = get_runtime(td)
+  if runtime > 0.0:
+    ls.append(to_seconds(get_runtime(td)))
   for c in td['spawned']:
     get_runtimes(c, ls)
 
@@ -235,7 +238,7 @@ for d in inputdirs:
   data[labels[i]] = results
   i += 1
 
-collect_and_plot(data, "Normalized runtime", "normed-runtime", ylim=(0, 10))
+collect_and_plot(data, "Normalized runtime", "normed-runtime", ylim=(0, 5))
 
 #  collect_and_plot(results, get_ips, "Instructions per second", "ips")
 #  collect_and_plot(results, get_ipc, "Instructions per cycle", "ipc")
