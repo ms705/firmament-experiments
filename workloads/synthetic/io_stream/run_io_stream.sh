@@ -3,9 +3,9 @@ DIR=$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )
 OUT_DIR=${OUT_DIR:-.}
 
 if [ $# -lt 1 ]; then
-  CONF=fio-seqwrite.fio
+  export CONF=fio-seqwrite.fio
 else
-  CONF=$1
+  export CONF=$1
 fi
 
 mkdir -p ${OUT_DIR}

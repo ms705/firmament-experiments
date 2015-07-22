@@ -3,9 +3,9 @@ DIR=$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )
 OUT_DIR=${OUT_DIR:-.}
 
 if [ $# -lt 1 ]; then
-  SIZE=1048576
+  export SIZE=1048576
 else
-  SIZE=$1
+  export SIZE=$1
 fi
 
 mkdir -p ${OUT_DIR}

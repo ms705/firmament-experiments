@@ -9,7 +9,7 @@ IS_INTEL=$(cat /proc/cpuinfo | grep Intel)
 IS_INTEL_GAINESTOWN=$(cat /proc/cpuinfo | grep E5520)
 IS_AMD=$(cat /proc/cpuinfo | grep AMD)
 
-if [[ ${IS_INTEL} == "" && ( ${IS_AMD} != "" || ${IS_INTEL_GAINESTOWN} != "" ) ]]; then
+if [[ ( ${IS_INTEL} == "" && ${IS_AMD} != "" ) || ( ${IS_INTEL} != "" && ${IS_INTEL_GAINESTOWN} != "" ) ]]; then
   EVENTS="${COMMON_EVENTS} ${AMD_EVENTS}"
 elif [[ ${IS_INTEL} != "" && ${IS_AMD} == "" ]]; then
   EVENTS="${COMMON_EVENTS} ${INTEL_EVENTS}"

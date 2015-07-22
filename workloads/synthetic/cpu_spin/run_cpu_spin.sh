@@ -3,9 +3,9 @@ DIR=$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )
 OUT_DIR=${OUT_DIR:-.}
 
 if [ $# -lt 1 ]; then
-  DURATION=10
+  export DURATION=10
 else
-  DURATION=$1
+  export DURATION=$1
 fi
 
 mkdir -p ${OUT_DIR}
