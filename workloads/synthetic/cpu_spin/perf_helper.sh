@@ -7,4 +7,4 @@ if [ $# -lt 1 ]; then
   exit 1
 fi
 
-perf stat -x "," -o cpu_spin.${DURATION}s.${HOSTNAME}${EXPERIMENT}.perf $(for e in ${EVENTS}; do echo -n "-e ${e} "; done) "$@"
+perf stat -x "," -o ${OUT_DIR}/cpu_spin.${DURATION}s.${HOSTNAME}${EXPERIMENT}.perf $(for e in ${EVENTS}; do echo -n "-e ${e} "; done) "$@"

@@ -7,4 +7,4 @@ if [ $# -lt 1 ]; then
   exit 1
 fi
 
-perf stat -x "," -o net_stream.${CONF}.${HOSTNAME}${EXPERIMENT}.perf $(for e in ${EVENTS}; do echo -n "-e ${e} "; done) "$@"
+perf stat -x "," -o ${OUT_DIR}/net_stream.${CONF}.${HOSTNAME}${EXPERIMENT}.perf $(for e in ${EVENTS}; do echo -n "-e ${e} "; done) "$@"
