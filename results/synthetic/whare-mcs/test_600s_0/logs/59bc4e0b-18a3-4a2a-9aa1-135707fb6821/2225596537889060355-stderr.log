@@ -1,0 +1,6 @@
+WARNING: Logging before InitGoogleLogging() is written to STDERR
+I0713 16:47:11.220773 41550 task_lib_main.cc:80] Starting TaskLib monitor thread for cpu_spin
+I0713 16:47:12.447724 41552 task_lib.cc:288] Connecting to coordinator at 
+W0713 16:47:20.426210 41614 stream_sockets_channel-inl.h:97] Error shutting down connections on socket for connection at 0x2e5c000: Transport endpoint is not connected
+cpu_spin: /usr/include/boost/smart_ptr/shared_ptr.hpp:653: typename boost::detail::sp_member_access<T>::type boost::shared_ptr<firmament::platform_unix::streamsockets::AsyncTCPServer>::operator->() const [Y = firmament::platform_unix::streamsockets::AsyncTCPServer]: Assertion `px != 0' failed.
+/home/malte/firmament-experiments/workloads/synthetic/cpu_spin/cpu_spin: Aborted

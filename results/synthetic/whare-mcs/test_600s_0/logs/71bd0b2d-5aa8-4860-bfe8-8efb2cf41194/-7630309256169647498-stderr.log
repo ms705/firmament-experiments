@@ -1,0 +1,5 @@
+WARNING: Logging before InitGoogleLogging() is written to STDERR
+I0713 16:39:30.294085 40752 task_lib_main.cc:80] Starting TaskLib monitor thread for mem_stream
+I0713 16:39:32.429883 40754 task_lib.cc:288] Connecting to coordinator at 
+mem_stream: /usr/include/boost/smart_ptr/shared_ptr.hpp:653: typename boost::detail::sp_member_access<T>::type boost::shared_ptr<firmament::platform_unix::streamsockets::AsyncTCPServer>::operator->() const [Y = firmament::platform_unix::streamsockets::AsyncTCPServer]: Assertion `px != 0' failed.
+/home/malte/firmament-experiments/workloads/synthetic/mem_stream/mem_stream: Aborted

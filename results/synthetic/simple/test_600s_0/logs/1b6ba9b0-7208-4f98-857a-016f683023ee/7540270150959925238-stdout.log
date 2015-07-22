@@ -1,0 +1,30 @@
+file1: (g=0): rw=write, bs=128K-128K/128K-128K/128K-128K, ioengine=libaio, iodepth=8
+fio-2.1.3
+Starting 1 process
+file1: Laying out IO file(s) (1 file(s) / 4096MB)
+
+file1: (groupid=0, jobs=1): err= 0: pid=20142: Mon Jul 13 15:41:31 2015
+  write: io=4096.0MB, bw=28428KB/s, iops=222, runt=147542msec
+    slat (usec): min=15, max=21615, avg=32.05, stdev=209.55
+    clat (msec): min=1, max=213, avg=35.99, stdev=20.22
+     lat (msec): min=1, max=213, avg=36.02, stdev=20.22
+    clat percentiles (msec):
+     |  1.00th=[    5],  5.00th=[    9], 10.00th=[   14], 20.00th=[   14],
+     | 30.00th=[   27], 40.00th=[   28], 50.00th=[   40], 60.00th=[   40],
+     | 70.00th=[   41], 80.00th=[   48], 90.00th=[   68], 95.00th=[   68],
+     | 99.00th=[   89], 99.50th=[  100], 99.90th=[  115], 99.95th=[  120],
+     | 99.99th=[  204]
+    bw (KB  /s): min=17201, max=127233, per=99.54%, avg=28296.84, stdev=18153.76
+    lat (msec) : 2=0.01%, 4=0.65%, 10=6.79%, 20=19.01%, 50=53.77%
+    lat (msec) : 100=19.29%, 250=0.47%
+  cpu          : usr=0.29%, sys=1.00%, ctx=32725, majf=0, minf=26
+  IO depths    : 1=0.1%, 2=0.1%, 4=0.1%, 8=100.0%, 16=0.0%, 32=0.0%, >=64=0.0%
+     submit    : 0=0.0%, 4=100.0%, 8=0.0%, 16=0.0%, 32=0.0%, 64=0.0%, >=64=0.0%
+     complete  : 0=0.0%, 4=100.0%, 8=0.1%, 16=0.0%, 32=0.0%, 64=0.0%, >=64=0.0%
+     issued    : total=r=0/w=32768/d=0, short=r=0/w=0/d=0
+
+Run status group 0 (all jobs):
+  WRITE: io=4096.0MB, aggrb=28427KB/s, minb=28427KB/s, maxb=28427KB/s, mint=147542msec, maxt=147542msec
+
+Disk stats (read/write):
+  sdb: ios=0/98545, merge=0/830, ticks=0/3339188, in_queue=3339092, util=100.00%
