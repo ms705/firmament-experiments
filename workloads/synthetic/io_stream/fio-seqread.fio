@@ -8,3 +8,4 @@ size=4096m
 
 [file1]
 iodepth=8
+unlink=1
