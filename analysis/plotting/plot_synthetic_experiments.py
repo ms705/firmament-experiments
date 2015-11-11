@@ -32,7 +32,7 @@ machine_types = { 'hammerthrow': "A",
                   'raphael': "C",
                   'uriel': "D",
                   'tigger': "E",
-                  'caelum': "DC" }
+                  'caelum': "M" }
 
 # @author: Aaron Blankstein, with modifications by Malte Schwarzkopf
 class boxplotter(object):
@@ -125,6 +125,8 @@ def best_median_runtime(results_dict):
 def collect_data_for_metric(results_dict, data_dict, labels_vec, selector):
   for (wl, setup), hr in sorted(results_dict.items(), key=lambda x: x[0]):
     for host, v in hr.items():
+      if host == "shark":
+        continue
       if not host in data_dict:
         data_dict[host] = []
       data_vec = data_dict[host]
@@ -146,7 +148,7 @@ def translate_host_to_type(host):
 def plot_box_whisker_chart(data, labels, ylabel, scale, outname, ylim=(-1, -1)):
   fig, ax = plt.subplots()
   i = 0
-  for host, v in data.items():
+  for host, v in sorted(data.items(), key=lambda (k, v): machine_types[k]):
     bp = percentile_box_plot(ax, v, color=colors[host], index_base=i,
                              index_step=len(data))
     ax.plot(-1, -1, ls="-", marker=None, color=colors[host], lw=1.0,
@@ -156,7 +158,7 @@ def plot_box_whisker_chart(data, labels, ylabel, scale, outname, ylim=(-1, -1)):
     plt.axvline(i * len(data) + len(data) - 0.5, ls='-', color='k')
 
   ax.legend(frameon=False, loc="upper center", ncol=6,
-            bbox_to_anchor=(0.0, 1.02, 1.0, 0.1))
+            bbox_to_anchor=(0.0, 1.02, 1.0, 0.1), columnspacing=0.3)
   ax.set_xlabel('Workload')
   ax.set_ylabel(ylabel)
   if ylim == (-1, -1):
@@ -166,9 +168,9 @@ def plot_box_whisker_chart(data, labels, ylabel, scale, outname, ylim=(-1, -1)):
       plt.ylim(ymin=1)
   else:
     plt.ylim(ylim[0], ylim[1])
-  plt.xlim(-0.5, len(data) * len(labels) + 0.5)
+  plt.xlim(-0.5, len(data) * len(data['michael']) - 0.5)
   plt.xticks(np.arange(len(data) / 2.0, len(data) * len(labels), len(data)),
-             [translate_workload_name(x) for x in labels], rotation=45,
+             [translate_workload_name(x) for x in labels], rotation=25,
              ha='right')
   plt.yscale(scale)
 
@@ -217,7 +219,7 @@ for d in inputdirs:
 
   print_overview(perf_results)
   
-  collect_and_plot(perf_results, get_ips, "Instructions per second", "ips")
+  collect_and_plot(perf_results, get_ips, "Instructions per second", "ips", "log", ylim=(100000, 10000000000))
   collect_and_plot(perf_results, get_ipc, "Instructions per cycle", "ipc")
   collect_and_plot(perf_results, get_cpi, "Cycles per instruction", "cpi")
   collect_and_plot(perf_results, get_ipms, "Instructions per memory store", "ipms", "log")
