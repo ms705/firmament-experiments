@@ -12,7 +12,7 @@ from matplotlib import pylab
 from scipy.stats import scoreatpercentile
 
 baseline_best_medians = { 'mem_stream_1M_': 55.649999999999999,
-                          'mem_stream_128K_': 55.590000000000003, 
+                          'mem_stream_128K_': 55.590000000000003,
                           'mem_stream_50M_': 56.990000000000002,
                           'io_stream_read': 73.510000000000005,
                           'mem_stream_1K': 52.939999999999998,
@@ -20,7 +20,7 @@ baseline_best_medians = { 'mem_stream_1M_': 55.649999999999999,
                           'cpu_spin': 60.0
                         }
 
-workload_labels = { 'cpu_spin': "\\texttt{cpu\_spin}, 60s", 
+workload_labels = { 'cpu_spin': "\\texttt{cpu\_spin}, 60s",
                     'mem_stream.1K': "\\texttt{mem\_stream}, 1K",
                     'mem_stream.128K': "\\texttt{mem\_stream}, 128K",
                     'mem_stream_1M_': "\\texttt{mem\_stream}, 1M",
@@ -73,7 +73,8 @@ def percentile_box_plot(ax, data, indexer=None, index_base=1, index_step=1,
                         box_top=75, box_bottom=25, whisker_top=99,
                         whisker_bottom=1, color='k', label=""):
     if indexer is None:
-        indexed_data = zip(range(index_base, index_base + index_step * len(data) + 1, index_step), data)
+        index_end = index_base + index_step * len(data) + 1
+        indexed_data = zip(range(index_base, index_end, index_step), data)
     else:
         indexed_data = [(indexer(datum), datum) for datum in data]
     def get_whisk(vector, w):
@@ -88,17 +89,18 @@ def percentile_box_plot(ax, data, indexer=None, index_base=1, index_step=1,
                         get_whisk(x, whisker_top),
                         get_whisk(x, whisker_bottom),
                         scoreatpercentile(x, 100))
-        bp.draw_on(ax, index, box_color=color, median_color=color, whisker_color=color)
+        bp.draw_on(ax, index, box_color=color, median_color=color,
+                   whisker_color=color)
 
 def print_overview(results_dict):
   for wl, v in sorted(results_dict.items(), key=lambda x: x[0]):
-    #print "======================================================================"
+    #print "==================================================================="
     print "=== %s === (%d records)" % (wl, len(v))
     #print "IPC \t\t %s" % (get_dist_str(get_ipc(v)))
     #print "CPI \t\t %s" % (get_dist_str(get_cpi(v)))
     #print "Cache miss ratio: \t %s" % (get_dist_str(get_runtime(v)))
     print "Runtime: \t %s" % (get_dist_str(v))
-    #print "----------------------------------------------------------------------"
+    #print "-------------------------------------------------------------------"
 
 def collect_data_for_metric(results_dict, data_dict, labels_vec):
   first = True
@@ -201,7 +203,7 @@ def load_workload_data_from_dir(directory, setup):
   for wl, rts in workload_runtimes.items():
     normalized_workload_runtimes[wl] = [normalize_by_baseline(wl, rt) for rt in rts]
   return normalized_workload_runtimes
- 
+
 
 ############################################################################
 

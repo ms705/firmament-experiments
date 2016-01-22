@@ -19,7 +19,8 @@ def translate_label(lbl):
     return "Network send"
 
 if len(sys.argv) < 2:
-  print "usage: plot_collectl_timeline.py <collectl file> <title> <output file> <normalize> <metric 1> ... <metric N>"
+  print "usage: plot_collectl_timeline.py <collectl file> <title> " \
+    "<output file> <normalize> <metric 1> ... <metric N>"
   sys.exit(1)
 
 input_file = sys.argv[1]
@@ -91,11 +92,14 @@ if do_percent:
   plt.yticks(range(0, 101, 20), [str(x) for x in range(0, 101, 20)])
   plt.ylabel("Utilization [\%]")
 #plt.xlim(min(rel_times), max(rel_times))
-plt.xticks(np.arange(0, max(rel_times), 5), ["%.0f" % (x) for x in np.arange(0, max(rel_times), 5)])
+plt.xticks(np.arange(0, max(rel_times), 5),
+           ["%.0f" % (x) for x in np.arange(0, max(rel_times), 5)])
 #plt.xlim(4, 14)
 plt.xlabel("Experiment time [min]")
 plt.legend(ncol=2, frameon=False, columnspacing=0.5, handletextpad=0.1)
 
 if paper_mode:
-  plt.savefig(output_file + ".pdf", format="pdf", bbox_inches='tight', pad_inches=0.01)
-plt.savefig(output_file + ".png", format="png", bbox_inches='tight', pad_inches=0.01)
+  plt.savefig(output_file + ".pdf", format="pdf", bbox_inches='tight',
+              pad_inches=0.01)
+plt.savefig(output_file + ".png", format="png", bbox_inches='tight',
+            pad_inches=0.01)

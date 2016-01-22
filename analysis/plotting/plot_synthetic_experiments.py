@@ -11,7 +11,8 @@ from process_synthetic_experiments import *
 from matplotlib import pylab
 from scipy.stats import scoreatpercentile
 
-colors = { 'michael': 'r', 'hammerthrow': 'g', 'caelum': 'b', 'hogun': 'c', 'shark': 'm', 'tigger': 'y', 'uriel': '0.5' }
+colors = { 'michael': 'r', 'hammerthrow': 'g', 'caelum': 'b', 'hogun': 'c',
+           'shark': 'm', 'tigger': 'y', 'uriel': '0.5' }
 
 workload_labels = { 'cpu_spin.60s': "\\texttt{cpu\_spin}, 60s",
                     'mem_stream.1024B': "\\texttt{mem\_stream}, 1K",
@@ -76,7 +77,8 @@ def percentile_box_plot(ax, data, indexer=None, index_base=1, index_step=1,
                         box_top=75, box_bottom=25, whisker_top=99,
                         whisker_bottom=1, color='k', label=""):
     if indexer is None:
-        indexed_data = zip(range(index_base, index_base + index_step * len(data) + 1, index_step), data)
+        index_end = index_base + index_step * len(data) + 1
+        indexed_data = zip(range(index_base, index_end, index_step), data)
     else:
         indexed_data = [(indexer(datum), datum) for datum in data]
     def get_whisk(vector, w):
@@ -95,9 +97,9 @@ def percentile_box_plot(ax, data, indexer=None, index_base=1, index_step=1,
 
 def print_overview(results_dict):
   for (wl, setup), hr in sorted(results_dict.items(), key=lambda x: x[0]):
-    print "======================================================================"
+    print "=================================================================="
     for host, v in hr.items():
-      print "----------------------------------------------------------------------"
+      print "------------------------------------------------------------------"
       print "%s" % (host)
       print "=== %s.%s === (%d records)\n" % (wl, setup, len(v))
       print "IPC \t\t %s" % (get_dist_str(get_ipc(v)))
@@ -216,14 +218,18 @@ for d in inputdirs:
   perf_results = load_perf_files_from_dir(d)
 
   print_overview(perf_results)
-  
+
   collect_and_plot(perf_results, get_ips, "Instructions per second", "ips")
   collect_and_plot(perf_results, get_ipc, "Instructions per cycle", "ipc")
   collect_and_plot(perf_results, get_cpi, "Cycles per instruction", "cpi")
-  collect_and_plot(perf_results, get_ipms, "Instructions per memory store", "ipms", "log")
-  collect_and_plot(perf_results, get_ipcr, "Instructions per cache reference", "ipcr", "log")
-  collect_and_plot(perf_results, get_ipcm, "Instructions per cache miss", "ipcm", "log")
-  collect_and_plot(perf_results, get_cache_miss_ratio, "Cache miss ratio", "cmr", ylim=(0, 2))
+  collect_and_plot(perf_results, get_ipms, "Instructions per memory store",
+                   "ipms", "log")
+  collect_and_plot(perf_results, get_ipcr, "Instructions per cache reference",
+                   "ipcr", "log")
+  collect_and_plot(perf_results, get_ipcm, "Instructions per cache miss",
+                   "ipcm", "log")
+  collect_and_plot(perf_results, get_cache_miss_ratio, "Cache miss ratio",
+                   "cmr", ylim=(0, 2))
   collect_and_plot(perf_results, get_runtime, "Runtime", "runtime")
 
   print best_median_runtime(perf_results)
