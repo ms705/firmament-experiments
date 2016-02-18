@@ -15,6 +15,9 @@ gflags.DEFINE_integer('num_files_to_process', 1,
 gflags.DEFINE_bool('paper_mode', False, 'Adjusts the size of the plots.')
 gflags.DEFINE_bool('plot_scheduling_delay_cdf', False,
                    'Plot CDF of scheduling delay.')
+gflags.DEFINE_bool('ignore_delay_first_solver_run', True,
+                   'True if the plot should not include the scheduling delay '
+                   'of the tasks scheduled in the first solver run.')
 gflags.DEFINE_bool('plot_solver_runtime_cdf', False,
                    'Plot CDF of solver runtimes.')
 gflags.DEFINE_bool('plot_solver_runtime_timeline', False,
@@ -25,6 +28,7 @@ gflags.DEFINE_string('trace_path', '', 'Path to where the trace files.')
 
 SUBMIT_EVENT = 0
 SCHEDULE_EVENT = 1
+EVICT_EVENT = 2
 
 
 def plot_cdf(plot_file_name, cdf_vals, label_axis, labels, log_scale=False,
@@ -95,6 +99,7 @@ def plot_cdf(plot_file_name, cdf_vals, label_axis, labels, log_scale=False,
             time_val = 1000 * 1000 # 1 sec
         else:
             print 'Error: unknown time unit'
+            exit(1)
         to_time_unit = time_val
         x_ticks = []
         while time_val <= max_cdf_val:
@@ -164,6 +169,8 @@ def plot_scatter(plot_file_name, x_vals, y_vals, x_label, y_label):
 
 
 def get_scheduling_delays(trace_path):
+    # If a task is evicted and scheduled again then we will have
+    # two or more scheduling delays for it.
     delays = []
     task_submit_time = {}
     for num_file in range(0, FLAGS.num_files_to_process, 1):
@@ -178,10 +185,15 @@ def get_scheduling_delays(trace_path):
                 task_submit_time[task_id] = timestamp
             elif event_type == SCHEDULE_EVENT:
                 if task_id in task_submit_time:
-                    delays.append(timestamp - task_submit_time[task_id])
+                    submit_time = task_submit_time[task_id]
+                    if (submit_time != 0 or
+                        FLAGS.ignore_delay_first_solver_run is False):
+                        delays.append(timestamp - submit_time)
                     del task_submit_time[task_id]
                 else:
-                    print "Error: schedule event before submit event"
+                    print ("Error: schedule event before submit event for task "
+                           "(%s, %s)" % (row[2], row[3]))
+                    exit(1)
         csv_file.close()
     delays.sort()
     return delays
@@ -228,12 +240,14 @@ def main(argv):
 
     if FLAGS.plot_scheduling_delay_cdf:
         delays = get_scheduling_delays(FLAGS.trace_path)
-        plot_cdf('scheduling_delay_cdf.pdf', [delays], "Latency [ms]",
-                 ["Google"])
+        print "Number tasks scheduled: %d" % (len(delays))
+        plot_cdf('scheduling_delay_cdf.pdf', [delays], "Latency [sec]",
+                 ["Google"], log_scale=True, bin_width=1000000, unit='sec')
 
     if FLAGS.plot_solver_runtime_cdf:
         scheduler_runtimes = get_scheduler_runtimes(FLAGS.trace_path, 1)
         algorithm_runtimes = get_scheduler_runtimes(FLAGS.trace_path, 2)
+        print "Number scheduler runs: %d" % (len(scheduler_runtimes))
         plot_cdf('scheduling_runtimes_cdf.pdf',
                  [scheduler_runtimes, algorithm_runtimes],
                  "Latency [ms]", ["Scheduler", "Algorithm"],
@@ -241,9 +255,11 @@ def main(argv):
 
     if FLAGS.plot_solver_runtime_timeline:
         print 'Error: not implemented'
+        exit(1)
 
     if FLAGS.plot_algorithm_runtime_vs_num_changes:
         (runtimes, num_graph_changes) = get_algorithm_runtime_and_num_changes(FLAGS.trace_path)
+        print "Number scheduler runs: %d" % (len(runtimes))
         plot_scatter('algorithm_runtime_vs_num_changes.pdf',
                      [x / 1000 for x in runtimes], num_graph_changes,
                      'Runtime [ms]', 'Number graph changes')
