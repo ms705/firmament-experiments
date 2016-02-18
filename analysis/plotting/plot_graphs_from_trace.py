@@ -19,8 +19,8 @@ gflags.DEFINE_bool('plot_solver_runtime_cdf', False,
                    'Plot CDF of solver runtimes.')
 gflags.DEFINE_bool('plot_solver_runtime_timeline', False,
                    'Print timeline of solver runtimes.')
-gflags.DEFINE_bool('plot_solver_runtime_vs_num_changes', False,
-                   'Plot solver runtime vs number changes.')
+gflags.DEFINE_bool('plot_algorithm_runtime_vs_num_changes', False,
+                   'Plot algorithm runtime vs number changes.')
 gflags.DEFINE_string('trace_path', '', 'Path to where the trace files.')
 
 SUBMIT_EVENT = 0
@@ -145,8 +145,22 @@ def plot_cdf(plot_file_name, cdf_vals, label_axis, labels, log_scale=False,
 #                  lw=0.5, label=labels[bar_index])
 
 
-def plot_scatter(x_vals, y_vals):
-    print 'Error: not implemented'
+def plot_scatter(plot_file_name, x_vals, y_vals, x_label, y_label):
+    if FLAGS.paper_mode:
+        plt.figure(figsize=(2.33, 1.55))
+        set_paper_rcs()
+    else:
+        plt.figure()
+        set_rcs()
+
+    plt.scatter(x_vals, y_vals)
+    plt.xlim(0, np.max(x_vals))
+    plt.ylim(0, np.max(y_vals))
+    plt.xlabel(x_label)
+    plt.ylabel(y_label)
+
+    plt.savefig("%s.pdf" % plot_file_name,
+                format="pdf", bbox_inches="tight")
 
 
 def get_scheduling_delays(trace_path):
@@ -188,7 +202,7 @@ def get_scheduler_runtimes(trace_path, column_index):
     return runtimes
 
 
-def get_solver_runtime_and_num_changes(trace_path):
+def get_algorithm_runtime_and_num_changes(trace_path):
     # 4 nodes added
     # 5 nodes removed
     # 6 arcs added
@@ -199,7 +213,7 @@ def get_solver_runtime_and_num_changes(trace_path):
     runtimes = []
     num_graph_changes = []
     for row in csv_reader:
-        runtimes.append(long(row[1]))
+        runtimes.append(long(row[2]))
         num_graph_changes.append(long(row[4]) + long(row[5]) + long(row[6]) +
                                  long(row[6]) + long(row[7]) + long(row[8]))
     csv_file.close()
@@ -228,10 +242,11 @@ def main(argv):
     if FLAGS.plot_solver_runtime_timeline:
         print 'Error: not implemented'
 
-    if FLAGS.plot_solver_runtime_vs_num_changes:
-        (runtimes, num_graph_changes) = get_solver_runtime_and_num_changes(FLAGS.trace_path)
-        plot_scatter(runtimes, num_graph_changes)
-        return
+    if FLAGS.plot_algorithm_runtime_vs_num_changes:
+        (runtimes, num_graph_changes) = get_algorithm_runtime_and_num_changes(FLAGS.trace_path)
+        plot_scatter('algorithm_runtime_vs_num_changes.pdf',
+                     [x / 1000 for x in runtimes], num_graph_changes,
+                     'Runtime [ms]', 'Number graph changes')
 
 
 if __name__ == '__main__':
