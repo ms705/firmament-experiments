@@ -24,7 +24,10 @@ gflags.DEFINE_bool('plot_solver_runtime_timeline', False,
                    'Print timeline of solver runtimes.')
 gflags.DEFINE_bool('plot_algorithm_runtime_vs_num_changes', False,
                    'Plot algorithm runtime vs number changes.')
-gflags.DEFINE_string('trace_path', '', 'Path to where the trace files.')
+gflags.DEFINE_string('trace_paths', '',
+                     ', separated list of path to trace files.')
+gflags.DEFINE_string('trace_labels', '',
+                     ', separated list of labels to use for trace files.')
 
 SUBMIT_EVENT = 0
 SCHEDULE_EVENT = 1
@@ -174,7 +177,7 @@ def get_scheduling_delays(trace_path):
     delays = []
     task_submit_time = {}
     for num_file in range(0, FLAGS.num_files_to_process, 1):
-        csv_file = open(trace_path + "task_events/part-" +
+        csv_file = open(trace_path + "/task_events/part-" +
                         '{:05}'.format(num_file) + "-of-00500.csv")
         csv_reader = csv.reader(csv_file)
         for row in csv_reader:
@@ -205,7 +208,7 @@ def get_scheduler_runtimes(trace_path, column_index):
     # 2 algorithm runtime
     # 3 total runtime (including Firmament)
     runtimes = []
-    csv_file = open(trace_path + "scheduler_events/scheduler_events.csv")
+    csv_file = open(trace_path + "/scheduler_events/scheduler_events.csv")
     csv_reader = csv.reader(csv_file)
     for row in csv_reader:
         runtimes.append(long(row[column_index]))
@@ -220,7 +223,7 @@ def get_algorithm_runtime_and_num_changes(trace_path):
     # 6 arcs added
     # 7 arcs changed
     # 8 arcs removed
-    csv_file = open(trace_path + "scheduler_events/scheduler_events.csv")
+    csv_file = open(trace_path + "/scheduler_events/scheduler_events.csv")
     csv_reader = csv.reader(csv_file)
     runtimes = []
     num_graph_changes = []
@@ -238,27 +241,43 @@ def main(argv):
     except gflags.FlagsError as e:
       print('%s\\nUsage: %s ARGS\\n%s' % (e, sys.argv[0], FLAGS))
 
+    trace_paths = FLAGS.trace_paths.split(',')
+    labels = FLAGS.trace_labels.split(',')
+
     if FLAGS.plot_scheduling_delay_cdf:
-        delays = get_scheduling_delays(FLAGS.trace_path)
-        print "Number tasks scheduled: %d" % (len(delays))
-        plot_cdf('scheduling_delay_cdf.pdf', [delays], "Latency [sec]",
-                 ["Google"], log_scale=True, bin_width=1000000, unit='sec')
+        delays = []
+        for trace_path in trace_paths:
+            trace_delays = get_scheduling_delays(trace_path)
+            print "Number tasks scheduled: %d" % (len(trace_delays))
+            delays.append(trace_delays)
+        plot_cdf('scheduling_delay_cdf.pdf', delays, "Latency [sec]",
+                 labels, log_scale=True, bin_width=1000000, unit='sec')
 
     if FLAGS.plot_solver_runtime_cdf:
-        scheduler_runtimes = get_scheduler_runtimes(FLAGS.trace_path, 1)
-        algorithm_runtimes = get_scheduler_runtimes(FLAGS.trace_path, 2)
-        print "Number scheduler runs: %d" % (len(scheduler_runtimes))
-        plot_cdf('scheduling_runtimes_cdf.pdf',
-                 [scheduler_runtimes, algorithm_runtimes],
-                 "Latency [ms]", ["Scheduler", "Algorithm"],
-                 log_scale=True, bin_width=1000, unit='ms')
+        runtimes = []
+        trace_labels = []
+        trace_id = 0
+        for trace_path in trace_paths:
+            sched_runtimes = get_scheduler_runtimes(trace_path, 1)
+            algo_runtimes = get_scheduler_runtimes(trace_path, 2)
+            print "Number scheduler runs: %d" % (len(sched_runtimes))
+            runtimes.append(sched_runtimes)
+            runtimes.append(algo_runtimes)
+            trace_labels.append('Scheduler ' + labels[trace_id])
+            trace_labels.append('Algorithm ' + labels[trace_id])
+            trace_id += 1
+        plot_cdf('scheduling_runtimes_cdf.pdf', runtimes, "Latency [ms]",
+                 trace_labels, log_scale=True, bin_width=1000, unit='ms')
 
     if FLAGS.plot_solver_runtime_timeline:
         print 'Error: not implemented'
         exit(1)
 
     if FLAGS.plot_algorithm_runtime_vs_num_changes:
-        (runtimes, num_graph_changes) = get_algorithm_runtime_and_num_changes(FLAGS.trace_path)
+        if len(trace_paths) != 1:
+            print 'Error: cannot plot algorithm vs num_changes for > 1 trace'
+            exit(1)
+        (runtimes, num_graph_changes) = get_algorithm_runtime_and_num_changes(trace_paths[0])
         print "Number scheduler runs: %d" % (len(runtimes))
         plot_scatter('algorithm_runtime_vs_num_changes.pdf',
                      [x / 1000 for x in runtimes], num_graph_changes,
