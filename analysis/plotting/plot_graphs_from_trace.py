@@ -20,8 +20,6 @@ gflags.DEFINE_bool('ignore_delay_first_solver_run', True,
                    'of the tasks scheduled in the first solver run.')
 gflags.DEFINE_bool('plot_solver_runtime_cdf', False,
                    'Plot CDF of solver runtimes.')
-gflags.DEFINE_bool('plot_solver_runtime_timeline', False,
-                   'Print timeline of solver runtimes.')
 gflags.DEFINE_bool('plot_algorithm_runtime_vs_num_changes', False,
                    'Plot algorithm runtime vs number changes.')
 gflags.DEFINE_string('trace_paths', '',
@@ -250,7 +248,7 @@ def main(argv):
             trace_delays = get_scheduling_delays(trace_path)
             print "Number tasks scheduled: %d" % (len(trace_delays))
             delays.append(trace_delays)
-        plot_cdf('scheduling_delay_cdf.pdf', delays, "Latency [sec]",
+        plot_cdf('scheduling_delay_cdf', delays, "Latency [sec]",
                  labels, log_scale=True, bin_width=1000000, unit='sec')
 
     if FLAGS.plot_solver_runtime_cdf:
@@ -266,12 +264,8 @@ def main(argv):
             trace_labels.append('Scheduler ' + labels[trace_id])
             trace_labels.append('Algorithm ' + labels[trace_id])
             trace_id += 1
-        plot_cdf('scheduling_runtimes_cdf.pdf', runtimes, "Latency [ms]",
+        plot_cdf('scheduling_runtimes_cdf', runtimes, "Latency [ms]",
                  trace_labels, log_scale=True, bin_width=1000, unit='ms')
-
-    if FLAGS.plot_solver_runtime_timeline:
-        print 'Error: not implemented'
-        exit(1)
 
     if FLAGS.plot_algorithm_runtime_vs_num_changes:
         if len(trace_paths) != 1:
@@ -279,7 +273,7 @@ def main(argv):
             exit(1)
         (runtimes, num_graph_changes) = get_algorithm_runtime_and_num_changes(trace_paths[0])
         print "Number scheduler runs: %d" % (len(runtimes))
-        plot_scatter('algorithm_runtime_vs_num_changes.pdf',
+        plot_scatter('algorithm_runtime_vs_num_changes',
                      [x / 1000 for x in runtimes], num_graph_changes,
                      'Runtime [ms]', 'Number graph changes')
 
