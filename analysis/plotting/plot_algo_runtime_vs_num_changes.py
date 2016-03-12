@@ -32,8 +32,8 @@ def get_algorithm_runtime_and_num_changes(trace_path):
     num_graph_changes = []
     for row in csv_reader:
         runtimes.append(long(row[2]))
-        num_graph_changes.append(long(row[7]) + long(row[8]) + long(row[9]) +
-                                 long(row[10]) + long(row[11]))
+        num_graph_changes.append(long(row[9]) + long(row[10]) + long(row[11]) +
+                                 long(row[12]) + long(row[13]))
     csv_file.close()
     if FLAGS.ignore_first_run is True:
         return (runtimes[1:], num_graph_changes[1:])
