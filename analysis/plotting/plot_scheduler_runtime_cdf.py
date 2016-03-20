@@ -157,9 +157,11 @@ def main(argv):
         algo_runtimes = get_scheduler_runtimes(trace_path, 2)
         print "Number scheduler runs: %d" % (len(sched_runtimes))
         runtimes.append(sched_runtimes)
-        runtimes.append(algo_runtimes)
         trace_labels.append('Scheduler ' + labels[trace_id])
-        trace_labels.append('Algorithm ' + labels[trace_id])
+        # XXX(malte): hack to deal with cs2 not providing this info
+        if algo_runtimes[0] != 18446744073709551615:
+          runtimes.append(algo_runtimes)
+          trace_labels.append('Algorithm ' + labels[trace_id])
         trace_id += 1
     plot_cdf('scheduling_runtimes_cdf', runtimes, "Latency [ms]",
              trace_labels, log_scale=True, bin_width=1000, unit='ms')
