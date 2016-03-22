@@ -9,7 +9,7 @@ git clone --recurse-submodules https://github.com/tensorflow/tensorflow workload
 sudo apt-get -y install python-numpy swig python-dev python-wheel
 
 # Bazel
-if [ $(which bazel) == "" ]; then
+if [ -z $(which bazel) ]; then
   wget "https://github.com/bazelbuild/bazel/releases/download/0.2.0/bazel_0.2.0-jdk7-linux-x86_64.deb" -O /tmp/bazel_0.2.0-jdk7-linux-x86_64.deb
   sudo dpkg -i /tmp/bazel_0.2.0-jdk7-linux-x86_64.deb
 fi
