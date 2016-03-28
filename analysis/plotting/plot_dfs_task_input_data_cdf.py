@@ -15,6 +15,7 @@ gflags.DEFINE_bool('paper_mode', False, 'Adjusts the size of the plots.')
 gflags.DEFINE_string('trace_path', '', 'Path to the trace')
 
 BYTES_TO_MB = 1048576
+BYTES_TO_GB = 1073741824
 BLOCK_ADD = 0
 BLOCK_REMOVE = 1
 
@@ -108,17 +109,17 @@ def plot_cdf(plot_file_name, cdf_vals, label_axis, labels, log_scale=False,
     if log_scale:
         plt.gca().set_xscale("log")
         plt.xlim(0, max_cdf_val)
-        # Start at 1MB.
-        x_val = BYTES_TO_MB
+        # Start at 1GB.
+        x_val = BYTES_TO_GB
         x_ticks = []
         while x_val <= max_cdf_val:
             x_ticks.append(x_val)
             x_val *= 10
-        plt.xticks(x_ticks, [str(x / BYTES_TO_MB) for x in x_ticks])
+        plt.xticks(x_ticks, [str(x / BYTES_TO_GB) for x in x_ticks])
     else:
         plt.xlim(0, max_cdf_val)
-        plt.xticks(range(0, max_cdf_val, 100 * BYTES_TO_MB),
-                   [str(x / BYTES_TO_MB) for x in range(0, max_cdf_val, 100 * BYTES_TO_MB)])
+        plt.xticks(range(0, max_cdf_val, 5 * BYTES_TO_GB),
+                   [str(x / BYTES_TO_GB) for x in range(0, max_cdf_val, 5 * BYTES_TO_GB)])
     plt.ylim(0, 1.0)
     plt.yticks(np.arange(0.0, 1.01, 0.2),
                [str(x) for x in np.arange(0.0, 1.01, 0.2)])
@@ -139,7 +140,7 @@ def main(argv):
 
     plot_cdf('dfs_task_input_data_cdf',
              [get_input_data_per_task(FLAGS.trace_path)],
-             'Input data per task [MB]', [], log_scale=False, bin_width=1)
+             'Input data per task [GB]', [], log_scale=False, bin_width=BYTES_TO_MB)
 
 
 if __name__ == '__main__':
