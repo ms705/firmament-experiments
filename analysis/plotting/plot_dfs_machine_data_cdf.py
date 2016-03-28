@@ -38,7 +38,16 @@ def get_data_per_machine(trace_path):
         else:
             machine_data[machine_id] = block_size
     csv_file.close()
-    return machine_data.values()
+    data_on_machines = []
+    for data_on_machine in machine_data.values():
+        # Ignore the machine with 0 data because they're likely machines that
+        # have been removed.
+        # NOTE: We may end up ignoring some machines that actually have no data
+        # on them.
+        if data_on_machine > 0:
+            data_on_machines.append(data_on_machine)
+    return data_on_machines
+
 
 def plot_cdf(plot_file_name, cdf_vals, label_axis, labels, log_scale=False,
              bin_width=1000):
@@ -127,7 +136,8 @@ def main(argv):
 
     plot_cdf('dfs_machine_data_cdf',
              [get_data_per_machine(FLAGS.trace_path)],
-             'Data per machine [MB]', [], log_scale=False, bin_width=1024)
+             'Data per machine [MB]', [], log_scale=False,
+             bin_width=BYTES_TO_MB)
 
 
 if __name__ == '__main__':
