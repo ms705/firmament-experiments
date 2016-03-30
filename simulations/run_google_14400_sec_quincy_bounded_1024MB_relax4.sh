@@ -1,3 +1,4 @@
 #!/bin/bash
 cd firmament
-./build/src/simulator --flagfile=/home/srguser/firmament-experiments/configs/google_14400_sec_quincy_relax4.cfg
+mkdir /mnt/data/google_14400_sec_quincy_bounded_1024MB_relax4/
+./build/src/simulator --flagfile=/home/srguser/firmament-experiments/configs/google_14400_sec_quincy_bounded_1024MB_relax4.cfg
