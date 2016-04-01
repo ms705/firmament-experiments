@@ -21,19 +21,19 @@ gflags.DEFINE_bool('ignore_first_run', True,
                    'True if the first run should be ignored')
 
 def get_algorithm_runtime_and_num_changes(trace_path):
-    # 7 nodes added
-    # 8 nodes removed
-    # 9 arcs added
-    # 10 arcs changed
-    # 11 arcs removed
+    # 10 nodes added
+    # 11 nodes removed
+    # 12 arcs added
+    # 13 arcs changed
+    # 14 arcs removed
     csv_file = open(trace_path + "/scheduler_events/scheduler_events.csv")
     csv_reader = csv.reader(csv_file)
     runtimes = []
     num_graph_changes = []
     for row in csv_reader:
         runtimes.append(long(row[2]))
-        num_graph_changes.append(long(row[9]) + long(row[10]) + long(row[11]) +
-                                 long(row[12]) + long(row[13]))
+        num_graph_changes.append(long(row[10]) + long(row[11]) + long(row[12]) +
+                                 long(row[13]) + long(row[14]))
     csv_file.close()
     if FLAGS.ignore_first_run is True:
         return (runtimes[1:], num_graph_changes[1:])

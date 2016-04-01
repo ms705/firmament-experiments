@@ -26,7 +26,7 @@ def get_percentage_unsched_tasks(trace_path):
     timestamps = []
     for row in csv_reader:
         timestamps.append(long(row[0]))
-        perc_unsched_tasks.append(float(row[4]) / float(row[6]) * 100.0)
+        perc_unsched_tasks.append(float(row[4]) / float(row[7]) * 100.0)
     csv_file.close()
     return (timestamps, perc_unsched_tasks)
 

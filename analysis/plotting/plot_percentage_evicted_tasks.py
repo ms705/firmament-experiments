@@ -24,8 +24,7 @@ def get_percentage_evicted_tasks(trace_path):
     csv_reader = csv.reader(csv_file)
     perc_evicted_tasks = []
     for row in csv_reader:
-        print row[5], row[6]
-        perc_evicted_tasks.append(float(row[5]) / float(row[6]) * 100.0)
+        perc_evicted_tasks.append(float(row[5]) / float(row[7]) * 100.0)
     csv_file.close()
     return perc_evicted_tasks
 
