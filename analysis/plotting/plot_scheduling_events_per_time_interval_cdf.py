@@ -17,11 +17,13 @@ gflags.DEFINE_bool('ignore_time_zero_events', True,
                    'True if the plot should ignore the events from the '
                    'beginning of the trace.')
 gflags.DEFINE_string('trace_path', '', 'Path to the trace')
-gflags.DEFINE_integer('time_interval', 1000000, 'Size of time interval in us')
+gflags.DEFINE_string('time_intervals', '1000000',
+                     ', separated sizes of time interval in us')
+gflags.DEFINE_string('time_labels', '1000 ms', ', separated list of labels')
 
 START_TIME = 600000000
 
-def get_events_cnt_per_time_interval(trace_path):
+def get_events_cnt_per_time_interval(trace_path, time_interval):
     events_per_interval = []
     for num_file in range(0, FLAGS.num_files_to_process, 1):
         csv_file = open(trace_path + "/task_events/part-" +
@@ -30,12 +32,10 @@ def get_events_cnt_per_time_interval(trace_path):
         for row in csv_reader:
             timestamp = long(row[0])
             if FLAGS.ignore_time_zero_events is False or timestamp > START_TIME:
-                index = (timestamp - START_TIME) / FLAGS.time_interval
+                index = (timestamp - START_TIME) / time_interval
                 while index >= len(events_per_interval):
                     events_per_interval.append(0)
                 events_per_interval[index] += 1
-    print events_per_interval
-    events_per_interval.sort()
     return events_per_interval
 
 
@@ -129,9 +129,15 @@ def main(argv):
     except gflags.FlagsError as e:
         print('%s\\nUsage: %s ARGS\\n%s' % (e, sys.argv[0], FLAGS))
 
-    plot_cdf('scheduling_events_per_time_interval_cdf',
-             [get_events_cnt_per_time_interval(FLAGS.trace_path)],
-             'Number events per time interval', ['1 second'], log_scale=True,
+    time_intervals = FLAGS.time_intervals.split(',')
+    labels = FLAGS.time_labels.split(',')
+    time_interval_vals = []
+    for time_interval in time_intervals:
+        time_interval_vals.append(get_events_cnt_per_time_interval(
+            FLAGS.trace_path, long(time_interval)))
+
+    plot_cdf('scheduling_events_per_time_interval_cdf', time_interval_vals,
+             'Number events per time interval', labels, log_scale=True,
              bin_width=1)
 
 
