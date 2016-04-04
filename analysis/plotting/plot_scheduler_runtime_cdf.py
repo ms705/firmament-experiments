@@ -17,8 +17,6 @@ gflags.DEFINE_string('trace_paths', '',
                      ', separated list of path to trace files.')
 gflags.DEFINE_string('trace_labels', '',
                      ', separated list of labels to use for trace files.')
-gflags.DEFINE_bool('ignore_first_run', True,
-                   'True if the first run should be ignored')
 gflags.DEFINE_integer('runtimes_after_timestamp', 0,
                       'Only plot runtimes of runs that happened after.')
 
@@ -133,13 +131,10 @@ def get_scheduler_runtimes(trace_path, column_index):
     runtimes = []
     csv_file = open(trace_path + "/scheduler_events/scheduler_events.csv")
     csv_reader = csv.reader(csv_file)
-    index = 0
     for row in csv_reader:
-        if index is not 0 or FLAGS.ignore_first_run is False:
-            timestamp = long(row[0])
-            if timestamp > FLAGS.runtimes_after_timestamp:
-                runtimes.append(long(row[column_index]))
-        index += 1
+        timestamp = long(row[0])
+        if timestamp > FLAGS.runtimes_after_timestamp:
+            runtimes.append(long(row[column_index]))
     csv_file.close()
     runtimes.sort()
     return runtimes
