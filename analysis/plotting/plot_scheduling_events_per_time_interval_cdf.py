@@ -66,34 +66,36 @@ def plot_cdf(plot_file_name, cdf_vals, label_axis, labels, log_scale=False,
         print "MAX: %ld" % (max_val)
         stddev = np.std(vals)
         print "STDDEV: %f" % (stddev)
+
+        hist, bin_edges = np.histogram(vals, bins=num_bins, normed=True, density=True)
         print "PERCENTILES:"
-        perc1 = np.percentile(vals, 1)
+        perc1 = hist[int(0.01 * len(hist))]
         print "  1st: %f" % (perc1)
-        perc10 = np.percentile(vals, 10)
+        perc10 = hist[int(0.1 * len(hist))]
         print " 10th: %f" % (perc10)
-        perc25 = np.percentile(vals, 25)
+        perc25 = hist[int(0.25 * len(hist))]
         print " 25th: %f" % (perc25)
-        perc50 = np.percentile(vals, 50)
+        perc50 = hist[int(0.5 * len(hist))]
         print " 50th: %f" % (perc50)
-        perc75 = np.percentile(vals, 75)
+        perc75 = hist[int(0.75 * len(hist))]
         print " 75th: %f" % (perc75)
-        perc90 = np.percentile(vals, 90)
+        perc90 = hist[int(0.9 * len(hist))]
         max_perc90 = max(max_perc90, perc90)
         print " 90th: %f" % (perc90)
-        perc99 = np.percentile(vals, 99)
+        perc99 = hist[int(0.99 * len(hist))]
         max_perc99 = max(max_perc99, perc99)
         print " 99th: %f" % (perc99)
 
         bin_range = max_val - min_val
         num_bins = bin_range / bin_width
-        (n, bins, patches) = plt.hist(vals, bins=num_bins, log=False,
-                                      normed=True, cumulative=True,
-                                      histtype="step", color=colors[index])
+        #(n, bins, patches) = plt.hist(vals, bins=num_bins, log=False,
+        #                              normed=True, cumulative=True,
+        #                              histtype="step", color=colors[index])
         # hack to add line to legend
-        plt.plot([-100], [-100], label=labels[index],
+        plt.plot(bin_edges, hist, label=labels[index],
                  color=colors[index], linestyle='solid', lw=1.0)
         # hack to remove vertical bar
-        patches[0].set_xy(patches[0].get_xy()[:-1])
+        #patches[0].set_xy(patches[0].get_xy()[:-1])
 
         index += 1
 
