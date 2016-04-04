@@ -17,8 +17,8 @@ gflags.DEFINE_string('trace_paths', '',
                      ', separated list of path to trace files.')
 gflags.DEFINE_string('trace_labels', '',
                      ', separated list of labels to use for trace files.')
-gflags.DEFINE_bool('ignore_first_run', True,
-                   'True if the first run should be ignored')
+gflags.DEFINE_integer('runtimes_after_timestamp', 0,
+                      'Only plot runtimes of runs that happened after.')
 
 
 def plot_cdf(plot_file_name, cdf_vals, label_axis, labels, log_scale=False,
@@ -68,6 +68,7 @@ def plot_cdf(plot_file_name, cdf_vals, label_axis, labels, log_scale=False,
 
         bin_range = max_val - min_val
         num_bins = bin_range / bin_width
+
         (n, bins, patches) = plt.hist(vals, bins=num_bins, log=False,
                                       normed=True, cumulative=True,
                                       histtype="step", color=colors[index])
@@ -130,11 +131,10 @@ def get_scheduler_runtimes(trace_path, column_index):
     runtimes = []
     csv_file = open(trace_path + "/scheduler_events/scheduler_events.csv")
     csv_reader = csv.reader(csv_file)
-    index = 0
     for row in csv_reader:
-        if index is not 0 or FLAGS.ignore_first_run is False:
+        timestamp = long(row[0])
+        if timestamp > FLAGS.runtimes_after_timestamp:
             runtimes.append(long(row[column_index]))
-        index += 1
     csv_file.close()
     runtimes.sort()
     return runtimes
@@ -148,23 +148,27 @@ def main(argv):
 
     trace_paths = FLAGS.trace_paths.split(',')
     labels = FLAGS.trace_labels.split(',')
-
-    runtimes = []
-    trace_labels = []
+    sched_runtimes = []
+    algo_runtimes = []
+    sched_trace_labels = []
+    algo_trace_labels = []
     trace_id = 0
     for trace_path in trace_paths:
-        sched_runtimes = get_scheduler_runtimes(trace_path, 1)
-        algo_runtimes = get_scheduler_runtimes(trace_path, 2)
-        print "Number scheduler runs: %d" % (len(sched_runtimes))
-        runtimes.append(sched_runtimes)
-        trace_labels.append('Scheduler ' + labels[trace_id])
+        sched_runtime = get_scheduler_runtimes(trace_path, 1)
+        algo_runtime = get_scheduler_runtimes(trace_path, 2)
+        print "Number scheduler runs: %d" % (len(sched_runtime))
+        sched_runtimes.append(sched_runtime)
+        sched_trace_labels.append('Scheduler ' + labels[trace_id])
         # XXX(malte): hack to deal with cs2 not providing this info
-        if algo_runtimes[0] != 18446744073709551615:
-          runtimes.append(algo_runtimes)
-          trace_labels.append('Algorithm ' + labels[trace_id])
+        if algo_runtime[0] != 18446744073709551615:
+          algo_runtimes.append(algo_runtime)
+          algo_trace_labels.append('Algorithm ' + labels[trace_id])
         trace_id += 1
-    plot_cdf('scheduling_runtimes_cdf', runtimes, "Latency [ms]",
-             trace_labels, log_scale=True, bin_width=1000, unit='ms')
+
+    plot_cdf('scheduling_runtimes_cdf', sched_runtimes, "Duration [ms]",
+             sched_trace_labels, log_scale=True, bin_width=1000, unit='ms')
+    plot_cdf('algorithm_runtimes_cdf', algo_runtimes, "Duration [ms]",
+             algo_trace_labels, log_scale=True, bin_width=1000, unit='ms')
 
 
 if __name__ == '__main__':
