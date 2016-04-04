@@ -51,7 +51,8 @@ for s in setup_names:
       median_rt = float(fields[1])
       min_rt = float(fields[3])
       max_rt = float(fields[4])
-      # we use the max because the job runtime is dominated by the longest straggler
+      # we use the max because the job runtime is dominated by the longest
+      # straggler
       bl_maxtimes.append(max_rt)
       if min_rt < 10.0 or min_rt * 2 < median_rt or min_rt * 2 < np.median(bl_maxtimes):
         print "WARNING: low minimum runtime %f on baseline (%s) for %s" % (min_rt, baseline_name, wl)
@@ -70,7 +71,8 @@ for s in setup_names:
       median_rt = float(fields[1])
       min_rt = float(fields[3])
       max_rt = float(fields[4])
-      # we use the max because the job runtime is dominated by the longest straggler
+      # we use the max because the job runtime is dominated by the longest
+      # straggler
       maxtimes.append(float(max_rt))
       if min_rt < 10.0 or min_rt * 2 < median_rt or min_rt * 2 < np.median(maxtimes):
         print "WARNING: low minimum runtime %f on setup (%s) for %s" % (min_rt, s, wl)
@@ -82,7 +84,8 @@ for s in setup_names:
     setup_runtimes.append(setup_avg_runtime)
     setup_stdevs.append(setup_std_runtime)
     normed_runtimes.append(setup_avg_runtime / bl_avg_runtime)
-    append_or_create(normed_runtimes_by_workload, wl, (setup_avg_runtime / bl_avg_runtime))
+    append_or_create(normed_runtimes_by_workload, wl,
+                     (setup_avg_runtime / bl_avg_runtime))
   print "%s," % (s) + ",".join(["%f" % (x) for x in normed_runtimes])
 
 print normed_runtimes_by_workload
@@ -118,8 +121,10 @@ plt.yticks(np.arange(0, 3.6, 0.5), ["%.1f $\\times$" % (x) for x in np.arange(0,
 plt.ylabel("Normalized runtime")
 
 #plt.xlabel("Workload")
-plt.xticks(np.arange(len(workloads)), [translate_workload(x) for x in workloads], ha='right', rotation=30)
+plt.xticks(np.arange(len(workloads)),
+           [translate_workload(x) for x in workloads], ha='right', rotation=30)
 
-plt.savefig("%s_normed_runtimes.pdf" % (outname), format="pdf", bbox_inches='tight', pad_inches=0.01)
-plt.savefig("%s_normed_runtimes.png" % (outname), format="png", bbox_inches='tight', pad_inches=0.01)
-
+plt.savefig("%s_normed_runtimes.pdf" % (outname), format="pdf",
+            bbox_inches='tight', pad_inches=0.01)
+plt.savefig("%s_normed_runtimes.png" % (outname), format="png",
+            bbox_inches='tight', pad_inches=0.01)

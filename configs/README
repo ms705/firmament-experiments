@@ -1,0 +1,10 @@
+This directory contains configurations for various experiments, specified
+in gflags "flagfile" format. To use one of them, run:
+
+$ <build_path>/simulator --flagfile=<file>
+
+for simulator experiments, and
+
+$ <build_path>/coordinator --flagfile=<file>
+
+for cluster experiments.

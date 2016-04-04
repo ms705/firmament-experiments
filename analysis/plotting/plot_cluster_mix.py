@@ -13,7 +13,16 @@ from scipy.stats import scoreatpercentile
 import process_mesos_masterlog
 from baselines import *
 
-workload_labels = { 'cpu_spin': "\\texttt{cpu\_spin}, 60s", 
+baseline_best_medians = { 'mem_stream_1M_': 55.649999999999999,
+                          'mem_stream_128K_': 55.590000000000003,
+                          'mem_stream_50M_': 56.990000000000002,
+                          'io_stream_read': 73.510000000000005,
+                          'mem_stream_1K': 52.939999999999998,
+                          'io_stream_write': 29.620000000000001,
+                          'cpu_spin': 60.0
+                        }
+
+workload_labels = { 'cpu_spin': "\\texttt{cpu\_spin}, 60s",
                     'mem_stream.1K': "\\texttt{mem\_stream}, 1K",
                     'mem_stream.128K': "\\texttt{mem\_stream}, 128K",
                     'mem_stream_1M_': "\\texttt{mem\_stream}, 1M",
@@ -81,7 +90,8 @@ def percentile_box_plot(ax, data, indexer=None, index_base=1, index_step=1,
                         box_top=75, box_bottom=25, whisker_top=99,
                         whisker_bottom=1, color='k', label=""):
     if indexer is None:
-        indexed_data = zip(range(index_base, index_base + index_step * len(data) + 1, index_step), data)
+        index_end = index_base + index_step * len(data) + 1
+        indexed_data = zip(range(index_base, index_end, index_step), data)
     else:
         indexed_data = [(indexer(datum), datum) for datum in data]
     def get_whisk(vector, w):
@@ -96,7 +106,8 @@ def percentile_box_plot(ax, data, indexer=None, index_base=1, index_step=1,
                         get_whisk(x, whisker_top),
                         get_whisk(x, whisker_bottom),
                         scoreatpercentile(x, 100))
-        bp.draw_on(ax, index, box_color=color, median_color=color, whisker_color=color)
+        bp.draw_on(ax, index, box_color=color, median_color=color,
+                   whisker_color=color)
 
 def print_overview(results_dict):
   for wl, v in sorted(results_dict["runtimes"].items(), key=lambda x: x[0]):

@@ -30,7 +30,7 @@ for l in open(input_csv).readlines():
   for wl in workloads:
     append_or_create(dataseries, wl, float(fields[i]))
     i += 1
-  
+
 #########################################
 # Plot
 
@@ -42,7 +42,8 @@ width = 0.8 / len(workloads)
 print width
 i = 0
 for wl in workloads:
-  plt.bar(np.arange(len(setups)) + i*width, dataseries[wl], width=width, align="center", label=labels[wl], color=colors[i % len(colors)])
+  plt.bar(np.arange(len(setups)) + i*width, dataseries[wl], width=width,
+          align="center", label=labels[wl], color=colors[i % len(colors)])
   i += 1
 
 plt.axhline(1.0, lw=1.0, ls='-', color='k')
@@ -57,5 +58,3 @@ plt.legend(ncol=2)
 
 plt.savefig("%s.pdf" % (outname), format="pdf")
 plt.savefig("%s.png" % (outname), format="png")
-
-

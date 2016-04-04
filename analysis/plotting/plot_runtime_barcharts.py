@@ -78,7 +78,7 @@ for wl in workloads:
   setup_runtimes.append(setup_avg_runtime)
   setup_stdevs.append(setup_std_runtime)
   normed_runtimes.append(setup_avg_runtime / bl_avg_runtime)
-  
+
 #########################################
 # Normed runtimes
 
@@ -101,21 +101,27 @@ plt.axhline(1.0, lw=1.0, ls='-', color='k')
 plt.legend(frameon=False, loc="upper left")
 
 plt.ylim(0, 3.5)
-plt.yticks(np.arange(0, 3.6, 0.5), ["%.1f $\\times$" % (x) for x in np.arange(0, 3.6, 0.5)])
+plt.yticks(np.arange(0, 3.6, 0.5),
+           ["%.1f $\\times$" % (x) for x in np.arange(0, 3.6, 0.5)])
 plt.ylabel("Normalized makespan")
 
 #plt.xlabel("Workload")
-plt.xticks(np.arange(len(workloads)), [translate_workload(x) for x in workloads], ha='right', rotation=30)
+plt.xticks(np.arange(len(workloads)),
+           [translate_workload(x) for x in workloads], ha='right', rotation=30)
 
-plt.savefig("%s_normed_runtimes.pdf" % (outname), format="pdf", bbox_inches='tight', pad_inches=0.01)
-plt.savefig("%s_normed_runtimes.png" % (outname), format="png", bbox_inches='tight', pad_inches=0.01)
+plt.savefig("%s_normed_runtimes.pdf" % (outname), format="pdf",
+            bbox_inches='tight', pad_inches=0.01)
+plt.savefig("%s_normed_runtimes.png" % (outname), format="png",
+            bbox_inches='tight', pad_inches=0.01)
 
 #########################################
 # Raw runtimes
 plt.clf()
 
-plt.bar(np.arange(len(workloads)), baseline_runtimes, yerr=baseline_stdevs, ecolor='k', width=0.4, align="center", label="Ideal")
-plt.bar(np.arange(len(workloads)) + 0.4, setup_runtimes, yerr=setup_stdevs, ecolor='k', width=0.4, align="center", label="Shared cluster", color='r')
+plt.bar(np.arange(len(workloads)), baseline_runtimes, yerr=baseline_stdevs,
+        ecolor='k', width=0.4, align="center", label="Ideal")
+plt.bar(np.arange(len(workloads)) + 0.4, setup_runtimes, yerr=setup_stdevs,
+        ecolor='k', width=0.4, align="center", label="Shared cluster", color='r')
 
 #plt.ylim(0, 1000)
 plt.ylabel("Makespan [sec]")
@@ -126,5 +132,3 @@ plt.xticks(np.arange(len(workloads)) + 0.2, workloads, ha='center')
 
 plt.savefig("%s_runtimes.pdf" % (outname), format="pdf")
 plt.savefig("%s_runtimes.png" % (outname), format="png")
-
-
