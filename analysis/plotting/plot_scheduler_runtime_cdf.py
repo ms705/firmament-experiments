@@ -10,8 +10,6 @@ import matplotlib.pyplot as plt
 from utils import *
 
 FLAGS = gflags.FLAGS
-gflags.DEFINE_integer('num_files_to_process', 1,
-                      'The number of trace files to process.')
 gflags.DEFINE_bool('paper_mode', False, 'Adjusts the size of the plots.')
 gflags.DEFINE_string('trace_paths', '',
                      ', separated list of path to trace files.')

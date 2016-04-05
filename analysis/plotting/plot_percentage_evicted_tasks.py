@@ -72,7 +72,7 @@ def plot_evicted_tasks_cdf(plot_file_name, cdf_vals, label_axis, labels,
         max_perc99 = max(max_perc99, perc99)
         print " 99th: %f" % (perc99)
 
-        bin_range = max_val - min_val
+        bin_range = max_val - min_val + 1
         num_bins = bin_range / bin_width
         (n, bins, patches) = plt.hist(vals, bins=num_bins, log=False,
                                       normed=True, cumulative=True,
