@@ -1,0 +1,5 @@
+#!/bin/bash
+
+cd /mnt/data/icg27/firmament-experiments/analysis/plotting/
+python plot_percentage_evicted_tasks.py --trace_paths="/mnt/data/icg27/firmament_simulations/old_quincy_pinned/google_14400_sec_quincy_bounded_1024MB_flowlessly_cost_scaling/,/mnt/data/icg27/firmament_simulations/old_quincy_pinned/google_14400_sec_quincy_bounded_1024MB_flowlessly_incremental_cost_scaling/,/mnt/data/icg27/firmament_simulations/old_quincy_pinned/google_14400_sec_quincy_bounded_1024MB_flowlessly_relax/,/mnt/data/icg27/firmament_simulations/old_quincy_pinned/google_14400_sec_quincy_bounded_1024MB_flowlessly_incremental_cost_scaling_then_relax/" --trace_labels="cost scaling,incremental cost scaling,relax,incremental relax"
+mv percentage_evicted_tasks.pdf quincy_4h_pinned_percentage_evicted_tasks.pdf

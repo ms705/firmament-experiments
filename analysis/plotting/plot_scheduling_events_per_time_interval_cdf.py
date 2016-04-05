@@ -28,20 +28,25 @@ def get_events_cnt_per_time_interval(trace_path, time_interval):
     for num_file in range(0, FLAGS.num_files_to_process, 1):
         csv_file = open(trace_path + "/task_events/part-" +
                         '{:05}'.format(num_file) + "-of-00500.csv")
+        print "%d -- Now on file %d" % (time_interval, num_file)
         csv_reader = csv.reader(csv_file)
         for row in csv_reader:
             timestamp = long(row[0])
+            # XXX(ionel): Hack to ignore the events beyond 30 days.
+            if timestamp > 2592000000000:
+                continue
             if FLAGS.ignore_time_zero_events is False or timestamp > START_TIME:
                 index = (timestamp - START_TIME) / time_interval
                 while index >= len(events_per_interval):
                     events_per_interval.append(0)
                 events_per_interval[index] += 1
+        csv_file.close()
     return events_per_interval
 
 
-def plot_cdf(plot_file_name, cdf_vals, label_axis, labels, log_scale=False,
+def plot_cdf(plot_file_name, label_axis, labels, log_scale=False,
              bin_width=1000):
-    colors = ['b', 'r', 'g', 'c', 'm', 'y', 'k']
+    colors = ['b', 'r', 'g', 'c', 'm', 'y', 'k', '0.2', '0.4', '0.6']
     if FLAGS.paper_mode:
         plt.figure(figsize=(2.33, 1.55))
         set_paper_rcs()
@@ -50,10 +55,12 @@ def plot_cdf(plot_file_name, cdf_vals, label_axis, labels, log_scale=False,
         set_rcs()
 
     max_cdf_val = 0
-    max_perc90 = 0
-    max_perc99 = 0
     index = 0
-    for vals in cdf_vals:
+    time_intervals = FLAGS.time_intervals.split(',')
+    for time_interval in time_intervals:
+        vals = get_events_cnt_per_time_interval(FLAGS.trace_path,
+                                                long(time_interval))
+        print "Got %d values" % (len(vals))
         print "Statistics for %s" % (labels[index])
         avg = np.mean(vals)
         print "AVG: %f" % (avg)
@@ -66,36 +73,24 @@ def plot_cdf(plot_file_name, cdf_vals, label_axis, labels, log_scale=False,
         print "MAX: %ld" % (max_val)
         stddev = np.std(vals)
         print "STDDEV: %f" % (stddev)
-        print "PERCENTILES:"
-        perc1 = np.percentile(vals, 1)
-        print "  1st: %f" % (perc1)
-        perc10 = np.percentile(vals, 10)
-        print " 10th: %f" % (perc10)
-        perc25 = np.percentile(vals, 25)
-        print " 25th: %f" % (perc25)
-        perc50 = np.percentile(vals, 50)
-        print " 50th: %f" % (perc50)
-        perc75 = np.percentile(vals, 75)
-        print " 75th: %f" % (perc75)
-        perc90 = np.percentile(vals, 90)
-        max_perc90 = max(max_perc90, perc90)
-        print " 90th: %f" % (perc90)
-        perc99 = np.percentile(vals, 99)
-        max_perc99 = max(max_perc99, perc99)
-        print " 99th: %f" % (perc99)
 
         bin_range = max_val - min_val
         num_bins = bin_range / bin_width
-        (n, bins, patches) = plt.hist(vals, bins=num_bins, log=False,
-                                      normed=True, cumulative=True,
-                                      histtype="step", color=colors[index])
+
+        hist, bin_edges = np.histogram(vals, bins=num_bins, normed=True)
+        cdf = np.cumsum(hist)
+
+        #(n, bins, patches) = plt.hist(vals, bins=num_bins, log=False,
+        #                              normed=True, cumulative=True,
+        #                              histtype="step", color=colors[index])
         # hack to add line to legend
-        plt.plot([-100], [-100], label=labels[index],
+        plt.plot(bin_edges[:-1], cdf, label=labels[index],
                  color=colors[index], linestyle='solid', lw=1.0)
         # hack to remove vertical bar
-        patches[0].set_xy(patches[0].get_xy()[:-1])
+        #patches[0].set_xy(patches[0].get_xy()[:-1])
 
         index += 1
+        del vals
 
 
     if log_scale:
@@ -129,14 +124,9 @@ def main(argv):
     except gflags.FlagsError as e:
         print('%s\\nUsage: %s ARGS\\n%s' % (e, sys.argv[0], FLAGS))
 
-    time_intervals = FLAGS.time_intervals.split(',')
     labels = FLAGS.time_labels.split(',')
-    time_interval_vals = []
-    for time_interval in time_intervals:
-        time_interval_vals.append(get_events_cnt_per_time_interval(
-            FLAGS.trace_path, long(time_interval)))
 
-    plot_cdf('scheduling_events_per_time_interval_cdf', time_interval_vals,
+    plot_cdf('scheduling_events_per_time_interval_cdf',
              'Number events per time interval', labels, log_scale=True,
              bin_width=1)
 
