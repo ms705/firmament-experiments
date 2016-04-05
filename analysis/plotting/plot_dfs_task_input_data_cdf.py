@@ -107,7 +107,7 @@ def plot_cdf(plot_file_name, cdf_vals, label_axis, labels, log_scale=False,
         index += 1
 
     if log_scale:
-        plt.gca().set_xscale("log")
+        plt.xscale("log")
         plt.xlim(0, max_cdf_val)
         # Start at 1GB.
         x_val = BYTES_TO_GB
