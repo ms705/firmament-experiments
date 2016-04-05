@@ -39,9 +39,9 @@ def get_events_cnt_per_time_interval(trace_path, time_interval):
     return events_per_interval
 
 
-def plot_cdf(plot_file_name, cdf_vals, label_axis, labels, log_scale=False,
+def plot_cdf(plot_file_name, label_axis, labels, log_scale=False,
              bin_width=1000):
-    colors = ['b', 'r', 'g', 'c', 'm', 'y', 'k']
+    colors = ['b', 'r', 'g', 'c', 'm', 'y', 'k', '0.2', '0.4', '0.6']
     if FLAGS.paper_mode:
         plt.figure(figsize=(2.33, 1.55))
         set_paper_rcs()
@@ -50,10 +50,11 @@ def plot_cdf(plot_file_name, cdf_vals, label_axis, labels, log_scale=False,
         set_rcs()
 
     max_cdf_val = 0
-    max_perc90 = 0
-    max_perc99 = 0
     index = 0
-    for vals in cdf_vals:
+    time_intervals = FLAGS.time_intervals.split(',')
+    for time_interval in time_intervals:
+        vals = get_events_cnt_per_time_interval(FLAGS.trace_path,
+                                                long(time_interval))
         print "Statistics for %s" % (labels[index])
         avg = np.mean(vals)
         print "AVG: %f" % (avg)
@@ -67,32 +68,17 @@ def plot_cdf(plot_file_name, cdf_vals, label_axis, labels, log_scale=False,
         stddev = np.std(vals)
         print "STDDEV: %f" % (stddev)
 
-        hist, bin_edges = np.histogram(vals, bins=num_bins, normed=True, density=True)
-        print "PERCENTILES:"
-        perc1 = hist[int(0.01 * len(hist))]
-        print "  1st: %f" % (perc1)
-        perc10 = hist[int(0.1 * len(hist))]
-        print " 10th: %f" % (perc10)
-        perc25 = hist[int(0.25 * len(hist))]
-        print " 25th: %f" % (perc25)
-        perc50 = hist[int(0.5 * len(hist))]
-        print " 50th: %f" % (perc50)
-        perc75 = hist[int(0.75 * len(hist))]
-        print " 75th: %f" % (perc75)
-        perc90 = hist[int(0.9 * len(hist))]
-        max_perc90 = max(max_perc90, perc90)
-        print " 90th: %f" % (perc90)
-        perc99 = hist[int(0.99 * len(hist))]
-        max_perc99 = max(max_perc99, perc99)
-        print " 99th: %f" % (perc99)
-
         bin_range = max_val - min_val
         num_bins = bin_range / bin_width
+
+        hist, bin_edges = np.histogram(vals, bins=num_bins, normed=True)
+        cdf = np.cumsum(hist)
+
         #(n, bins, patches) = plt.hist(vals, bins=num_bins, log=False,
         #                              normed=True, cumulative=True,
         #                              histtype="step", color=colors[index])
         # hack to add line to legend
-        plt.plot(bin_edges, hist, label=labels[index],
+        plt.plot(bin_edges[:-1], cdf, label=labels[index],
                  color=colors[index], linestyle='solid', lw=1.0)
         # hack to remove vertical bar
         #patches[0].set_xy(patches[0].get_xy()[:-1])
@@ -131,14 +117,9 @@ def main(argv):
     except gflags.FlagsError as e:
         print('%s\\nUsage: %s ARGS\\n%s' % (e, sys.argv[0], FLAGS))
 
-    time_intervals = FLAGS.time_intervals.split(',')
     labels = FLAGS.time_labels.split(',')
-    time_interval_vals = []
-    for time_interval in time_intervals:
-        time_interval_vals.append(get_events_cnt_per_time_interval(
-            FLAGS.trace_path, long(time_interval)))
 
-    plot_cdf('scheduling_events_per_time_interval_cdf', time_interval_vals,
+    plot_cdf('scheduling_events_per_time_interval_cdf',
              'Number events per time interval', labels, log_scale=True,
              bin_width=1)
 
