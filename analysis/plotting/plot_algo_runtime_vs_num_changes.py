@@ -41,7 +41,7 @@ def get_algorithm_runtime_and_num_changes(trace_path):
 
 def plot_scatter(plot_file_name, x_vals, y_vals, x_label, y_label):
     if FLAGS.paper_mode:
-        plt.figure(figsize=(2.33, 1.55))
+        plt.figure(figsize=(3.33, 2.22))
         set_paper_rcs()
     else:
         plt.figure()

@@ -36,7 +36,7 @@ def get_scheduler_runtime(trace_path, column_index):
 def plot_timeline(plot_file_name, all_x_vals, all_y_vals, labels, unit='sec'):
     colors = ['b', 'r', 'g', 'c', 'm', 'y', 'k']
     if FLAGS.paper_mode:
-        plt.figure(figsize=(2.33, 1.55))
+        plt.figure(figsize=(3.33, 2.22))
         set_paper_rcs()
     else:
         plt.figure()
