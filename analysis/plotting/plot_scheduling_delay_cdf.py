@@ -134,8 +134,8 @@ def plot_cdf(plot_file_name, cdf_vals, label_axis, labels, log_scale=False,
         plt.xticks(x_ticks, [str(x / to_time_unit) for x in x_ticks])
     else:
         plt.xlim(0, max_cdf_val)
-        plt.xticks(range(0, max_cdf_val, 1000000),
-                   [str(x / 1000) for x in range(0, max_cdf_val, 1000000)])
+        plt.xticks(range(0, max_cdf_val, 10000000),
+                   [str(x / 10000000) for x in range(0, max_cdf_val, 10000000)])
     plt.ylim(0, 1.0)
     plt.yticks(np.arange(0.0, 1.01, 0.2),
                [str(x) for x in np.arange(0.0, 1.01, 0.2)])
@@ -172,7 +172,7 @@ def main(argv):
         print "Number tasks scheduled: %d" % (len(trace_delays))
         delays.append(trace_delays)
     plot_cdf('scheduling_delay_cdf', delays, "Latency [sec]",
-             labels, log_scale=True, bin_width=1000000, unit='sec')
+             labels, log_scale=False, bin_width=100000, unit='sec')
 
 
 if __name__ == '__main__':
