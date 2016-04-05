@@ -15,7 +15,7 @@ def set_leg_fontsize(size):
   rc('legend', fontsize=size)
 
 def set_paper_rcs():
-  rc('font', family='serif')
+  rc('font', family='serif', size=9)
   rc('text.latex', preamble=['\usepackage{times,mathptmx}'])
   rc('text', usetex=True)
   rc('legend', fontsize=8)

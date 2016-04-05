@@ -47,7 +47,7 @@ def plot_scalability(plot_file_name, setups, runtimes,
     #plt.errorbar(range(1, len(setups) + 1), [np.mean(x) for x in runtimes],
     #             yerr=[np.std(x) for x in runtimes], marker="x")
     plt.xlim(0.5, len(setups) + 0.5)
-    plt.ylim(ymin=0, ymax=40)
+    plt.ylim(ymin=0)
     plt.xticks(range(1, len(setups) + 1), ["%u" % (float(x) * 12500) for x in setups])
     plt.xlabel(x_label)
     plt.ylabel(y_label)
@@ -68,7 +68,6 @@ def main(argv):
     runtimes = []
     for t in trace_paths:
       runtimes.append(get_total_runtime(t))
-    print "Number scheduler runs: %d" % (len(runtimes))
     plot_scalability('quincy_scalability', labels, runtimes)
 
 
