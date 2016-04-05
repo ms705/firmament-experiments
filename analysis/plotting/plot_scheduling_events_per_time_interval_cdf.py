@@ -28,14 +28,19 @@ def get_events_cnt_per_time_interval(trace_path, time_interval):
     for num_file in range(0, FLAGS.num_files_to_process, 1):
         csv_file = open(trace_path + "/task_events/part-" +
                         '{:05}'.format(num_file) + "-of-00500.csv")
+        print "%d -- Now on file %d" % (time_interval, num_file)
         csv_reader = csv.reader(csv_file)
         for row in csv_reader:
             timestamp = long(row[0])
+            # XXX(ionel): Hack to ignore the events beyond 30 days.
+            if timestamp > 2592000000000:
+                continue
             if FLAGS.ignore_time_zero_events is False or timestamp > START_TIME:
                 index = (timestamp - START_TIME) / time_interval
                 while index >= len(events_per_interval):
                     events_per_interval.append(0)
                 events_per_interval[index] += 1
+        csv_file.close()
     return events_per_interval
 
 
@@ -55,6 +60,7 @@ def plot_cdf(plot_file_name, label_axis, labels, log_scale=False,
     for time_interval in time_intervals:
         vals = get_events_cnt_per_time_interval(FLAGS.trace_path,
                                                 long(time_interval))
+        print "Got %d values" % (len(vals))
         print "Statistics for %s" % (labels[index])
         avg = np.mean(vals)
         print "AVG: %f" % (avg)
@@ -84,6 +90,7 @@ def plot_cdf(plot_file_name, label_axis, labels, log_scale=False,
         #patches[0].set_xy(patches[0].get_xy()[:-1])
 
         index += 1
+        del vals
 
 
     if log_scale:
