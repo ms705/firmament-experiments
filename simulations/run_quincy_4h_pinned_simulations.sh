@@ -3,7 +3,6 @@ ssh srguser@caelum-401.cl.cam.ac.uk 'screen -d -m /home/srguser/firmament-experi
 ssh srguser@caelum-402.cl.cam.ac.uk 'screen -d -m /home/srguser/firmament-experiments/simulations/run_google_14400_sec_quincy_bounded_1024MB_0.4events_flowlessly_cost_scaling.sh'
 ssh srguser@caelum-403.cl.cam.ac.uk 'screen -d -m /home/srguser/firmament-experiments/simulations/run_google_14400_sec_quincy_bounded_1024MB_0.6events_flowlessly_cost_scaling.sh'
 ssh srguser@caelum-404.cl.cam.ac.uk 'screen -d -m /home/srguser/firmament-experiments/simulations/run_google_14400_sec_quincy_bounded_1024MB_0.8events_flowlessly_cost_scaling.sh'
-ssh srguser@caelum-406.cl.cam.ac.uk 'screen -d -m /home/srguser/firmament-experiments/simulations/run_google_14400_sec_quincy_bounded_1024MB_flowlessly_cost_scaling_1percent_data_threshold.sh'
 ssh srguser@caelum-407.cl.cam.ac.uk 'screen -d -m /home/srguser/firmament-experiments/simulations/run_google_14400_sec_quincy_bounded_1024MB_flowlessly_relax.sh'
 ssh srguser@caelum-408.cl.cam.ac.uk 'screen -d -m /home/srguser/firmament-experiments/simulations/run_google_14400_sec_quincy_bounded_1024MB_relax4.sh'
 ssh srguser@caelum-409.cl.cam.ac.uk 'screen -d -m /home/srguser/firmament-experiments/simulations/run_google_14400_sec_quincy_bounded_1024MB_incremental_relax4.sh'
