@@ -23,15 +23,27 @@ gflags.DEFINE_string('time_labels', '1000 ms', ', separated list of labels')
 
 START_TIME = 600000000
 
+TASK_SUBMIT_EVENT = 0
+TASK_SCHEDULE_EVENT = 1
+TASK_EVICT_EVENT = 2
+TASK_FAIL_EVENT = 3
+TASK_FINISH_EVENT = 4
+TASK_KILL_EVENT = 5
+TASK_LOST_EVENT = 6
+
 def get_events_cnt_per_time_interval(trace_path, time_interval):
     events_per_interval = []
     for num_file in range(0, FLAGS.num_files_to_process, 1):
         csv_file = open(trace_path + "/task_events/part-" +
                         '{:05}'.format(num_file) + "-of-00500.csv")
-        print "%d -- Now on file %d" % (time_interval, num_file)
         csv_reader = csv.reader(csv_file)
         for row in csv_reader:
             timestamp = long(row[0])
+            event_type = long(row[3])
+            # Ignore the schedule events because they're scheduling policy
+            # specific.
+            if event_type == TASK_SCHEDULE_EVENT:
+                continue
             # XXX(ionel): Hack to ignore the events beyond 30 days.
             if timestamp > 2592000000000:
                 continue
@@ -48,7 +60,7 @@ def plot_cdf(plot_file_name, label_axis, labels, log_scale=False,
              bin_width=1000):
     colors = ['b', 'r', 'g', 'c', 'm', 'y', 'k', '0.2', '0.4', '0.6']
     if FLAGS.paper_mode:
-        plt.figure(figsize=(2.33, 1.55))
+        plt.figure(figsize=(3.33, 2.22))
         set_paper_rcs()
     else:
         plt.figure()
@@ -94,7 +106,7 @@ def plot_cdf(plot_file_name, label_axis, labels, log_scale=False,
 
 
     if log_scale:
-        plt.gca().set_xscale("log")
+        plt.xscale("log")
         plt.xlim(0, max_cdf_val)
         x_val = 1
         x_ticks = []
@@ -127,7 +139,7 @@ def main(argv):
     labels = FLAGS.time_labels.split(',')
 
     plot_cdf('scheduling_events_per_time_interval_cdf',
-             'Number events per time interval', labels, log_scale=True,
+             'Task events per time interval', labels, log_scale=True,
              bin_width=1)
 
 

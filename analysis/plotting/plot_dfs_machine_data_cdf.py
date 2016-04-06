@@ -54,7 +54,7 @@ def plot_cdf(plot_file_name, cdf_vals, label_axis, labels, log_scale=False,
              bin_width=1000):
     colors = ['b', 'r', 'g', 'c', 'm', 'y', 'k']
     if FLAGS.paper_mode:
-        plt.figure(figsize=(2.33, 1.55))
+        plt.figure(figsize=(3.33, 2.22))
         set_paper_rcs()
     else:
         plt.figure()
@@ -105,7 +105,7 @@ def plot_cdf(plot_file_name, cdf_vals, label_axis, labels, log_scale=False,
         index += 1
 
     if log_scale:
-        plt.gca().set_xscale("log")
+        plt.xscale("log")
         plt.xlim(0, max_cdf_val)
         # Start at 1GB.
         x_val = BYTES_TO_GB

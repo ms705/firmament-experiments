@@ -15,10 +15,10 @@ def set_leg_fontsize(size):
   rc('legend', fontsize=size)
 
 def set_paper_rcs():
-  rc('font',**{'family':'sans-serif','sans-serif':['Helvetica'],
-               'serif':['Helvetica'],'size':8})
+  rc('font', family='serif', size=9)
+  rc('text.latex', preamble=['\usepackage{times,mathptmx}'])
   rc('text', usetex=True)
-  rc('legend', fontsize=7)
+  rc('legend', fontsize=8)
   rc('figure', figsize=(3.33,2.22))
 #  rc('figure.subplot', left=0.10, top=0.90, bottom=0.12, right=0.95)
   rc('axes', linewidth=0.5)
