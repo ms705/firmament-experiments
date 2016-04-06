@@ -15,6 +15,8 @@ gflags.DEFINE_string('trace_paths', '',
                      ', separated list of path to trace files.')
 gflags.DEFINE_string('trace_labels', '',
                      ', separated list of labels to use for trace files.')
+gflags.DEFINE_integer('runtimes_after_timestamp', 0,
+                      'Only plot % unscheduled for runs that happened after.')
 
 
 def get_percentage_unsched_tasks(trace_path):
@@ -23,7 +25,11 @@ def get_percentage_unsched_tasks(trace_path):
     perc_unsched_tasks = []
     timestamps = []
     for row in csv_reader:
-        timestamps.append(long(row[0]))
+        timestamp = long(row[0])
+        if timestamp <= FLAGS.runtimes_after_timestamp:
+            continue
+
+        timestamps.append(timestamp)
         perc_unsched_tasks.append(float(row[4]) / float(row[7]) * 100.0)
     csv_file.close()
     return (timestamps, perc_unsched_tasks)
@@ -47,15 +53,16 @@ def plot_timeline(plot_file_name, all_x_vals, all_y_vals, labels, unit='sec'):
                  color=colors[index])
     plt.ylabel('\% unscheduled tasks')
     plt.ylim(0, max_y_val + 1)
+    plt.xlim(0, max_x_val)
 
     if unit is 'ms':
         plt.xlim(0, max_x_val / 1000)
-        plt.xticks(range(0, max_x_val, 10000000000),
-                   [str(x / 1000) for x in range(0, max_x_val, 10000000000)])
+        plt.xticks(range(0, max_x_val, 1000000000),
+                   [str(x / 1000) for x in range(0, max_x_val, 1000000000)])
     elif unit is 'sec':
         plt.xlim(0, max_x_val / 1000 / 1000)
-        plt.xticks(range(0, max_x_val, 10000000000),
-                   [str(x / 1000 / 1000) for x in range(0, max_x_val, 10000000000)])
+        plt.xticks(range(0, max_x_val, 1000000000),
+                   [str(x / 1000 / 1000) for x in range(0, max_x_val, 1000000000)])
     else:
         print 'Error: unknown time unit'
         exit(1)
