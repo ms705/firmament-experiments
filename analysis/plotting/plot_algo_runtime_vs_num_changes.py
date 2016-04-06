@@ -73,8 +73,8 @@ def main(argv):
     (runtimes, num_graph_changes) = get_algorithm_runtime_and_num_changes(trace_paths[0])
     print "Number scheduler runs: %d" % (len(runtimes))
     plot_scatter('algorithm_runtime_vs_num_changes',
-                 [x / 1000 for x in runtimes], num_graph_changes,
-                 'Runtime [ms]', 'Number graph changes')
+                 [x / 1000 / 1000 for x in runtimes], num_graph_changes,
+                 'Runtime [sec]', 'Number graph changes')
 
 
 if __name__ == '__main__':
