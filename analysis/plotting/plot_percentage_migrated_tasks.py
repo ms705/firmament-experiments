@@ -17,17 +17,17 @@ gflags.DEFINE_string('trace_labels', '',
                      ', separated list of labels to use for trace files.')
 
 
-def get_percentage_evicted_tasks(trace_path):
+def get_percentage_migrated_tasks(trace_path):
     csv_file = open(trace_path + "/scheduler_events/scheduler_events.csv")
     csv_reader = csv.reader(csv_file)
-    perc_evicted_tasks = []
+    perc_migrated_tasks = []
     for row in csv_reader:
-        perc_evicted_tasks.append(float(row[5]) / float(row[7]) * 100.0)
+        perc_migrated_tasks.append(float(row[6]) / float(row[7]) * 100.0)
     csv_file.close()
-    return perc_evicted_tasks
+    return perc_migrated_tasks
 
 
-def plot_evicted_tasks_cdf(plot_file_name, cdf_vals, label_axis, labels,
+def plot_migrated_tasks_cdf(plot_file_name, cdf_vals, label_axis, labels,
                            bin_width=0.1):
     colors = ['b', 'r', 'g', 'c', 'm', 'y', 'k']
     if FLAGS.paper_mode:
@@ -85,11 +85,11 @@ def plot_evicted_tasks_cdf(plot_file_name, cdf_vals, label_axis, labels,
 
         index += 1
     plt.xlim(0, max_cdf_val)
-    x_val = 0.01
+    x_val = 10
     ticks = []
     while x_val < max_cdf_val:
         ticks.append(x_val)
-        x_val += 0.01
+        x_val += 10
     plt.xticks(ticks, [str(x) for x in ticks])
     plt.ylim(0, 1.0)
     plt.yticks(np.arange(0.0, 1.01, 0.2),
@@ -111,11 +111,12 @@ def main(argv):
 
     trace_paths = FLAGS.trace_paths.split(',')
     labels = FLAGS.trace_labels.split(',')
-    perc_evicted_tasks = []
+    perc_migrated_tasks = []
     for trace_path in trace_paths:
-        perc_evicted_tasks.append(get_percentage_evicted_tasks(trace_path))
-    plot_evicted_tasks_cdf('percentage_evicted_tasks_cdf', perc_evicted_tasks,
-                           'Task evicted [\%]', labels, bin_width=0.0001)
+        perc_migrated_tasks.append(get_percentage_migrated_tasks(trace_path))
+    plot_migrated_tasks_cdf('percentage_migrated_tasks_cdf',
+                            perc_migrated_tasks,
+                            'Task migrated [\%]', labels, bin_width=0.0001)
 
 
 if __name__ == '__main__':
