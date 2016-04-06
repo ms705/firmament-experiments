@@ -53,7 +53,6 @@ def get_scheduling_delays(trace_path):
                            "(%s, %s)" % (row[2], row[3]))
                     exit(1)
         csv_file.close()
-    delays.sort()
     return delays
 
 
@@ -61,7 +60,7 @@ def plot_cdf(plot_file_name, cdf_vals, label_axis, labels, log_scale=False,
              bin_width=1000, unit='ms'):
     colors = ['b', 'r', 'g', 'c', 'm', 'y', 'k']
     if FLAGS.paper_mode:
-        plt.figure(figsize=(2.33, 1.55))
+        plt.figure(figsize=(3.33, 2.22))
         set_paper_rcs()
     else:
         plt.figure()
@@ -115,17 +114,17 @@ def plot_cdf(plot_file_name, cdf_vals, label_axis, labels, log_scale=False,
 
         index += 1
 
+    time_val = 1000
+    if unit is 'ms':
+        time_val = 1000 # 1 ms
+    elif unit is 'sec':
+        time_val = 1000 * 1000 # 1 sec
+    else:
+        print 'Error: unknown time unit'
+        exit(1)
     if log_scale:
-        plt.gca().set_xscale("log")
+        plt.xscale("log")
         plt.xlim(0, max_cdf_val)
-        time_val = 1000
-        if unit is 'ms':
-            time_val = 1000 # 1 ms
-        elif unit is 'sec':
-            time_val = 1000 * 1000 # 1 sec
-        else:
-            print 'Error: unknown time unit'
-            exit(1)
         to_time_unit = time_val
         x_ticks = []
         while time_val <= max_cdf_val:
@@ -135,7 +134,7 @@ def plot_cdf(plot_file_name, cdf_vals, label_axis, labels, log_scale=False,
     else:
         plt.xlim(0, max_cdf_val)
         plt.xticks(range(0, max_cdf_val, 10000000),
-                   [str(x / 10000000) for x in range(0, max_cdf_val, 10000000)])
+                   [str(x / time_val) for x in range(0, max_cdf_val, 10000000)])
     plt.ylim(0, 1.0)
     plt.yticks(np.arange(0.0, 1.01, 0.2),
                [str(x) for x in np.arange(0.0, 1.01, 0.2)])
