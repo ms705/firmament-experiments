@@ -1,0 +1,6 @@
+#!/bin/bash
+rm -r /mnt/data/google_14400_sec_quincy_batch_2_sec_preemption_bounded_1024MB_flowlessly_incremental_cost_scaling_then_relax/
+mkdir /mnt/data/google_14400_sec_quincy_batch_2_sec_preemption_bounded_1024MB_flowlessly_incremental_cost_scaling_then_relax/
+cd firmament
+./build/src/simulator --flagfile=/home/srguser/firmament-experiments/configs/google_14400_sec_quincy_batch_2_sec_preemption_bounded_1024MB_flowlessly_incremental_cost_scaling_then_relax.cfg
+scp -r /mnt/data/google_14400_sec_quincy_batch_2_sec_preemption_bounded_1024MB_flowlessly_incremental_cost_scaling_then_relax/ icg27@ganymede.cl.cam.ac.uk:/mnt/data/icg27/firmament_simulations/
