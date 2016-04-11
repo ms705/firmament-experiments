@@ -1,5 +1,6 @@
 #!/bin/bash
 cd ~/firmament/build/third_party/flowlessly/src/flowlessly/
+git checkout master
 # Task removal improvement
 git checkout a0c07c247574c3bd74ba85747aa2c915580a92e3
 cmake .

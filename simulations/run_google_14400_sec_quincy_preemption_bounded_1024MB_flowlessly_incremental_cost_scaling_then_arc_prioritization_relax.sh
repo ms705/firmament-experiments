@@ -1,5 +1,6 @@
 #!/bin/bash
 cd ~/firmament/build/third_party/flowlessly/src/flowlessly/
+git checkout master
 # Arc prioritization.
 git checkout 482b7b5182e9ab7cec70d2a60fa4876eac8b8b00
 cmake .

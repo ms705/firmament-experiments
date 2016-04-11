@@ -1,5 +1,6 @@
 #!/bin/bash
 cd ~/firmament/build/third_party/flowlessly/src/flowlessly/
+git checkout master
 # Pre supply arc prioritization and task removal improvement
 git checkout cf5f14400613de8bf143234efaad9ac2db3e2714
 cmake .
