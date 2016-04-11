@@ -15,10 +15,12 @@ gflags.DEFINE_string('trace_paths', '',
                      ', separated list of path to trace files.')
 gflags.DEFINE_string('trace_labels', '',
                      ', separated list of labels to use for trace files.')
-gflags.DEFINE_bool('ignore_first_run', True,
-                   'True if the first run should be ignored')
+gflags.DEFINE_integer('ignore_runs_before', 600000000,
+                      'timestamp before which scheduler runs are ignored')
+gflags.DEFINE_string('change_columns', '10,11,12,13,14',
+                     'Column indices used to count changes.')
 
-def get_algorithm_runtime_and_num_changes(trace_path):
+def get_algorithm_runtime_and_num_changes(trace_path, col_indices):
     # 10 nodes added
     # 11 nodes removed
     # 12 arcs added
@@ -29,27 +31,46 @@ def get_algorithm_runtime_and_num_changes(trace_path):
     runtimes = []
     num_graph_changes = []
     for row in csv_reader:
+        ts = long(row[0])
+        if ts < FLAGS.ignore_runs_before:
+            continue
+        # XXX(ionel): HACK! There currently are only two outlier data points.
+        # We do not include them in the graph because we do not have any
+        # in-between points.
+        if long(row[14]) + long(row[12]) > 100000:
+            continue
         runtimes.append(long(row[2]))
-        num_graph_changes.append(long(row[10]) + long(row[11]) + long(row[12]) +
-                                 long(row[13]) + long(row[14]))
+        num_changes = 0
+        for col_index in col_indices:
+            num_changes = num_changes + long(row[col_index])
+        num_graph_changes.append(num_changes)
     csv_file.close()
-    if FLAGS.ignore_first_run is True:
-        return (runtimes[1:], num_graph_changes[1:])
-    else:
-        return (runtimes, num_graph_changes)
+    return (runtimes, num_graph_changes)
 
 
-def plot_scatter(plot_file_name, x_vals, y_vals, x_label, y_label):
+def plot_scatter(plot_file_name, runtimes_vs_changes, labels, x_label, y_label):
+    colors = ['r', 'b', 'g']
     if FLAGS.paper_mode:
         plt.figure(figsize=(3.33, 2.22))
         set_paper_rcs()
     else:
         plt.figure()
         set_rcs()
+    max_x = 0
+    max_y = 0
+    index = 0
+    splts = []
+    for (runtimes, num_changes) in runtimes_vs_changes:
+        max_x = max(max_x, np.max(num_changes))
+        max_y = max(max_y, np.max(runtimes))
+        splt = plt.scatter(num_changes, [x / 1000 / 1000 for x in runtimes],
+                           c=colors[index])
+        splts.append(splt)
+        index = index + 1
 
-    plt.scatter(x_vals, y_vals)
-    plt.xlim(0, np.max(x_vals))
-    plt.ylim(0, np.max(y_vals))
+    plt.xlim(0, max_x)
+    plt.ylim(0, max_y / 1000 / 1000)
+    plt.legend(splts, labels, scatterpoints=1, loc='lower right')
     plt.xlabel(x_label)
     plt.ylabel(y_label)
 
@@ -65,16 +86,14 @@ def main(argv):
 
     trace_paths = FLAGS.trace_paths.split(',')
     labels = FLAGS.trace_labels.split(',')
-
-    if len(trace_paths) != 1:
-        print 'Error: cannot plot algorithm vs num_changes for > 1 trace'
-        exit(1)
-
-    (runtimes, num_graph_changes) = get_algorithm_runtime_and_num_changes(trace_paths[0])
-    print "Number scheduler runs: %d" % (len(runtimes))
-    plot_scatter('algorithm_runtime_vs_num_changes',
-                 [x / 1000 / 1000 for x in runtimes], num_graph_changes,
-                 'Runtime [sec]', 'Number graph changes')
+    col_indices = FLAGS.change_columns.split(',')
+    runtimes_vs_changes = []
+    for trace_path in trace_paths:
+        runtimes_vs_changes.append(
+            get_algorithm_runtime_and_num_changes(trace_path,
+                                                  [long(x) for x in col_indices]))
+    plot_scatter('algorithm_runtime_vs_num_changes', runtimes_vs_changes,
+                 labels, 'Number graph changes', 'Runtime [sec]')
 
 
 if __name__ == '__main__':
