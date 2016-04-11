@@ -3,7 +3,7 @@ cd ~/firmament/build/third_party/flowlessly/src/flowlessly/
 # Solver flip without price refine.
 git checkout fd75adabaf52ec44b071da30ef5bc5d657131999
 cmake .
-make -j3
+make clean; make -j3
 cd ~/firmament
 rm -r /mnt/data/google_14400_sec_quincy_preemption_bounded_1024MB_/
 mkdir /mnt/data/google_14400_sec_quincy_preemption_bounded_1024MB_solver_flip_without_refine/

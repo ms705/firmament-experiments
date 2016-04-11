@@ -3,7 +3,7 @@ cd ~/firmament/build/third_party/flowlessly/src/flowlessly/
 # Arc prioritization.
 git checkout 482b7b5182e9ab7cec70d2a60fa4876eac8b8b00
 cmake .
-make -j3
+make clean; make -j3
 cd ~/firmament
 rm -r /mnt/data/google_14400_sec_quincy_preemption_bounded_1024MB_flowlessly_incremental_cost_scaling_then_arc_prioritization_relax/
 mkdir /mnt/data/google_14400_sec_quincy_preemption_bounded_1024MB_flowlessly_incremental_cost_scaling_then_arc_prioritization_relax/
