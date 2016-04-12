@@ -11,6 +11,9 @@ from utils import *
 
 FLAGS = gflags.FLAGS
 gflags.DEFINE_bool('paper_mode', False, 'Adjusts the size of the plots.')
+gflags.DEFINE_bool('log_scale', True, 'Plot x axis on log scale.')
+gflags.DEFINE_string('algorithm', 'relax', 'Plot for algorithm. Options: '
+                     'relax | cost_scaling.')
 gflags.DEFINE_string('trace_paths', '',
                      ', separated list of path to trace files.')
 gflags.DEFINE_string('trace_labels', '',
@@ -99,8 +102,8 @@ def plot_cdf(plot_file_name, cdf_vals, label_axis, labels, log_scale=False,
         plt.xticks(x_ticks, [str(x / to_time_unit) for x in x_ticks])
     else:
         plt.xlim(100000, max_cdf_val)
-        plt.xticks(range(0, max_cdf_val, 1000000),
-                   [str(x / 1000) for x in range(0, max_cdf_val, 1000000)])
+        plt.xticks(range(0, max_cdf_val, 10000000),
+                   [str(x / 1000) for x in range(0, max_cdf_val, 10000000)])
     plt.ylim(0, 1.0)
     plt.yticks(np.arange(0.0, 1.01, 0.2),
                [str(x) for x in np.arange(0.0, 1.01, 0.2)])
@@ -132,12 +135,18 @@ def get_scheduler_runtimes(trace_path, column_index):
     csv_file = open(trace_path + "/scheduler_events/scheduler_events.csv")
     csv_reader = csv.reader(csv_file)
     num_run = 0
+    mod_res = 0
+    if FLAGS.algorithm == 'relax':
+        mod_res = 1
+    elif FLAGS.algorithm == 'cost_scaling':
+        mod_res = 0
+    else:
+        print 'Error: Unexpected algorithm'
     for row in csv_reader:
         num_run = num_run + 1
         timestamp = long(row[0])
         if num_run > FLAGS.number_runs_in_cost_scaling:
-            if (num_run - FLAGS.number_runs_in_cost_scaling) % 2 == 1:
-                # Relax run
+            if (num_run - FLAGS.number_runs_in_cost_scaling) % 2 == mod_res:
                 runtimes.append(long(row[column_index]))
 
     csv_file.close()
@@ -170,9 +179,11 @@ def main(argv):
         trace_id += 1
 
     plot_cdf('scheduling_runtimes_cdf', sched_runtimes, "Duration [ms]",
-             sched_trace_labels, log_scale=True, bin_width=1000, unit='ms')
+             sched_trace_labels, log_scale=FLAGS.log_scale, bin_width=1000,
+             unit='ms')
     plot_cdf('algorithm_runtimes_cdf', algo_runtimes, "Duration [ms]",
-             algo_trace_labels, log_scale=True, bin_width=1000, unit='ms')
+             algo_trace_labels, log_scale=FLAGS.log_scale, bin_width=1000,
+             unit='ms')
 
 
 if __name__ == '__main__':
