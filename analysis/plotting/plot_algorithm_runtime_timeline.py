@@ -15,6 +15,8 @@ gflags.DEFINE_string('trace_paths', '',
                      ', separated list of path to trace files.')
 gflags.DEFINE_string('trace_labels', '',
                      ', separated list of labels to use for trace files.')
+gflags.DEFINE_integer('runtimes_after_timestamp', 0,
+                      'Only plot runtimes of runs that happened after.')
 
 
 def get_scheduler_runtime(trace_path, column_index):
@@ -27,8 +29,10 @@ def get_scheduler_runtime(trace_path, column_index):
     csv_file = open(trace_path + "/scheduler_events/scheduler_events.csv")
     csv_reader = csv.reader(csv_file)
     for row in csv_reader:
-        timestamps.append(long(row[0]))
-        runtimes.append(long(row[column_index]))
+        timestamp = long(row[0])
+        if timestamp > FLAGS.runtimes_after_timestamp:
+            timestamps.append(long(row[0]))
+            runtimes.append(long(row[column_index]))
     csv_file.close()
     return (timestamps, runtimes)
 
@@ -49,7 +53,7 @@ def plot_timeline(plot_file_name, all_x_vals, all_y_vals, labels, unit='sec'):
         max_y_val = max(max_y_val, np.max(all_y_vals[index]))
         plt.plot(all_x_vals[index],
                  [y / 1000.0 / 1000.0 for y in all_y_vals[index]],
-                 label=labels[index], linestyle='none', marker='x',
+                 label=labels[index],
                  color=colors[index])
     plt.ylabel('Algorithm runtime [sec]')
     plt.ylim(0, max_y_val / 1000 / 1000 + 1)
@@ -66,7 +70,7 @@ def plot_timeline(plot_file_name, all_x_vals, all_y_vals, labels, unit='sec'):
         print 'Error: unknown time unit'
         exit(1)
     plt.xlabel('Time [' + unit + ']')
-    plt.legend(loc=1, frameon=False, handlelength=2.5, handletextpad=0.2)
+    plt.legend(loc=2, frameon=False, handlelength=1.5, handletextpad=0.1)
     plt.savefig("%s.pdf" % plot_file_name,
                 format="pdf", bbox_inches="tight")
 

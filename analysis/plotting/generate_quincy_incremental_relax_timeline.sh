@@ -1,0 +1,5 @@
+#!/bin/bash
+# $1 duration in seconds
+
+python plot_algorithm_runtime_timeline.py --trace_paths=/mnt/data/icg27/firmament_simulations/quincy/google_$1_sec_quincy_preemption_bounded_1024MB_flowlessly_incremental_cost_scaling_then_non-recovering_relax,/mnt/data/icg27/firmament_simulations/quincy/google_$1_sec_quincy_preemption_bounded_1024MB_flowlessly_incremental_cost_scaling_then_arc_prioritization_relax,/mnt/data/icg27/firmament_simulations/quincy/google_$1_sec_quincy_preemption_bounded_1024MB_flowlessly_incremental_cost_scaling_then_improved_rem_node_relax,/mnt/data/icg27/firmament_simulations/quincy/google_$1_sec_quincy_preemption_bounded_1024MB_flowlessly_incremental_cost_scaling_then_relax --trace_labels="incremental relax,incremental relax AP,incremental relax TR,incremental relax APTR" --runtimes_after_timestamp=10000000 --paper_mode
+mv solver_algo_runtime_timeline.pdf quincy_incremental_relax_optimizations_timeline.pdf
