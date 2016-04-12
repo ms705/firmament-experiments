@@ -2,7 +2,7 @@
 cd ~/firmament/build/third_party/flowlessly/src/flowlessly/
 git checkout master
 # Solver flip without price refine.
-git checkout fd75adabaf52ec44b071da30ef5bc5d657131999
+git checkout c364d168adcafb8927961cc7cc791527fc6440dd
 cmake .
 make clean; make -j3
 cd ~/firmament
