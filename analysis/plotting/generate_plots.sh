@@ -32,6 +32,9 @@ ssh ganymede.cl.cam.ac.uk '/mnt/data/icg27/firmament-experiments/analysis/plotti
 ssh ganymede.cl.cam.ac.uk '/mnt/data/icg27/firmament-experiments/analysis/plotting/generate_quincy_pinned_scheduling_delay.sh 14400 1'
 ssh ganymede.cl.cam.ac.uk '/mnt/data/icg27/firmament-experiments/analysis/plotting/generate_quincy_preemption_scheduling_delay.sh 14400 1'
 
+# Incremental Relax optimizations
+ssh ganymede.cl.cam.ac.uk '/mnt/data/icg27/firmament-experiments/analysis/plotting/generate_quincy_incremental_relax_optimizations_runtime.sh 14400'
+
 # Percentage data locality
 # TODO(ionel): Add!
 

@@ -39,6 +39,8 @@ def get_algorithm_runtime_and_num_changes(trace_path, col_indices):
         # in-between points.
         if long(row[14]) + long(row[12]) > 100000:
             continue
+        if long(row[2]) > 80000000:
+            continue
         runtimes.append(long(row[2]))
         num_changes = 0
         for col_index in col_indices:
@@ -50,6 +52,7 @@ def get_algorithm_runtime_and_num_changes(trace_path, col_indices):
 
 def plot_scatter(plot_file_name, runtimes_vs_changes, labels, x_label, y_label):
     colors = ['r', 'b', 'g']
+    markers = ['+', 'o', 'x']
     if FLAGS.paper_mode:
         plt.figure(figsize=(3.33, 2.22))
         set_paper_rcs()
@@ -60,17 +63,23 @@ def plot_scatter(plot_file_name, runtimes_vs_changes, labels, x_label, y_label):
     max_y = 0
     index = 0
     splts = []
+    plt.xscale('log')
     for (runtimes, num_changes) in runtimes_vs_changes:
         max_x = max(max_x, np.max(num_changes))
         max_y = max(max_y, np.max(runtimes))
-        splt = plt.scatter(num_changes, [x / 1000 / 1000 for x in runtimes],
-                           c=colors[index])
+        if markers[index] == 'o':
+            splt = plt.scatter(num_changes, [x / 1000 / 1000 for x in runtimes],
+                               c=colors[index], marker=markers[index],
+                               linewidth=0)
+        else:
+            splt = plt.scatter(num_changes, [x / 1000 / 1000 for x in runtimes],
+                               c=colors[index], marker=markers[index])
         splts.append(splt)
         index = index + 1
 
     plt.xlim(0, max_x)
     plt.ylim(0, max_y / 1000 / 1000)
-    plt.legend(splts, labels, scatterpoints=1, loc='lower right')
+    plt.legend(splts, labels, scatterpoints=1, loc='upper left')
     plt.xlabel(x_label)
     plt.ylabel(y_label)
 

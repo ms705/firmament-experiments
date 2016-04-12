@@ -80,7 +80,7 @@ def plot_cdf(plot_file_name, cdf_vals, label_axis, labels, log_scale=False,
 
     if log_scale:
         plt.xscale("log")
-        plt.xlim(0, max_cdf_val)
+        plt.xlim(100000, max_cdf_val)
         time_val = 1000
         if unit is 'ms':
             time_val = 1000 # 1 ms
@@ -91,12 +91,14 @@ def plot_cdf(plot_file_name, cdf_vals, label_axis, labels, log_scale=False,
             exit(1)
         to_time_unit = time_val
         x_ticks = []
+        # Start at 100 ms
+        time_val = 100 * time_val
         while time_val <= max_cdf_val:
             x_ticks.append(time_val)
             time_val *= 10
         plt.xticks(x_ticks, [str(x / to_time_unit) for x in x_ticks])
     else:
-        plt.xlim(0, max_cdf_val)
+        plt.xlim(100000, max_cdf_val)
         plt.xticks(range(0, max_cdf_val, 1000000),
                    [str(x / 1000) for x in range(0, max_cdf_val, 1000000)])
     plt.ylim(0, 1.0)
@@ -111,12 +113,12 @@ def plot_cdf(plot_file_name, cdf_vals, label_axis, labels, log_scale=False,
                 format="pdf", bbox_inches="tight")
 
     plt.ylim(0, 0.99)
-    plt.xlim(0, max_perc99);
+    plt.xlim(100000, max_perc99);
     plt.savefig("%s-99th.pdf" % plot_file_name,
                 format="pdf", bbox_inches="tight")
 
     plt.ylim(0, 0.9)
-    plt.xlim(0, max_perc90);
+    plt.xlim(100000, max_perc90);
     plt.savefig("%s-90th.pdf" % plot_file_name,
                 format="pdf", bbox_inches="tight")
 
