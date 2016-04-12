@@ -35,6 +35,9 @@ ssh ganymede.cl.cam.ac.uk '/mnt/data/icg27/firmament-experiments/analysis/plotti
 # Incremental Relax optimizations
 ssh ganymede.cl.cam.ac.uk '/mnt/data/icg27/firmament-experiments/analysis/plotting/generate_quincy_incremental_relax_optimizations_runtime.sh 14400'
 
+# Solver flip time
+ssh ganymede.cl.cam.ac.uk '/mnt/data/icg27/firmament-experiments/analysis/plotting/generate_quincy_solver_flip_runtime.sh 14400'
+
 # Percentage data locality
 # TODO(ionel): Add!
 
