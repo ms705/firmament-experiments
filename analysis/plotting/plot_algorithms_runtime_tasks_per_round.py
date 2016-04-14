@@ -14,9 +14,6 @@ gflags.DEFINE_bool('paper_mode', False, 'Adjusts the size of the plots.')
 gflags.DEFINE_string('trace_paths', '',
                      ', separated list of path to trace files.')
 gflags.DEFINE_string('setups', '', ', separated list of cluster setups.')
-gflags.DEFINE_integer('runtimes_after_timestamp', 0,
-                      'Only plot runtimes of runs that happened after.')
-gflags.DEFINE_integer('max_runtime', 200000000, 'Do not show longer runs.')
 
 def get_scheduler_runtimes(trace_path, column_index):
     # 0 timestamp
@@ -27,15 +24,12 @@ def get_scheduler_runtimes(trace_path, column_index):
     csv_file = open(trace_path + "/scheduler_events/scheduler_events.csv")
     csv_reader = csv.reader(csv_file)
     for row in csv_reader:
-        timestamp = long(row[0])
-        if timestamp > FLAGS.runtimes_after_timestamp:
-            runtimes.append(long(row[column_index]))
+        runtimes.append(long(row[column_index]))
     csv_file.close()
     return runtimes
 
 
 def plot_timeline(plot_file_name, runtimes, setups):
-    markers = ['x', 'o', '+', '^', 'v']
     colors = ['b', 'r', 'g', 'c', 'm', 'y', 'k']
     if FLAGS.paper_mode:
         plt.figure(figsize=(3.33, 2.22))
@@ -45,26 +39,20 @@ def plot_timeline(plot_file_name, runtimes, setups):
         set_rcs()
     index = 0
     max_y_val = 0
-    print setups
     for algo, algo_runtimes in runtimes.items():
         max_y_val = max(max_y_val, np.max(algo_runtimes))
-        plt.plot(range(0, len(algo_runtimes)),
+        plt.plot(range(0, len(setups)),
                  [y / 1000.0 / 1000.0 for y in algo_runtimes],
-                 label=algo, color=colors[index], marker=markers[index],
-                 mfc='none', mew=1.0, mec=colors[index])
+                 label=algo, color=colors[index])
         index = index + 1
-    plt.yscale("log")
-    plt.ylabel('Algorithm runtime')
-    plt.yticks([10**x for x in range(-3, 3)],
-               ["1ms", "10ms", "100ms", "1s", "10s", "100s"])
-    plt.ylim(0, FLAGS.max_runtime / 1000.0 / 1000.0)
+    plt.ylabel('Algorithm runtime [sec]')
+    plt.ylim(0, max_y_val / 1000.0 / 1000.0)
     plt.xlim(0, len(setups) - 1)
     plt.xticks(range(0, len(setups)),
-               ["%u" % (float(x) * 12500) for x in setups])
-    plt.xlabel('Cluster size [machines]')
+               ["%u" % (long(x)) for x in setups])
+    plt.xlabel('Tasks per scheduling round')
 
-    plt.legend(loc='lower right', frameon=False, handlelength=1.5,
-               handletextpad=0.1, numpoints=1)
+    plt.legend(loc=2, frameon=False, handlelength=1.5, handletextpad=0.1)
     plt.savefig("%s.pdf" % plot_file_name,
                 format="pdf", bbox_inches="tight")
 
@@ -95,10 +83,10 @@ def main(argv):
                 else:
                     runtimes['relax'] = [avg_runtime]
             elif 'successive_shortest' in trace_path:
-                if 'succ. shortest' in runtimes:
-                    runtimes['succ. shortest'].append(avg_runtime)
+                if 'successive shortest' in runtimes:
+                    runtimes['successive shortest'].append(avg_runtime)
                 else:
-                    runtimes['succ. shortest'] = [avg_runtime]
+                    runtimes['successive shortest'] = [avg_runtime]
             elif 'cycle_cancelling' in trace_path:
                 if 'cycle cancelling' in runtimes:
                     runtimes['cycle cancelling'].append(avg_runtime)
@@ -107,7 +95,7 @@ def main(argv):
             else:
                 print 'Error: Unexpected algorithm'
     print runtimes
-    plot_timeline('algorithms_scalability', runtimes,
+    plot_timeline('algorithms_runtime_tasks_per_round', runtimes,
                   [float(x) for x in setups])
 
 
