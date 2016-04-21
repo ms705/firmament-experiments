@@ -1,0 +1,8 @@
+#!/bin/bash
+# $1 duration in seconds
+
+cd /mnt/data/icg27/firmament-experiments/analysis/plotting/
+python plot_quincy_cost_scaling_theresholds_runtime_cdf.py --trace_paths=/mnt/data/icg27/firmament_simulations/quincy/google_$1_sec_quincy_preemption_bounded_1024MB_flowlessly_cost_scaling_1percent_data_threshold/,/mnt/data/icg27/firmament_simulations/quincy/google_$1_sec_quincy_preemption_bounded_1024MB_flowlessly_cost_scaling_4percent_data_threshold/,/mnt/data/icg27/firmament_simulations/quincy/google_$1_sec_quincy_preemption_bounded_1024MB_flowlessly_cost_scaling_7percent_data_threshold/,/mnt/data/icg27/firmament_simulations/quincy/google_$1_sec_quincy_preemption_bounded_1024MB_flowlessly_cost_scaling/,/mnt/data/icg27/firmament_simulations/quincy/google_$1_sec_quincy_preemption_bounded_1024MB_flowlessly_cost_scaling_19percent_data_threshold/ --trace_labels="1\%,4\%,7\%,10\%,19\%" --runtimes_after_timestamp=10000000 --log_scale=False
+mv algorithm_runtimes_cdf-90th.pdf quincy_$1_sec_bounded_1024MB_preemption_thresholds_cost_scaling_cdf-90th.pdf
+mv algorithm_runtimes_cdf-99th.pdf quincy_$1_sec_bounded_1024MB_preemption_thresholds_cost_scaling_cdf-99th.pdf
+mv algorithm_runtimes_cdf.pdf quincy_$1_sec_bounded_1024MB_preemption_thresholds_cost_scaling_cdf.pdf
