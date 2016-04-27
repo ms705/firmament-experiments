@@ -30,7 +30,8 @@ def get_scheduler_runtimes(trace_path, column_index):
 
 
 def plot_timeline(plot_file_name, runtimes, setups):
-    colors = ['b', 'r', 'g', 'c', 'm', 'y', 'k']
+    colors = ['b', 'g', 'r', 'c', 'm', 'y', 'k']
+    markers = ['o', '+', '^', 'v']
     if FLAGS.paper_mode:
         plt.figure(figsize=(3.33, 2.22))
         set_paper_rcs()
@@ -43,7 +44,8 @@ def plot_timeline(plot_file_name, runtimes, setups):
         max_y_val = max(max_y_val, np.max(algo_runtimes))
         plt.plot(range(0, len(setups)),
                  [y / 1000.0 / 1000.0 for y in algo_runtimes],
-                 label=algo, color=colors[index])
+                 label=algo, color=colors[index], marker=markers[index],
+                 mfc='none', mec=colors[index], mew=1.0, lw=1.0)
         index = index + 1
     plt.ylabel('Algorithm runtime [sec]')
     plt.ylim(0, max_y_val / 1000.0 / 1000.0)
@@ -52,7 +54,8 @@ def plot_timeline(plot_file_name, runtimes, setups):
                ["%u" % (long(x)) for x in setups])
     plt.xlabel('Tasks per scheduling round')
 
-    plt.legend(loc=2, frameon=False, handlelength=1.5, handletextpad=0.1)
+    plt.legend(loc=2, frameon=False, handlelength=1.5, handletextpad=0.1,
+               numpoints=1)
     plt.savefig("%s.pdf" % plot_file_name,
                 format="pdf", bbox_inches="tight")
 
