@@ -35,8 +35,10 @@ def get_scheduler_runtimes(trace_path, column_index):
 
 
 def plot_timeline(plot_file_name, runtimes, setups):
-    markers = ['x', 'o', '+', '^', 'v']
-    colors = ['b', 'r', 'g', 'c', 'm', 'y', 'k']
+    markers = {'cycle cancelling':'x', 'cost scaling':'o', 'relax':'+',
+               'succ. shortest':'^'}
+    colors = {'cycle cancelling':'r', 'cost scaling':'b', 'relax':'g',
+              'succ. shortest':'c'}
     if FLAGS.paper_mode:
         plt.figure(figsize=(3.33, 2.22))
         set_paper_rcs()
@@ -44,23 +46,22 @@ def plot_timeline(plot_file_name, runtimes, setups):
         plt.figure()
         set_rcs()
     index = 0
-    max_y_val = 0
     print setups
     for algo, algo_runtimes in runtimes.items():
-        max_y_val = max(max_y_val, np.max(algo_runtimes))
         plt.plot(range(0, len(algo_runtimes)),
                  [y / 1000.0 / 1000.0 for y in algo_runtimes],
-                 label=algo, color=colors[index], marker=markers[index],
-                 mfc='none', mew=1.0, mec=colors[index])
+                 label=algo, color=colors[algo], marker=markers[algo],
+                 mfc='none', mew=1.0, mec=colors[algo])
         index = index + 1
     plt.yscale("log")
     plt.ylabel('Algorithm runtime')
+    plt.ylim(0, FLAGS.max_runtime / 1000.0 / 1000.0)
     plt.yticks([10**x for x in range(-3, 3)],
                ["1ms", "10ms", "100ms", "1s", "10s", "100s"])
-    plt.ylim(0, FLAGS.max_runtime / 1000.0 / 1000.0)
     plt.xlim(0, len(setups) - 1)
     plt.xticks(range(0, len(setups)),
-               ["%u" % (float(x) * 12500) for x in setups])
+               ["%u" % (float(x) * 12500) for x in setups], rotation=30,
+               ha='right')
     plt.xlabel('Cluster size [machines]')
 
     plt.legend(loc='lower right', frameon=False, handlelength=1.5,

@@ -78,18 +78,19 @@ def plot_cdf(plot_file_name, cdf_vals, label_axis, labels, log_scale=False,
 
         index += 1
 
+    time_val = 1000
+    if unit is 'ms':
+        time_val = 1000 # 1 ms
+    elif unit is 'sec':
+        time_val = 1000 * 1000 # 1 sec
+    else:
+        print 'Error: unknown time unit'
+        exit(1)
+    to_time_unit = time_val
+
     if log_scale:
         plt.xscale("log")
         plt.xlim(0, max_cdf_val)
-        time_val = 1000
-        if unit is 'ms':
-            time_val = 1000 # 1 ms
-        elif unit is 'sec':
-            time_val = 1000 * 1000 # 1 sec
-        else:
-            print 'Error: unknown time unit'
-            exit(1)
-        to_time_unit = time_val
         x_ticks = []
         while time_val <= max_cdf_val:
             x_ticks.append(time_val)
@@ -97,15 +98,15 @@ def plot_cdf(plot_file_name, cdf_vals, label_axis, labels, log_scale=False,
         plt.xticks(x_ticks, [str(x / to_time_unit) for x in x_ticks])
     else:
         plt.xlim(0, max_cdf_val)
-        plt.xticks(range(0, max_cdf_val, 1000000),
-                   [str(x / 1000) for x in range(0, max_cdf_val, 1000000)])
+        plt.xticks(range(0, max_cdf_val, 5000000),
+                   [str(x / to_time_unit) for x in range(0, max_cdf_val, 5000000)])
     plt.ylim(0, 1.0)
     plt.yticks(np.arange(0.0, 1.01, 0.2),
                [str(x) for x in np.arange(0.0, 1.01, 0.2)])
 
     plt.xlabel(label_axis)
 
-    plt.legend(loc=4, frameon=False, handlelength=2.5, handletextpad=0.2)
+    plt.legend(loc=4, frameon=False, handlelength=1.5, handletextpad=0.2)
 
     plt.savefig("%s.pdf" % plot_file_name,
                 format="pdf", bbox_inches="tight")
