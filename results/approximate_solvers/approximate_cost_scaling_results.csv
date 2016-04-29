@@ -1,0 +1,12 @@
+approximate_cost_scaling_1000000_us.output,11883,85649,1490
+approximate_cost_scaling_5000000_us.output,7940,106271,1192
+approximate_cost_scaling_9000000_us.output,9680,102421,1398
+approximate_cost_scaling_13000000_us.output,10138,108979,1299
+approximate_cost_scaling_17000000_us.output,8309,96538,1063
+approximate_cost_scaling_21000000_us.output,1695,5691,1391
+approximate_cost_scaling_25000000_us.output,1509,2630,1443
+approximate_cost_scaling_29000000_us.output,430,2408,430
+approximate_cost_scaling_33000000_us.output,168,1745,168
+approximate_cost_scaling_37000000_us.output,163,1691,163
+approximate_cost_scaling_41000000_us.output,150,1741,150
+approximate_cost_scaling_45000000_us.output,137,1651,137
