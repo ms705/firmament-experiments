@@ -1,0 +1,12 @@
+#!/bin/bash
+cd ~/firmament/build/third_party/flowlessly/src/flowlessly/
+git checkout master
+# Relax without task removal
+git checkout 8afbe9bd00550dcad89bd6b6868e690d81ae694e
+cmake .
+make clean; make -j3
+cd ~/firmament
+rm -r /mnt/data/synthetic_octopus_10k_machines_90_utilization_5000_tasks_per_sec_flowlessly_incremental_cost_scaling_without_task_removal/
+mkdir /mnt/data/synthetic_octopus_10k_machines_90_utilization_5000_tasks_per_sec_flowlessly_incremental_cost_scaling_without_task_removal/
+./build/src/simulator --flagfile=/home/srguser/firmament-experiments/configs/synthetic_octopus_10k_machines_90_utilization_5000_tasks_per_sec_flowlessly_incremental_cost_scaling_without_task_removal.cfg
+scp -r /mnt/data/synthetic_octopus_10k_machines_90_utilization_5000_tasks_per_sec_flowlessly_incremental_cost_scaling_without_task_removal/ icg27@ganymede.cl.cam.ac.uk:/mnt/data/icg27/firmament_simulations/
