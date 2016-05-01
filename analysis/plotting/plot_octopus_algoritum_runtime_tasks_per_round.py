@@ -55,9 +55,10 @@ def plot_timeline(plot_file_name, runtimes, setups):
     plt.ylabel('Algorithm runtime [sec]')
     plt.ylim(0, max_y_val / 1000.0 / 1000.0 + 5)
     max_x_val = setups[-1]
-    plt.xlim(0, max_x_val)
-    plt.xticks(range(0, 1000, 5001), ["%u" % x for x in range(0, 1000, 5001)],
+    plt.xticks(range(0, max_x_val + 1, 1000),
+               ["%u" % x for x in range(0, max_x_val + 1, 1000)],
                rotation=30, ha='right')
+    plt.xlim(0, max_x_val)
     plt.xlabel('Tasks per scheduling round')
 
     plt.legend(loc=2, frameon=False, handlelength=1.5, handletextpad=0.1,
