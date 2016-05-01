@@ -11,20 +11,17 @@ from utils import *
 
 FLAGS = gflags.FLAGS
 gflags.DEFINE_bool('paper_mode', False, 'Adjusts the size of the plots.')
-gflags.DEFINE_bool('log_scale', True, 'Plot x axis on log scale.')
-gflags.DEFINE_string('algorithm', 'relax', 'Plot for algorithm. Options: '
-                     'relax | cost_scaling.')
 gflags.DEFINE_string('trace_paths', '',
                      ', separated list of path to trace files.')
 gflags.DEFINE_string('trace_labels', '',
                      ', separated list of labels to use for trace files.')
-gflags.DEFINE_integer('number_runs_in_cost_scaling', 2,
-                      'Number of initial cost scaling runs')
-
+gflags.DEFINE_integer('runtimes_after_timestamp', 0,
+                      'Only plot runtimes of runs that happened after.')
+gflags.DEFINE_bool('log_scale', False, '')
 
 def plot_cdf(plot_file_name, cdf_vals, label_axis, labels, log_scale=False,
              bin_width=1000, unit='ms'):
-    colors = ['b', 'r', 'g', 'c', 'm', 'y', 'k']
+    colors = ['g', 'y', 'c', 'm', 'y', 'k']
     if FLAGS.paper_mode:
         plt.figure(figsize=(3.33, 2.22))
         set_paper_rcs()
@@ -81,7 +78,6 @@ def plot_cdf(plot_file_name, cdf_vals, label_axis, labels, log_scale=False,
 
         index += 1
 
-
     time_val = 1000
     if unit is 'ms':
         time_val = 1000 # 1 ms
@@ -91,7 +87,7 @@ def plot_cdf(plot_file_name, cdf_vals, label_axis, labels, log_scale=False,
         print 'Error: unknown time unit'
         exit(1)
     to_time_unit = time_val
-    plt.xlim(100000, max_cdf_val)
+    plt.xlim(100000, max_cdf_val / to_time_unit)
 
     if log_scale:
         plt.xscale("log")
@@ -103,15 +99,15 @@ def plot_cdf(plot_file_name, cdf_vals, label_axis, labels, log_scale=False,
             time_val *= 10
         plt.xticks(x_ticks, [str(x / to_time_unit) for x in x_ticks])
     else:
-        plt.xticks(range(0, max_cdf_val, 5000000),
-                   [str(x / to_time_unit) for x in range(0, max_cdf_val, 5000000)])
+        plt.xticks(range(0, max_cdf_val, 1000000),
+                   [str(x / to_time_unit) for x in range(0, max_cdf_val, 1000000)])
     plt.ylim(0, 1.0)
     plt.yticks(np.arange(0.0, 1.01, 0.2),
                [str(x) for x in np.arange(0.0, 1.01, 0.2)])
     plt.ylabel('CDF of runtimes')
     plt.xlabel(label_axis)
 
-    plt.legend(loc=4, frameon=False, handlelength=1.5, handletextpad=0.2)
+    plt.legend(loc=4, frameon=False, handlelength=2.5, handletextpad=0.2)
 
     plt.savefig("%s.pdf" % plot_file_name,
                 format="pdf", bbox_inches="tight")
@@ -135,22 +131,12 @@ def get_scheduler_runtimes(trace_path, column_index):
     runtimes = []
     csv_file = open(trace_path + "/scheduler_events/scheduler_events.csv")
     csv_reader = csv.reader(csv_file)
-    num_run = 0
-    mod_res = 0
-    if FLAGS.algorithm == 'relax':
-        mod_res = 1
-    elif FLAGS.algorithm == 'cost_scaling':
-        mod_res = 0
-    else:
-        print 'Error: Unexpected algorithm'
     for row in csv_reader:
-        num_run = num_run + 1
         timestamp = long(row[0])
-        if num_run > FLAGS.number_runs_in_cost_scaling:
-            if (num_run - FLAGS.number_runs_in_cost_scaling) % 2 == mod_res:
-                runtimes.append(long(row[column_index]))
-
+        if timestamp > FLAGS.runtimes_after_timestamp:
+            runtimes.append(long(row[column_index]))
     csv_file.close()
+    runtimes.sort()
     return runtimes
 
 
@@ -162,26 +148,20 @@ def main(argv):
 
     trace_paths = FLAGS.trace_paths.split(',')
     labels = FLAGS.trace_labels.split(',')
-    sched_runtimes = []
     algo_runtimes = []
-    sched_trace_labels = []
     algo_trace_labels = []
     trace_id = 0
     for trace_path in trace_paths:
-        sched_runtime = get_scheduler_runtimes(trace_path, 1)
         algo_runtime = get_scheduler_runtimes(trace_path, 2)
-        print "Number scheduler runs: %d" % (len(sched_runtime))
-        sched_runtimes.append(sched_runtime)
-        sched_trace_labels.append(labels[trace_id])
         # XXX(malte): hack to deal with cs2 not providing this info
         if algo_runtime[0] != 18446744073709551615:
           algo_runtimes.append(algo_runtime)
           algo_trace_labels.append(labels[trace_id])
         trace_id += 1
 
-    plot_cdf('algorithm_runtimes_cdf', algo_runtimes, "Duration [sec]",
+    plot_cdf('relax_optimizations_cdf', algo_runtimes, "Duration [ms]",
              algo_trace_labels, log_scale=FLAGS.log_scale, bin_width=1000,
-             unit='sec')
+             unit='ms')
 
 
 if __name__ == '__main__':

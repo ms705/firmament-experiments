@@ -48,7 +48,9 @@ def plot_scalability(plot_file_name, setups, runtimes,
     #             yerr=[np.std(x) for x in runtimes], marker="x")
     plt.xlim(0.5, len(setups) + 0.5)
     plt.ylim(ymin=0)
-    plt.xticks(range(1, len(setups) + 1), ["%u" % (float(x) * 12500) for x in setups])
+    plt.xticks(range(1, len(setups) + 1),
+               ["%u" % (float(x) * 12500) for x in setups],
+               rotation=30, ha='right')
     plt.xlabel(x_label)
     plt.ylabel(y_label)
 
