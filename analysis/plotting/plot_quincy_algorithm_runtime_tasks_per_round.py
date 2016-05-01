@@ -31,12 +31,12 @@ def get_scheduler_runtimes(trace_path, column_index):
         if timestamp > FLAGS.runtimes_after_timestamp:
             runtimes.append(long(row[column_index]))
     csv_file.close()
-    return runtimes
+    return runtimes[:1]
 
 
 def plot_timeline(plot_file_name, runtimes, setups):
-    colors = ['b', 'g', 'r', 'c', 'm', 'y', 'k']
-    markers = ['o', '+', '^', 'v']
+    colors = ['g', 'b', 'r', 'c', 'm', 'y', 'k']
+    markers = ['+', 'o', '^', 'v']
     if FLAGS.paper_mode:
         plt.figure(figsize=(3.33, 2.22))
         set_paper_rcs()
@@ -47,17 +47,19 @@ def plot_timeline(plot_file_name, runtimes, setups):
     max_y_val = 0
     for algo, algo_runtimes in runtimes.items():
         max_y_val = max(max_y_val, np.max(algo_runtimes))
-        plt.plot(range(0, len(setups)),
+        plt.plot(setups,
                  [y / 1000.0 / 1000.0 for y in algo_runtimes],
                  label=algo, color=colors[index], marker=markers[index],
                  mfc='none', mec=colors[index], mew=1.0, lw=1.0)
         index = index + 1
     plt.ylabel('Algorithm runtime [sec]')
-    plt.ylim(0, max_y_val / 1000.0 / 1000.0)
-    plt.xlim(0, len(setups) - 1)
-    plt.xticks(range(0, len(setups)),
-               ["%u" % (long(x)) for x in setups])
-    plt.xlabel('Tasks per scheduling round')
+    plt.ylim(0, max_y_val / 1000.0 / 1000.0 + 5)
+    max_x_val = setups[-1]
+    plt.xlim(2500, max_x_val)
+    utilization = [float(144339 + x) / 161256 * 100 for x in setups]
+    plt.xticks(setups,
+               ["%.2f" % x for x in utilization], rotation=30, ha='right')
+    plt.xlabel('Cluster utilization [\%]')
 
     plt.legend(loc=2, frameon=False, handlelength=1.5, handletextpad=0.1,
                numpoints=1)
@@ -104,7 +106,7 @@ def main(argv):
                 print 'Error: Unexpected algorithm'
     print runtimes
     plot_timeline('algorithms_runtime_tasks_per_round', runtimes,
-                  [float(x) for x in setups])
+                  [long(x) for x in setups])
 
 
 if __name__ == '__main__':
