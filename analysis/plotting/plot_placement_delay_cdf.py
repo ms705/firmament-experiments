@@ -26,40 +26,32 @@ EVICT_EVENT = 2
 
 
 def get_scheduling_delays(trace_path):
-    csv_file = open(trace_path + "/scheduler_events/scheduler_events.csv")
-    csv_reader = csv.reader(csv_file)
-    timestamps = []
-    runtimes = []
-    for row in csv_reader:
-        timestamp = long(row[0])
-        if timestamp > FLAGS.runtimes_after_timestamp:
-            timestamps.append(long(row[0]))
-            runtimes.append(long(row[2]))
-    csv_file.close()
-
-    timestamp_len = len(timestamps)
-    timestamp_index = 0
     # If a task is evicted and scheduled again then we will have
     # two or more scheduling delays for it.
     delays = []
+    task_submit_time = {}
     for num_file in range(0, FLAGS.num_files_to_process, 1):
         csv_file = open(trace_path + "/task_events/part-" +
                         '{:05}'.format(num_file) + "-of-00500.csv")
         csv_reader = csv.reader(csv_file)
         for row in csv_reader:
             timestamp = long(row[0])
+            task_id = (long(row[2]), long(row[3]))
             event_type = int(row[5])
-            if timestamp <= FLAGS.runtimes_after_timestamp:
-                continue
-
-            while timestamps[timestamp_index] < timestamp:
-                timestamp_index = timestamp_index + 1
-                if timestamp_index >= timestamp_len:
-                    return delays
-
             if event_type == SUBMIT_EVENT:
-                delays.append(runtimes[timestamp_index])
-
+                task_submit_time[task_id] = timestamp
+            elif event_type == SCHEDULE_EVENT:
+                if timestamp <= FLAGS.runtimes_after_timestamp:
+                    continue
+                if task_id in task_submit_time:
+                    submit_time = task_submit_time[task_id]
+                    if submit_time != 0:
+                        delays.append(timestamp - submit_time)
+                    del task_submit_time[task_id]
+                else:
+                    print ("Error: schedule event before submit event for task "
+                           "(%s, %s)" % (row[2], row[3]))
+                    exit(1)
         csv_file.close()
     return delays
 
