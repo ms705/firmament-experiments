@@ -38,10 +38,12 @@ def get_scheduler_runtimes(trace_path, column_index):
 
 
 def plot_timeline(plot_file_name, runtimes, setups):
-    markers = {'cycle cancelling':'x', 'cost scaling':'o', 'relax':'+',
-               'succ. shortest':'^'}
-    colors = {'cycle cancelling':'r', 'cost scaling':'b', 'relax':'g',
-              'succ. shortest':'c'}
+    markers = {'cycle cancelling':'x', 'cost scaling':'o',
+               'relax + arc prioritization':'+',
+               'succ. shortest':'^', 'relax':'v'}
+    colors = {'cycle cancelling':'r', 'cost scaling':'b',
+              'relax + arc prioritization':'g', 'succ. shortest':'c',
+              'relax':'m'}
     if FLAGS.paper_mode:
         plt.figure(figsize=(3.33, 2.22))
         set_paper_rcs()
@@ -52,23 +54,28 @@ def plot_timeline(plot_file_name, runtimes, setups):
     for algo, algo_runtimes in runtimes.items():
 #        max_y_val = max(max_y_val, np.max(algo_runtimes))
         runtimes_in_sec = [[x / 1000 / 1000 for x in y] for y in algo_runtimes]
+        algo_name = ''
+        if algo == 'relax':
+            algo_name = 'relax + arc prioritization'
+        elif algo == 'relax without arc prioritization':
+            algo_name = 'relax'
         plt.errorbar(setups,
                      [np.mean(vals) for vals in runtimes_in_sec],
                      yerr=[np.std(vals) for vals in runtimes_in_sec],
-                     color=colors[algo],
-                     label=algo,
-                     marker=markers[algo],
-                     mfc='none', mec=colors[algo], mew=1.0, lw=1.0, markevery=2)
+                     color=colors[algo_name],
+                     label=algo_name,
+                     marker=markers[algo_name],
+                     mfc='none', mec=colors[algo_name], mew=1.0, lw=1.0)
         # plt.plot(setups,
         #          [np.mean(y) / 1000.0 / 1000.0 for y in algo_runtimes],
         #          label=algo, color=colors[algo], marker=markers[algo],
         #          mfc='none', mec=colors[algo], mew=1.0, lw=1.0)
     plt.ylabel('Algorithm runtime [sec]')
-    max_x_val = setups[-1]
-    plt.xticks(range(0, max_x_val + 1, 1000),
-               ["%u" % x for x in range(0, max_x_val + 1, 1000)],
+
+    plt.xlim(0, 5000)
+    plt.xticks(range(0, 5000 + 1, 1000),
+               ["%u" % x for x in range(0, 5000 + 1, 1000)],
                rotation=30, ha='right')
-    plt.xlim(0, max_x_val)
     plt.xlabel('Tasks per scheduling round')
 
     plt.legend(loc=2, frameon=False, handlelength=1.5, handletextpad=0.1,
@@ -91,7 +98,12 @@ def main(argv):
         algo_runtime = get_scheduler_runtimes(trace_path, 2)
         # XXX(malte): hack to deal with cs2 not providing this info
         if algo_runtime[0] != 18446744073709551615:
-            if 'cost_scaling' in trace_path:
+            if 'relax_without_arc_prioritization' in trace_path:
+                if 'relax without arc prioritization' in runtimes:
+                    runtimes['relax without arc prioritization'].append(algo_runtime)
+                else:
+                    runtimes['relax without arc prioritization'] = [algo_runtime]
+            elif 'cost_scaling' in trace_path:
                 if 'cost scaling' in runtimes:
                     runtimes['cost scaling'].append(algo_runtime)
                 else:
