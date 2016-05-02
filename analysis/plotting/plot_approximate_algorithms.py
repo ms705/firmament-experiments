@@ -37,7 +37,7 @@ def plot_timeline(plot_file_name, x_vals, y_vals, labels, log_scale):
         max_y_val = max(max_y_val, np.max(y_vals[index]))
         plt.plot([x / 1000 / 1000 for x in x_vals[index]], y_vals[index],
                  label=algo, color=colors[algo], marker=markers[algo],
-                 mfc='none', mec=colors[algo], mew=1.0, lw=1.0, markersize=3)
+                 mfc='none', mec=colors[algo], mew=1.0, lw=1.0, markevery=2)
         index = index + 1
 
     if log_scale:

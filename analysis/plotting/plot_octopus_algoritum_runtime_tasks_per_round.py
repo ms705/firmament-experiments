@@ -31,29 +31,36 @@ def get_scheduler_runtimes(trace_path, column_index):
         if timestamp > FLAGS.runtimes_after_timestamp:
             runtimes.append(long(row[column_index]))
     csv_file.close()
-    return runtimes[:1]
+    return runtimes
 
 
 def plot_timeline(plot_file_name, runtimes, setups):
-    colors = ['g', 'b', 'r', 'c', 'm', 'y', 'k']
-    markers = ['+', 'o', '^', 'v']
+    markers = {'cycle cancelling':'x', 'cost scaling':'o', 'relax':'+',
+               'succ. shortest':'^'}
+    colors = {'cycle cancelling':'r', 'cost scaling':'b', 'relax':'g',
+              'succ. shortest':'c'}
     if FLAGS.paper_mode:
         plt.figure(figsize=(3.33, 2.22))
         set_paper_rcs()
     else:
         plt.figure()
         set_rcs()
-    index = 0
     max_y_val = 0
     for algo, algo_runtimes in runtimes.items():
-        max_y_val = max(max_y_val, np.max(algo_runtimes))
-        plt.plot(setups,
-                 [y / 1000.0 / 1000.0 for y in algo_runtimes],
-                 label=algo, color=colors[index], marker=markers[index],
-                 mfc='none', mec=colors[index], mew=1.0, lw=1.0)
-        index = index + 1
+#        max_y_val = max(max_y_val, np.max(algo_runtimes))
+        runtimes_in_sec = [[x / 1000 / 1000 for x in y] for y in algo_runtimes]
+        plt.errorbar(setups,
+                     [np.mean(vals) for vals in runtimes_in_sec],
+                     yerr=[np.std(vals) for vals in runtimes_in_sec],
+                     color=colors[algo],
+                     label=algo,
+                     marker=markers[algo],
+                     mfc='none', mec=colors[algo], mew=1.0, lw=1.0, markevery=2)
+        # plt.plot(setups,
+        #          [np.mean(y) / 1000.0 / 1000.0 for y in algo_runtimes],
+        #          label=algo, color=colors[algo], marker=markers[algo],
+        #          mfc='none', mec=colors[algo], mew=1.0, lw=1.0)
     plt.ylabel('Algorithm runtime [sec]')
-    plt.ylim(0, max_y_val / 1000.0 / 1000.0 + 5)
     max_x_val = setups[-1]
     plt.xticks(range(0, max_x_val + 1, 1000),
                ["%u" % x for x in range(0, max_x_val + 1, 1000)],
@@ -81,27 +88,26 @@ def main(argv):
         algo_runtime = get_scheduler_runtimes(trace_path, 2)
         # XXX(malte): hack to deal with cs2 not providing this info
         if algo_runtime[0] != 18446744073709551615:
-            avg_runtime = np.mean(algo_runtime)
             if 'cost_scaling' in trace_path:
                 if 'cost scaling' in runtimes:
-                    runtimes['cost scaling'].append(avg_runtime)
+                    runtimes['cost scaling'].append(algo_runtime)
                 else:
-                    runtimes['cost scaling'] = [avg_runtime]
+                    runtimes['cost scaling'] = [algo_runtime]
             elif 'relax' in trace_path:
                 if 'relax' in runtimes:
-                    runtimes['relax'].append(avg_runtime)
+                    runtimes['relax'].append(algo_runtime)
                 else:
-                    runtimes['relax'] = [avg_runtime]
+                    runtimes['relax'] = [algo_runtime]
             elif 'successive_shortest' in trace_path:
                 if 'successive shortest' in runtimes:
-                    runtimes['successive shortest'].append(avg_runtime)
+                    runtimes['successive shortest'].append(algo_runtime)
                 else:
-                    runtimes['successive shortest'] = [avg_runtime]
+                    runtimes['successive shortest'] = [algo_runtime]
             elif 'cycle_cancelling' in trace_path:
                 if 'cycle cancelling' in runtimes:
-                    runtimes['cycle cancelling'].append(avg_runtime)
+                    runtimes['cycle cancelling'].append(algo_runtime)
                 else:
-                    runtimes['cycle cancelling'] = [avg_runtime]
+                    runtimes['cycle cancelling'] = [algo_runtime]
             else:
                 print 'Error: Unexpected algorithm'
     print runtimes
