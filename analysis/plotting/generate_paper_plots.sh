@@ -27,5 +27,23 @@ ssh ganymede.cl.cam.ac.uk '/mnt/data/icg27/firmament-experiments/analysis/plotti
 # Task removal (Figure 12)
 ssh ganymede.cl.cam.ac.uk '/mnt/data/icg27/firmament-experiments/analysis/plotting/generate_quincy_incremental_optimizations.sh'
 
+# Rapid 97% utilization (Figure 14)
+# TODO
+ssh ganymede.cl.cam.ac.uk '/mnt/data/icg27/firmament-experiments/analysis/plotting/'
+
+# Google speedup (Figure 15)
+# TODO
+ssh ganymede.cl.cam.ac.uk '/mnt/data/icg27/firmament-experiments/analysis/plotting/'
+
+# Rapid breaking point (Figure 16)
+# TODO
+ssh ganymede.cl.cam.ac.uk '/mnt/data/icg27/firmament-experiments/analysis/plotting/'
+
+# Percentage data locality (Figure 17)
+# TODO
+
+# Quincy machine hogging (Figure 18)
+# TODO
+
 # Copy the PDFs
 scp ganymede.cl.cam.ac.uk:/mnt/data/icg27/firmament-experiments/analysis/plotting/*.pdf ./
