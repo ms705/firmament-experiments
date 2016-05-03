@@ -69,18 +69,37 @@ def get_scheduling_delays(trace_path):
     # two or more scheduling delays for it.
     delays = []
     seen_last_scheduler_run = False
-    print runtime_factor
+
+    scheduled_tasks = set([])
     for num_file in range(0, FLAGS.num_files_to_process, 1):
         csv_file = open(trace_path + "/task_events/part-" +
                         '{:05}'.format(num_file) + "-of-00500.csv")
         csv_reader = csv.reader(csv_file)
         for row in csv_reader:
             timestamp = long(row[0])
+            task_id = (long(row[2]), long(row[3]))
             event_type = int(row[5])
             if timestamp > FLAGS.runtime / runtime_factor:
                 break
             if timestamp <= FLAGS.runtimes_after_timestamp:
                 continue
+            if event_type == SCHEDULE_EVENT:
+                scheduled_tasks.add(task_id)
+        csv_file.close()
+
+    for num_file in range(0, FLAGS.num_files_to_process, 1):
+        csv_file = open(trace_path + "/task_events/part-" +
+                        '{:05}'.format(num_file) + "-of-00500.csv")
+        csv_reader = csv.reader(csv_file)
+        for row in csv_reader:
+            timestamp = long(row[0])
+            task_id = (long(row[2]), long(row[3]))
+            event_type = int(row[5])
+            if timestamp > FLAGS.runtime / runtime_factor:
+                break
+            if timestamp <= FLAGS.runtimes_after_timestamp:
+                continue
+
             while not seen_last_scheduler_run and timestamps[timestamp_index] < timestamp:
                 timestamp_index = timestamp_index + 1
                 if timestamp_index >= timestamp_len or timestamps[timestamp_index] * runtime_factor > FLAGS.runtime:
@@ -91,8 +110,10 @@ def get_scheduling_delays(trace_path):
                 if seen_last_scheduler_run:
                     delays.append(FLAGS.runtime - timestamp * runtime_factor)
                 else:
-                    delays.append(runtimes[timestamp_index])
-
+                    if task_id in scheduled_tasks:
+                        delays.append(runtimes[timestamp_index])
+                    else:
+                        delays.append(FLAGS.runtime - timestamp * runtime_factor)
         csv_file.close()
     return delays
 
@@ -140,9 +161,9 @@ def main(argv):
         delays_98percentile = []
         delays_90percentile = []
         for delays in speedup_delays:
-            print len(delays)
             delays_90percentile.append(np.percentile(delays, 90) / 1000 / 1000)
             delays_98percentile.append(np.percentile(delays, 98) / 1000 / 1000)
+        print algo, "90percentile", delays_90percentile
         print algo, "98percentile", delays_98percentile
         plt.plot(speedups[:len(delays_98percentile)], delays_90percentile,
                  marker=markers[algo], color=colors[algo], mfc='none', mew=1.0,
