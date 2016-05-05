@@ -15,6 +15,8 @@ gflags.DEFINE_integer('num_files_to_process', 1,
 gflags.DEFINE_bool('paper_mode', False, 'Adjusts the size of the plots.')
 gflags.DEFINE_integer('runtimes_after_timestamp', 0,
                       'Only plot runtimes of runs that happened after.')
+gflags.DEFINE_integer('runtimes_before_timestamp', 0,
+                      'Only plot runtimes that happened before.')
 gflags.DEFINE_string('trace_paths', '',
                      ', separated list of path to trace files.')
 gflags.DEFINE_string('trace_labels', '',
@@ -26,33 +28,41 @@ EVICT_EVENT = 2
 
 
 def get_scheduling_delays(trace_path):
-    # If a task is evicted and scheduled again then we will have
-    # two or more scheduling delays for it.
     delays = []
     task_submit_time = {}
+    tasks_scheduled = set([])
+    tasks_submitted = set([])
     for num_file in range(0, FLAGS.num_files_to_process, 1):
         csv_file = open(trace_path + "/task_events/part-" +
                         '{:05}'.format(num_file) + "-of-00500.csv")
         csv_reader = csv.reader(csv_file)
         for row in csv_reader:
+            if len(row) <= 5:
+                break
             timestamp = long(row[0])
             task_id = (long(row[2]), long(row[3]))
             event_type = int(row[5])
+            if timestamp >= FLAGS.runtimes_before_timestamp:
+                continue
             if event_type == SUBMIT_EVENT:
+                tasks_submitted.add(task_id)
                 task_submit_time[task_id] = timestamp
             elif event_type == SCHEDULE_EVENT:
+                tasks_scheduled.add(task_id)
                 if timestamp <= FLAGS.runtimes_after_timestamp:
                     continue
                 if task_id in task_submit_time:
                     submit_time = task_submit_time[task_id]
-                    if submit_time != 0:
+                    if submit_time != 0 and timestamp != submit_time:
+                        # Add the event because it's not a migration.
                         delays.append(timestamp - submit_time)
-                    del task_submit_time[task_id]
                 else:
                     print ("Error: schedule event before submit event for task "
                            "(%s, %s)" % (row[2], row[3]))
                     exit(1)
         csv_file.close()
+    print trace_path, 'tasks submitted:', len(tasks_submitted)
+    print trace_path, 'task scheduled:', len(tasks_scheduled)
     return delays
 
 
@@ -132,13 +142,13 @@ def plot_cdf(plot_file_name, cdf_vals, label_axis, labels, log_scale=False,
             time_val *= 10
         plt.xticks(x_ticks, [str(x / to_time_unit) for x in x_ticks])
     else:
-        plt.xlim(0, max_cdf_val)
-        plt.xticks(range(0, max_cdf_val, 10000000),
-                   [str(x / time_val) for x in range(0, max_cdf_val, 10000000)])
+        plt.xlim(0, 100)
+        plt.xticks(range(0, 100000000, 20000000),
+                   [str(x / time_val) for x in range(0, 100000000, 20000000)])
     plt.ylim(0, 1.0)
     plt.yticks(np.arange(0.0, 1.01, 0.2),
                [str(x) for x in np.arange(0.0, 1.01, 0.2)])
-
+    plt.ylabel('CDF of task placement latency')
     plt.xlabel(label_axis)
 
     plt.legend(loc=4, frameon=False, handlelength=2.5, handletextpad=0.2)
@@ -168,9 +178,9 @@ def main(argv):
     delays = []
     for trace_path in trace_paths:
         trace_delays = get_scheduling_delays(trace_path)
-        print "Number tasks scheduled: %d" % (len(trace_delays))
         delays.append(trace_delays)
-    plot_cdf('scheduling_delay_cdf', delays, "Latency [sec]",
+
+    plot_cdf('scheduling_delay_cdf', delays, "Task placement latency [sec]",
              labels, log_scale=False, bin_width=100000, unit='sec')
 
 
