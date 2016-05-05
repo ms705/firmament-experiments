@@ -38,12 +38,12 @@ def get_scheduler_runtimes(trace_path, column_index):
 
 
 def plot_timeline(plot_file_name, runtimes, setups):
-    markers = {'Cycle cancelling':'x', 'cost scaling':'o',
-               'relax + arc prioritization':'+',
-               'succ. shortest':'^', 'relax':'v'}
-    colors = {'Cycle cancelling':'r', 'cost scaling':'b',
-              'relax + arc prioritization':'g', 'succ. shortest':'c',
-              'relax':'m'}
+    markers = {'Cycle cancelling':'x', 'Cost scaling':'o',
+               'Relaxation + arc prioritization':'+',
+               'Succ. shortest':'^', 'Relaxation':'v'}
+    colors = {'Cycle cancelling':'r', 'Cost scaling':'b',
+              'Relaxation + arc prioritization':'g', 'Succ. shortest':'c',
+              'Relaxation':'m'}
     if FLAGS.paper_mode:
         plt.figure(figsize=(3.33, 2.22))
         set_paper_rcs()
@@ -55,10 +55,10 @@ def plot_timeline(plot_file_name, runtimes, setups):
 #        max_y_val = max(max_y_val, np.max(algo_runtimes))
         runtimes_in_sec = [[x / 1000 / 1000 for x in y] for y in algo_runtimes]
         algo_name = ''
-        if algo == 'relax':
-            algo_name = 'relax + arc prioritization'
-        elif algo == 'relax without arc prioritization':
-            algo_name = 'relax'
+        if algo == 'Relaxation':
+            algo_name = 'Relaxation + arc prioritization'
+        elif algo == 'Relaxation without arc prioritization':
+            algo_name = 'Relaxation'
         plt.errorbar(setups,
                      [np.mean(vals) for vals in runtimes_in_sec],
                      yerr=[np.std(vals) for vals in runtimes_in_sec],
@@ -99,30 +99,30 @@ def main(argv):
         # XXX(malte): hack to deal with cs2 not providing this info
         if algo_runtime[0] != 18446744073709551615:
             if 'relax_without_arc_prioritization' in trace_path:
-                if 'relax without arc prioritization' in runtimes:
-                    runtimes['relax without arc prioritization'].append(algo_runtime)
+                if 'Relaxation without arc prioritization' in runtimes:
+                    runtimes['Relaxation without arc prioritization'].append(algo_runtime)
                 else:
-                    runtimes['relax without arc prioritization'] = [algo_runtime]
+                    runtimes['Relaxation without arc prioritization'] = [algo_runtime]
             elif 'cost_scaling' in trace_path:
-                if 'cost scaling' in runtimes:
-                    runtimes['cost scaling'].append(algo_runtime)
+                if 'Cost scaling' in runtimes:
+                    runtimes['Cost scaling'].append(algo_runtime)
                 else:
-                    runtimes['cost scaling'] = [algo_runtime]
+                    runtimes['Cost scaling'] = [algo_runtime]
             elif 'relax' in trace_path:
-                if 'relax' in runtimes:
-                    runtimes['relax'].append(algo_runtime)
+                if 'Relaxation' in runtimes:
+                    runtimes['Relaxation'].append(algo_runtime)
                 else:
-                    runtimes['relax'] = [algo_runtime]
+                    runtimes['Relaxation'] = [algo_runtime]
             elif 'successive_shortest' in trace_path:
-                if 'successive shortest' in runtimes:
-                    runtimes['successive shortest'].append(algo_runtime)
+                if 'Successive shortest' in runtimes:
+                    runtimes['Successive shortest'].append(algo_runtime)
                 else:
-                    runtimes['successive shortest'] = [algo_runtime]
+                    runtimes['Successive shortest'] = [algo_runtime]
             elif 'cycle_cancelling' in trace_path:
-                if 'cycle cancelling' in runtimes:
-                    runtimes['cycle cancelling'].append(algo_runtime)
+                if 'Cycle cancelling' in runtimes:
+                    runtimes['Cycle cancelling'].append(algo_runtime)
                 else:
-                    runtimes['cycle cancelling'] = [algo_runtime]
+                    runtimes['Cycle cancelling'] = [algo_runtime]
             else:
                 print 'Error: Unexpected algorithm'
     print runtimes

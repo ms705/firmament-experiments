@@ -83,15 +83,15 @@ def main(argv):
         if algo_runtime[0] != 18446744073709551615:
             avg_runtime = np.mean(algo_runtime)
             if 'cost_scaling' in trace_path:
-                if 'cost scaling' in runtimes:
-                    runtimes['cost scaling'].append(avg_runtime)
+                if 'Cost scaling' in runtimes:
+                    runtimes['Cost scaling'].append(avg_runtime)
                 else:
-                    runtimes['cost scaling'] = [avg_runtime]
+                    runtimes['Cost scaling'] = [avg_runtime]
             elif 'relax' in trace_path:
-                if 'relax' in runtimes:
-                    runtimes['relax'].append(avg_runtime)
+                if 'Relaxation' in runtimes:
+                    runtimes['Relaxation'].append(avg_runtime)
                 else:
-                    runtimes['relax'] = [avg_runtime]
+                    runtimes['Relaxation'] = [avg_runtime]
             elif 'successive_shortest' in trace_path:
                 if 'successive shortest' in runtimes:
                     runtimes['successive shortest'].append(avg_runtime)

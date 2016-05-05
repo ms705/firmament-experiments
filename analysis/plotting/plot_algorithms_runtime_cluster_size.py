@@ -35,10 +35,10 @@ def get_scheduler_runtimes(trace_path, column_index):
 
 
 def plot_timeline(plot_file_name, runtimes, setups):
-    markers = {'cycle cancelling':'x', 'cost scaling':'o', 'relax':'+',
-               'succ. shortest':'^'}
-    colors = {'cycle cancelling':'r', 'cost scaling':'b', 'relax':'g',
-              'succ. shortest':'c'}
+    markers = {'Cycle cancelling':'x', 'Cost scaling':'o', 'Relaxation':'+',
+               'Succ. shortest':'^'}
+    colors = {'Cycle cancelling':'r', 'Cost scaling':'b', 'Relaxation':'g',
+              'Succ. shortest':'c'}
     if FLAGS.paper_mode:
         plt.figure(figsize=(3.33, 2.22))
         set_paper_rcs()
@@ -86,25 +86,25 @@ def main(argv):
         if algo_runtime[0] != 18446744073709551615:
             avg_runtime = np.mean(algo_runtime)
             if 'cost_scaling' in trace_path:
-                if 'cost scaling' in runtimes:
-                    runtimes['cost scaling'].append(avg_runtime)
+                if 'Cost scaling' in runtimes:
+                    runtimes['Cost scaling'].append(avg_runtime)
                 else:
-                    runtimes['cost scaling'] = [avg_runtime]
+                    runtimes['Cost scaling'] = [avg_runtime]
             elif 'relax' in trace_path:
-                if 'relax' in runtimes:
-                    runtimes['relax'].append(avg_runtime)
+                if 'Relaxation' in runtimes:
+                    runtimes['Relaxation'].append(avg_runtime)
                 else:
-                    runtimes['relax'] = [avg_runtime]
+                    runtimes['Relaxation'] = [avg_runtime]
             elif 'successive_shortest' in trace_path:
-                if 'succ. shortest' in runtimes:
-                    runtimes['succ. shortest'].append(avg_runtime)
+                if 'Succ. shortest' in runtimes:
+                    runtimes['Succ. shortest'].append(avg_runtime)
                 else:
-                    runtimes['succ. shortest'] = [avg_runtime]
+                    runtimes['Succ. shortest'] = [avg_runtime]
             elif 'cycle_cancelling' in trace_path:
-                if 'cycle cancelling' in runtimes:
-                    runtimes['cycle cancelling'].append(avg_runtime)
+                if 'Cycle cancelling' in runtimes:
+                    runtimes['Cycle cancelling'].append(avg_runtime)
                 else:
-                    runtimes['cycle cancelling'] = [avg_runtime]
+                    runtimes['Cycle cancelling'] = [avg_runtime]
             else:
                 print 'Error: Unexpected algorithm'
     print runtimes

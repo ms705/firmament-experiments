@@ -24,7 +24,7 @@ gflags.DEFINE_integer('number_runs_in_cost_scaling', 2,
 
 def plot_cdf(plot_file_name, cdf_vals, label_axis, labels, log_scale=False,
              bin_width=1000, unit='ms'):
-    colors = ['b', 'r', 'g', 'c', 'm', 'y', 'k']
+    colors = ['b', 'y', 'g', 'c', 'm', 'y', 'k']
     if FLAGS.paper_mode:
         plt.figure(figsize=(3.33, 2.22))
         set_paper_rcs()
@@ -179,7 +179,7 @@ def main(argv):
           algo_trace_labels.append(labels[trace_id])
         trace_id += 1
 
-    plot_cdf('algorithm_runtimes_cdf', algo_runtimes, "Duration [sec]",
+    plot_cdf('algorithm_runtimes_cdf', algo_runtimes, "Algorithm runtime [sec]",
              algo_trace_labels, log_scale=FLAGS.log_scale, bin_width=1000,
              unit='sec')
 

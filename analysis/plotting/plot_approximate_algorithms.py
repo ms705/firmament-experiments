@@ -17,9 +17,9 @@ gflags.DEFINE_string('labels', '', ', separated list of labels')
 gflags.DEFINE_bool('log_scale', False, 'Plot in log scale.')
 
 def plot_timeline(plot_file_name, x_vals, y_vals, labels, log_scale):
-    markers = {'cycle cancelling':'x', 'cost scaling':'o', 'relax':'+',
+    markers = {'cycle cancelling':'x', 'Cost scaling':'o', 'Relaxation':'+',
                'succ. shortest':'^'}
-    colors = {'cycle cancelling':'r', 'cost scaling':'b', 'relax':'g',
+    colors = {'cycle cancelling':'r', 'Cost scaling':'b', 'Relaxation':'g',
               'succ. shortest':'c'}
     if FLAGS.paper_mode:
         plt.figure(figsize=(3.33, 2.22))

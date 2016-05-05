@@ -71,7 +71,8 @@ def plot_timeline(plot_file_name, all_x_vals, all_y_vals, labels, unit='sec'):
     plt.xticks(range(FLAGS.runtimes_after_timestamp, max_x_val, 1000000000),
                [str(x / 1000 / 1000) for x in range(FLAGS.runtimes_after_timestamp, max_x_val, 1000000000)])
     plt.xlabel('Time [' + unit + ']')
-    plt.legend(loc='upper left', frameon=False, handlelength=1.5, handletextpad=0.2)
+    plt.legend(loc='upper left', frameon=False, handlelength=1.5,
+               handletextpad=0.2, numpoints=1)
     plt.savefig("%s.pdf" % plot_file_name,
                 format="pdf", bbox_inches="tight")
 
