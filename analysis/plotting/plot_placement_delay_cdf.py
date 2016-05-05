@@ -48,12 +48,12 @@ def get_scheduling_delays(trace_path):
                 tasks_submitted.add(task_id)
                 task_submit_time[task_id] = timestamp
             elif event_type == SCHEDULE_EVENT:
-                tasks_scheduled.add(task_id)
                 if timestamp <= FLAGS.runtimes_after_timestamp:
                     continue
                 if task_id in task_submit_time:
                     submit_time = task_submit_time[task_id]
-                    if submit_time != 0 and timestamp != submit_time:
+                    if submit_time != 0 and timestamp != submit_time and task_id not in tasks_scheduled:
+                        tasks_scheduled.add(task_id)
                         # Add the event because it's not a migration.
                         delays.append(timestamp - submit_time)
                 else:
@@ -68,7 +68,7 @@ def get_scheduling_delays(trace_path):
 
 def plot_cdf(plot_file_name, cdf_vals, label_axis, labels, log_scale=False,
              bin_width=1000, unit='ms'):
-    colors = ['b', 'r', 'g', 'c', 'm', 'y', 'k']
+    colors = ['b', 'g', 'r', 'c', 'm', 'y', 'k']
     if FLAGS.paper_mode:
         plt.figure(figsize=(3.33, 2.22))
         set_paper_rcs()
@@ -142,9 +142,9 @@ def plot_cdf(plot_file_name, cdf_vals, label_axis, labels, log_scale=False,
             time_val *= 10
         plt.xticks(x_ticks, [str(x / to_time_unit) for x in x_ticks])
     else:
-        plt.xlim(0, 100)
-        plt.xticks(range(0, 100000000, 20000000),
-                   [str(x / time_val) for x in range(0, 100000000, 20000000)])
+        plt.xlim(0, max_cdf_val)
+        plt.xticks(range(0, max_cdf_val, 10000000),
+                   [str(x / time_val) for x in range(0, max_cdf_val, 10000000)])
     plt.ylim(0, 1.0)
     plt.yticks(np.arange(0.0, 1.01, 0.2),
                [str(x) for x in np.arange(0.0, 1.01, 0.2)])

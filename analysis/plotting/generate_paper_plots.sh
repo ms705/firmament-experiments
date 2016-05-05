@@ -27,7 +27,10 @@ ssh ganymede.cl.cam.ac.uk '/mnt/data/icg27/firmament-experiments/analysis/plotti
 # Task removal (Figure 12)
 ssh ganymede.cl.cam.ac.uk '/mnt/data/icg27/firmament-experiments/analysis/plotting/generate_quincy_incremental_optimizations.sh'
 
-# Rapid 97% utilization (Figure 14)
+# Rapid vs Quincy at 90% utilization (Figure 14)
+ssh ganymede.cl.cam.ac.uk '/mnt/data/icg27/firmament-experiments/analysis/plotting/generate_quincy_task_placement.sh'
+
+# Rapid vs just running relax/cost_scaling
 # TODO
 ssh ganymede.cl.cam.ac.uk '/mnt/data/icg27/firmament-experiments/analysis/plotting/'
 

@@ -21,7 +21,7 @@ gflags.DEFINE_integer('runtimes_after_timestamp', 0,
 
 def plot_cdf(plot_file_name, cdf_vals, label_axis, labels, log_scale=False,
              bin_width=1000, unit='ms'):
-    colors = ['g', 'm', 'g', 'c', 'm', 'y', 'k']
+    colors = ['b', 'm', 'g', 'c', 'm', 'y', 'k']
     if FLAGS.paper_mode:
         plt.figure(figsize=(3.33, 2.22))
         set_paper_rcs()

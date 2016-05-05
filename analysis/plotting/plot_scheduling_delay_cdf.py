@@ -15,6 +15,8 @@ gflags.DEFINE_integer('num_files_to_process', 1,
 gflags.DEFINE_bool('paper_mode', False, 'Adjusts the size of the plots.')
 gflags.DEFINE_integer('runtimes_after_timestamp', 0,
                       'Only plot runtimes of runs that happened after.')
+gflags.DEFINE_integer('runtimes_before_timestamp', 0,
+                      'Only plot runtimes that happened before.')
 gflags.DEFINE_string('trace_paths', '',
                      ', separated list of path to trace files.')
 gflags.DEFINE_string('trace_labels', '',
@@ -32,7 +34,7 @@ def get_scheduling_delays(trace_path):
     runtimes = []
     for row in csv_reader:
         timestamp = long(row[0])
-        if timestamp > FLAGS.runtimes_after_timestamp:
+        if timestamp > FLAGS.runtimes_after_timestamp and timestamp < FLAGS.runtimes_before_timestamp:
             timestamps.append(long(row[0]))
             runtimes.append(long(row[2]))
     csv_file.close()
@@ -50,6 +52,8 @@ def get_scheduling_delays(trace_path):
             timestamp = long(row[0])
             event_type = int(row[5])
             if timestamp <= FLAGS.runtimes_after_timestamp:
+                continue
+            if timestamp >= FLAGS.runtimes_before_timestamp:
                 continue
 
             while timestamps[timestamp_index] < timestamp:
