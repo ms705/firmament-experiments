@@ -45,7 +45,8 @@ ssh ganymede.cl.cam.ac.uk '/mnt/data/icg27/firmament-experiments/analysis/plotti
 
 # Percentage data locality (Figure 17)
 ssh ganymede.cl.cam.ac.uk '/mnt/data/icg27/firmament-experiments/analysis/plotting/generate_algorithm_runtime_preference_threshold.sh'
-# TODO
+ssh ganymede.cl.cam.ac.uk '/mnt/data/icg27/firmament-experiments/analysis/plotting/generate_task_percentage_local_input.sh'
+
 
 # Quincy machine hogging (Figure 18)
 # TODO
