@@ -48,21 +48,25 @@ def get_scheduling_delays(trace_path):
         csv_file = open(trace_path + "/task_events/part-" +
                         '{:05}'.format(num_file) + "-of-00500.csv")
         csv_reader = csv.reader(csv_file)
+        tasks_scheduled = set([])
         for row in csv_reader:
             timestamp = long(row[0])
+            task_id = (long(row[2]), long(row[3]))
             event_type = int(row[5])
             if timestamp <= FLAGS.runtimes_after_timestamp:
                 continue
             if timestamp >= FLAGS.runtimes_before_timestamp:
                 continue
-
             while timestamps[timestamp_index] < timestamp:
                 timestamp_index = timestamp_index + 1
                 if timestamp_index >= timestamp_len:
                     return delays
 
             if event_type == SUBMIT_EVENT:
-                delays.append(runtimes[timestamp_index])
+                if task_id not in tasks_scheduled:
+                    delays.append(runtimes[timestamp_index])
+            elif event_type == SCHEDULE_EVENT:
+                tasks_scheduled.add(task_id)
 
         csv_file.close()
     return delays

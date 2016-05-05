@@ -30,9 +30,8 @@ ssh ganymede.cl.cam.ac.uk '/mnt/data/icg27/firmament-experiments/analysis/plotti
 # Rapid vs Quincy at 90% utilization (Figure 14)
 ssh ganymede.cl.cam.ac.uk '/mnt/data/icg27/firmament-experiments/analysis/plotting/generate_quincy_task_placement.sh'
 
-# Rapid vs just running relax/cost_scaling
-# TODO
-ssh ganymede.cl.cam.ac.uk '/mnt/data/icg27/firmament-experiments/analysis/plotting/'
+# Rapid vs just running relax/cost_scaling at 97% utilization
+ssh ganymede.cl.cam.ac.uk '/mnt/data/icg27/firmament-experiments/analysis/plotting/generate_rapid_recovering_timeline.sh'
 
 # Google speedup (Figure 15)
 # TODO

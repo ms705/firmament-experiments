@@ -38,10 +38,10 @@ def get_scheduler_runtimes(trace_path, column_index):
 
 
 def plot_timeline(plot_file_name, runtimes, setups):
-    markers = {'cycle cancelling':'x', 'cost scaling':'o',
+    markers = {'Cycle cancelling':'x', 'cost scaling':'o',
                'relax + arc prioritization':'+',
                'succ. shortest':'^', 'relax':'v'}
-    colors = {'cycle cancelling':'r', 'cost scaling':'b',
+    colors = {'Cycle cancelling':'r', 'cost scaling':'b',
               'relax + arc prioritization':'g', 'succ. shortest':'c',
               'relax':'m'}
     if FLAGS.paper_mode:
