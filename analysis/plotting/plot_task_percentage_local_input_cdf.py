@@ -181,6 +181,7 @@ def plot_cdf(plot_file_name, cdf_vals, label_axis, labels, log_scale=False,
                [str(x) for x in np.arange(0.0, 1.01, 0.2)])
 
     plt.xlabel(label_axis)
+    plt.ylabel('CDF of task data locality')
 
     plt.legend(loc=4, frameon=False, handlelength=2.5, handletextpad=0.2)
 
@@ -204,7 +205,7 @@ def main(argv):
         task_localities.append(task_locality)
 
     plot_cdf('task_percentage_local_input_cdf', task_localities,
-             'Data locality [%]', labels, log_scale=False, bin_width=1)
+             'Data locality [\%]', labels, log_scale=False, bin_width=1)
 
 
 if __name__ == '__main__':
