@@ -7,49 +7,80 @@ import matplotlib
 matplotlib.use("agg")
 import os, sys
 import matplotlib.pyplot as plt
+from collections import defaultdict
 from utils import *
 
 FLAGS = gflags.FLAGS
 gflags.DEFINE_integer('num_files_to_process', 1,
                       'The number of trace files to process.')
 gflags.DEFINE_bool('paper_mode', False, 'Adjusts the size of the plots.')
-gflags.DEFINE_integer('runtimes_after_timestamp', 0,
-                      'Only plot runtimes of runs that happened after.')
-gflags.DEFINE_integer('runtimes_before_timestamp', 0,
-                      'Only plot runtimes that happened before.')
 gflags.DEFINE_string('trace_paths', '',
                      ', separated list of path to trace files.')
 gflags.DEFINE_string('trace_labels', '',
                      ', separated list of labels to use for trace files.')
+gflags.DEFINE_integer('runtimes_after_timestamp', 0,
+                      'Only plot runtimes of runs that happened after.')
+gflags.DEFINE_integer('runtimes_before_timestamp', 0,
+                      'Only plot runtimes that happened before.')
 
-SUBMIT_EVENT = 0
+
+BYTES_TO_MB = 1048576
+BYTES_TO_GB = 1073741824
+BLOCK_ADD = 0
+BLOCK_REMOVE = 1
+
 SCHEDULE_EVENT = 1
-EVICT_EVENT = 2
 
-
-def get_scheduling_delays(trace_path):
-    csv_file = open(trace_path + "/scheduler_events/scheduler_events.csv")
+def get_task_inputs(trace_path):
+    csv_file = open(trace_path + "/tasks_to_blocks/tasks_to_blocks.csv")
     csv_reader = csv.reader(csv_file)
-    timestamps = []
-    runtimes = []
+    task_blocks = defaultdict(list)
     for row in csv_reader:
-        timestamp = long(row[0])
-        if timestamp > FLAGS.runtimes_after_timestamp and timestamp < FLAGS.runtimes_before_timestamp:
-            timestamps.append(long(row[0]))
-            runtimes.append(long(row[2]))
+        if len(row) < 3:
+            print 'Reached truncated row'
+            break
+        job_id = long(row[0])
+        task_index = long(row[1])
+        block_id = long(row[2])
+        task_blocks[(job_id, task_index)].append(block_id)
     csv_file.close()
+    return task_blocks
 
-    timestamp_len = len(timestamps)
-    timestamp_index = 0
-    # If a task is evicted and scheduled again then we will have
-    # two or more scheduling delays for it.
-    delays = []
+
+def get_block_locations(trace_path):
+    dfs_csv_file = open(trace_path + "/dfs_events/dfs_events.csv")
+    dfs_csv_reader = csv.reader(dfs_csv_file)
+    block_locations = defaultdict(list)
+    for row in dfs_csv_reader:
+        if len(row) < 5:
+            print 'Reached truncated row'
+            break
+        timestamp = long(row[0])
+        event_type = int(row[1])
+        machine_id = long(row[2])
+        block_id = long(row[3])
+        block_size = long(row[4])
+        if timestamp <= FLAGS.runtimes_after_timestamp:
+            continue
+        if timestamp >= FLAGS.runtimes_before_timestamp:
+            continue
+        if event_type == BLOCK_ADD:
+            block_locations[block_id].append((timestamp, machine_id, block_size))
+    dfs_csv_file.close()
+    return block_locations
+
+
+def get_task_locality(trace_path, task_blocks, blocks_locations):
+    task_locality = []
     tasks_scheduled = set([])
     for num_file in range(0, FLAGS.num_files_to_process, 1):
         csv_file = open(trace_path + "/task_events/part-" +
                         '{:05}'.format(num_file) + "-of-00500.csv")
         csv_reader = csv.reader(csv_file)
         for row in csv_reader:
+            if len(row) < 6:
+                print 'Reached truncated row'
+                break
             timestamp = long(row[0])
             task_id = (long(row[2]), long(row[3]))
             event_type = int(row[5])
@@ -57,23 +88,39 @@ def get_scheduling_delays(trace_path):
                 continue
             if timestamp >= FLAGS.runtimes_before_timestamp:
                 continue
-            while timestamps[timestamp_index] < timestamp:
-                timestamp_index = timestamp_index + 1
-                if timestamp_index >= timestamp_len:
-                    return delays
 
-            if event_type == SUBMIT_EVENT:
-                if task_id not in tasks_scheduled:
-                    delays.append(runtimes[timestamp_index])
-            elif event_type == SCHEDULE_EVENT:
+            if event_type == SCHEDULE_EVENT and task_id not in tasks_scheduled:
+                machine_id = long(row[4])
                 tasks_scheduled.add(task_id)
+                local_data_size = 0
+                total_data_size = 0
+                num_local_blocks = 0
+                for block_id in task_blocks[task_id]:
+                    locations = blocks_locations[block_id]
+                    # XXX(ionel): This is not quite correct. We should check
+                    # the machine was still alive. However, machine failures
+                    # are rare so they're not going to have an effect on the
+                    # graph.
+                    index = 0
+                    for (timestamp, block_machine_id, block_size) in locations:
+                        if index == 0:
+                            total_data_size += block_size
+                        index += 1
+                        if machine_id == block_machine_id:
+                            local_data_size += block_size
+                            num_local_blocks += 1
+                            break
+                if total_data_size > 0:
+                    task_locality.append(long(float(local_data_size) / float(total_data_size) * 100.0))
+#                    print total_data_size, local_data_size
+#                    print len(task_blocks[task_id]), num_local_blocks
 
         csv_file.close()
-    return delays
+    return task_locality
 
 
 def plot_cdf(plot_file_name, cdf_vals, label_axis, labels, log_scale=False,
-             bin_width=1000, unit='ms'):
+             bin_width=1000):
     colors = ['b', 'r', 'g', 'c', 'm', 'y', 'k']
     if FLAGS.paper_mode:
         plt.figure(figsize=(3.33, 2.22))
@@ -83,8 +130,6 @@ def plot_cdf(plot_file_name, cdf_vals, label_axis, labels, log_scale=False,
         set_rcs()
 
     max_cdf_val = 0
-    max_perc90 = 0
-    max_perc99 = 0
     index = 0
     for vals in cdf_vals:
         print "Statistics for %s" % (labels[index])
@@ -111,13 +156,11 @@ def plot_cdf(plot_file_name, cdf_vals, label_axis, labels, log_scale=False,
         perc75 = np.percentile(vals, 75)
         print " 75th: %f" % (perc75)
         perc90 = np.percentile(vals, 90)
-        max_perc90 = max(max_perc90, perc90)
         print " 90th: %f" % (perc90)
         perc99 = np.percentile(vals, 99)
-        max_perc99 = max(max_perc99, perc99)
         print " 99th: %f" % (perc99)
 
-        bin_range = max_val - min_val
+        bin_range = max_val - min_val + 1
         num_bins = bin_range / bin_width
         (n, bins, patches) = plt.hist(vals, bins=num_bins, log=False,
                                       normed=True, cumulative=True,
@@ -130,46 +173,19 @@ def plot_cdf(plot_file_name, cdf_vals, label_axis, labels, log_scale=False,
 
         index += 1
 
-    time_val = 1000
-    if unit is 'ms':
-        time_val = 1000 # 1 ms
-    elif unit is 'sec':
-        time_val = 1000 * 1000 # 1 sec
-    else:
-        print 'Error: unknown time unit'
-        exit(1)
-    if log_scale:
-        plt.xscale("log")
-        plt.xlim(0, max_cdf_val)
-        to_time_unit = time_val
-        x_ticks = []
-        while time_val <= max_cdf_val:
-            x_ticks.append(time_val)
-            time_val *= 10
-        plt.xticks(x_ticks, [str(x / to_time_unit) for x in x_ticks])
-    else:
-        plt.xlim(0, max_cdf_val)
-        plt.xticks(range(0, max_cdf_val, 10000000),
-                   [str(x / time_val) for x in range(0, max_cdf_val, 10000000)])
+    plt.xlim(0, 100)
+    plt.xticks(range(0, 101, 10), range(0, 101, 10))
+
     plt.ylim(0, 1.0)
     plt.yticks(np.arange(0.0, 1.01, 0.2),
                [str(x) for x in np.arange(0.0, 1.01, 0.2)])
 
     plt.xlabel(label_axis)
+    plt.ylabel('CDF of task data locality')
 
     plt.legend(loc=4, frameon=False, handlelength=2.5, handletextpad=0.2)
 
     plt.savefig("%s.pdf" % plot_file_name,
-                format="pdf", bbox_inches="tight")
-
-    plt.ylim(0, 0.99)
-    plt.xlim(0, max_perc99);
-    plt.savefig("%s-99th.pdf" % plot_file_name,
-                format="pdf", bbox_inches="tight")
-
-    plt.ylim(0, 0.9)
-    plt.xlim(0, max_perc90);
-    plt.savefig("%s-90th.pdf" % plot_file_name,
                 format="pdf", bbox_inches="tight")
 
 
@@ -181,13 +197,15 @@ def main(argv):
 
     trace_paths = FLAGS.trace_paths.split(',')
     labels = FLAGS.trace_labels.split(',')
-    delays = []
+    task_localities = []
     for trace_path in trace_paths:
-        trace_delays = get_scheduling_delays(trace_path)
-        print "Number tasks scheduled: %d" % (len(trace_delays))
-        delays.append(trace_delays)
-    plot_cdf('scheduling_delay_cdf', delays, "Latency [sec]",
-             labels, log_scale=False, bin_width=100000, unit='sec')
+        task_blocks = get_task_inputs(trace_path)
+        block_locations = get_block_locations(trace_path)
+        task_locality = get_task_locality(trace_path, task_blocks, block_locations)
+        task_localities.append(task_locality)
+
+    plot_cdf('task_percentage_local_input_cdf', task_localities,
+             'Data locality [\%]', labels, log_scale=False, bin_width=1)
 
 
 if __name__ == '__main__':

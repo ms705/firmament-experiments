@@ -38,9 +38,9 @@ def get_scheduler_runtimes(trace_path, column_index):
 
 
 def plot_timeline(plot_file_name, runtimes, setups):
-    markers = {'cycle cancelling':'x', 'cost scaling':'o', 'relax':'+',
+    markers = {'cycle cancelling':'x', 'Cost scaling':'o', 'Relaxation':'+',
                'succ. shortest':'^'}
-    colors = {'cycle cancelling':'r', 'cost scaling':'b', 'relax':'g',
+    colors = {'cycle cancelling':'r', 'Cost scaling':'b', 'Relaxation':'g',
               'succ. shortest':'c'}
     if FLAGS.paper_mode:
         plt.figure(figsize=(3.33, 2.22))
@@ -92,15 +92,15 @@ def main(argv):
         # XXX(malte): hack to deal with cs2 not providing this info
         if algo_runtime[0] != 18446744073709551615:
             if 'cost_scaling' in trace_path:
-                if 'cost scaling' in runtimes:
-                    runtimes['cost scaling'].append(algo_runtime)
+                if 'Cost scaling' in runtimes:
+                    runtimes['Cost scaling'].append(algo_runtime)
                 else:
-                    runtimes['cost scaling'] = [algo_runtime]
+                    runtimes['Cost scaling'] = [algo_runtime]
             elif 'relax' in trace_path:
-                if 'relax' in runtimes:
-                    runtimes['relax'].append(algo_runtime)
+                if 'Relaxation' in runtimes:
+                    runtimes['Relaxation'].append(algo_runtime)
                 else:
-                    runtimes['relax'] = [algo_runtime]
+                    runtimes['Relaxation'] = [algo_runtime]
             elif 'successive_shortest' in trace_path:
                 if 'successive shortest' in runtimes:
                     runtimes['successive shortest'].append(algo_runtime)
