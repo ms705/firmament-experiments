@@ -6,7 +6,8 @@ if [[ $# -lt 1 ]]; then
 fi
 
 echo "Killing coordinators..."
-parallel-ssh -t 0 -h $1 "killall coordinator"
+#parallel-ssh -t 0 -h $1 "killall coordinator"
+parallel-nuke -t 0 -h $1 "coordinator"
 #parallel-ssh -t 0 -h $1 "curl http://localhost:8080/shutdown"
 
 echo "Cleaning up zombies..."
