@@ -12,7 +12,7 @@ int main(int argc, char* argv[]) {
     return 1;
   }
   // Sleep for 100ms.
-  sleep(100 * 1000);
+  usleep(100 * 1000);
   struct hdfsBuilder* hdfs_builder = hdfsNewBuilder();
   if (!hdfs_builder) {
     printf("Could not create HDFS builder");
