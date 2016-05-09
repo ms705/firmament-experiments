@@ -4,13 +4,15 @@
 #include <hdfs.h>
 #include <stdlib.h>
 #include <stdio.h>
+#include <unistd.h>
 
 int main(int argc, char* argv[]) {
   if (argc < 4) {
     printf("usage: hdfs_get <name node address> <name node port> <input file>\n");
     return 1;
   }
-
+  // Sleep for 100ms.
+  sleep(100 * 1000);
   struct hdfsBuilder* hdfs_builder = hdfsNewBuilder();
   if (!hdfs_builder) {
     printf("Could not create HDFS builder");
