@@ -27,6 +27,8 @@ def get_scheduling_delays(trace_path):
     delays = []
     task_submit_time = {}
     tasks_submitted = set([])
+    task_scheduled = {}
+    tasks_on_machine = {}
     for num_file in range(0, FLAGS.num_files_to_process, 1):
         csv_file = open(trace_path + "/task_events/part-" +
                         '{:05}'.format(num_file) + "-of-00500.csv")
@@ -34,14 +36,27 @@ def get_scheduling_delays(trace_path):
         for row in csv_reader:
             timestamp = long(row[0])
             task_id = (long(row[2]), long(row[3]))
+            machine = row[4]
             event_type = int(row[5])
             if event_type == SUBMIT_EVENT:
                 tasks_submitted.add(task_id)
                 task_submit_time[task_id] = timestamp
+            elif event_type == SCHEDULE_EVENT:
+                task_scheduled[task_id] = machine
+                if machine in tasks_on_machine:
+                    tasks_on_machine[machine] = tasks_on_machine[machine] + 1
+                else:
+                    tasks_on_machine[machine] = 1
+                if tasks_on_machine[machine] > 2:
+                    print "MACHINE", machine, "has", tasks_on_machine[machine]
             elif event_type == FINISH_EVENT:
+                machine = task_scheduled[task_id]
+                tasks_on_machine[machine] = tasks_on_machine[machine] - 1
                 if task_id in task_submit_time:
                     submit_time = task_submit_time[task_id]
                     delays.append(timestamp - submit_time)
+                    if timestamp - submit_time > 30000000:
+                        print task_id
                 else:
                     print ("Error: schedule event before submit event for task "
                            "(%s, %s)" % (row[2], row[3]))
@@ -53,7 +68,7 @@ def get_scheduling_delays(trace_path):
 
 def plot_cdf(plot_file_name, cdf_vals, label_axis, labels, log_scale=False,
              bin_width=1000, unit='ms'):
-    colors = ['b', 'r', 'g', 'c', 'm', 'y', 'k']
+    colors = ['r', 'm', 'g', 'c', 'm', 'y', 'k']
     if FLAGS.paper_mode:
         plt.figure(figsize=(3.33, 2.22))
         set_paper_rcs()
@@ -117,6 +132,7 @@ def plot_cdf(plot_file_name, cdf_vals, label_axis, labels, log_scale=False,
     else:
         print 'Error: unknown time unit'
         exit(1)
+    max_cdf_val = 30000001
     if log_scale:
         plt.xscale("log")
         plt.xlim(0, max_cdf_val)
@@ -133,7 +149,7 @@ def plot_cdf(plot_file_name, cdf_vals, label_axis, labels, log_scale=False,
     plt.ylim(0, 1.0)
     plt.yticks(np.arange(0.0, 1.01, 0.2),
                [str(x) for x in np.arange(0.0, 1.01, 0.2)])
-    plt.ylabel('CDF of task placement latency')
+    plt.ylabel('CDF of task response time')
     plt.xlabel(label_axis)
 
     plt.legend(loc=4, frameon=False, handlelength=2.5, handletextpad=0.2)
@@ -165,7 +181,7 @@ def main(argv):
         trace_delays = get_scheduling_delays(trace_path)
         delays.append(trace_delays)
 
-    plot_cdf('scheduling_delay_cdf', delays, "Task placement latency [sec]",
+    plot_cdf('scheduling_delay_cdf', delays, "Task response time [sec]",
              labels, log_scale=False, bin_width=10000, unit='sec')
 
 
