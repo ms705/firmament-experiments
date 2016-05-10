@@ -26,6 +26,7 @@ gflags.DEFINE_integer('runtimes_before_timestamp', 0,
 
 BYTES_TO_MB = 1048576
 BYTES_TO_GB = 1073741824
+BLOCK_SIZE_BYTES = 1073741824
 BLOCK_ADD = 0
 BLOCK_REMOVE = 1
 
@@ -39,6 +40,7 @@ def get_task_inputs(trace_path):
         if len(row) < 3:
             print 'Reached truncated row'
             break
+
         job_id = long(row[0])
         task_index = long(row[1])
         block_id = long(row[2])
@@ -73,6 +75,8 @@ def get_block_locations(trace_path):
 def get_task_locality(trace_path, task_blocks, blocks_locations):
     task_locality = []
     tasks_scheduled = set([])
+    total_local_data = 0
+    unique_blocks = set([])
     for num_file in range(0, FLAGS.num_files_to_process, 1):
         csv_file = open(trace_path + "/task_events/part-" +
                         '{:05}'.format(num_file) + "-of-00500.csv")
@@ -96,6 +100,7 @@ def get_task_locality(trace_path, task_blocks, blocks_locations):
                 total_data_size = 0
                 num_local_blocks = 0
                 for block_id in task_blocks[task_id]:
+                    unique_blocks.add(block_id)
                     locations = blocks_locations[block_id]
                     # XXX(ionel): This is not quite correct. We should check
                     # the machine was still alive. However, machine failures
@@ -108,6 +113,7 @@ def get_task_locality(trace_path, task_blocks, blocks_locations):
                         index += 1
                         if machine_id == block_machine_id:
                             local_data_size += block_size
+                            total_local_data += block_size
                             num_local_blocks += 1
                             break
                 if total_data_size > 0:
@@ -116,7 +122,8 @@ def get_task_locality(trace_path, task_blocks, blocks_locations):
 #                    print len(task_blocks[task_id]), num_local_blocks
 
         csv_file.close()
-    return task_locality
+    total_dfs_data = len(unique_blocks) * BLOCK_SIZE_BYTES
+    return (total_dfs_data, total_local_data, task_locality)
 
 
 def plot_cdf(plot_file_name, cdf_vals, label_axis, labels, log_scale=False,
@@ -190,6 +197,31 @@ def plot_cdf(plot_file_name, cdf_vals, label_axis, labels, log_scale=False,
                 format="pdf", bbox_inches="tight")
 
 
+def plot_barchart(plot_file_name, percentage_local_data, ylabel, xlabels):
+    colors = ['b', 'r', 'g', 'c', 'm', 'y', 'k']
+    if FLAGS.paper_mode:
+        plt.figure(figsize=(1.66, 1.11))
+        set_paper_rcs()
+    else:
+        plt.figure()
+        set_rcs()
+
+
+    plt.bar(1, percentage_local_data[0], width=0.5, align="center",
+            label=xlabels[0], color=colors[0])
+
+    plt.bar(2, percentage_local_data[1], width=0.5, align="center",
+            label=xlabels[1], color=colors[1])
+
+    plt.ylim(0, 100)
+    plt.xticks([1, 2], ['Quincy 14\%', 'Rapid 2\%'])
+    plt.yticks(range(0, 101, 20), range(0, 101, 20))
+    plt.ylabel(ylabel)
+
+    plt.savefig("%s.pdf" % plot_file_name,
+                format="pdf", bbox_inches="tight")
+
+
 def main(argv):
     try:
         argv = FLAGS(argv)
@@ -199,14 +231,18 @@ def main(argv):
     trace_paths = FLAGS.trace_paths.split(',')
     labels = FLAGS.trace_labels.split(',')
     task_localities = []
+    percentage_data_local = []
     for trace_path in trace_paths:
         task_blocks = get_task_inputs(trace_path)
         block_locations = get_block_locations(trace_path)
-        task_locality = get_task_locality(trace_path, task_blocks, block_locations)
+        (total_dfs_size, total_local_data, task_locality) = get_task_locality(trace_path, task_blocks, block_locations)
+        percentage_data_local.append(total_local_data * 100 / total_dfs_size)
         task_localities.append(task_locality)
 
-    plot_cdf('task_percentage_local_input_cdf', task_localities,
-             'Data locality [\%]', labels, log_scale=False, bin_width=1)
+    plot_barchart('task_percentage_local_bar_chart', percentage_data_local,
+                  'Data read locally [\%]', labels)
+#    plot_cdf('task_percentage_local_input_cdf', task_localities,
+#             'Data locality [\%]', labels, log_scale=False, bin_width=1)
 
 
 if __name__ == '__main__':
