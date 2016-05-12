@@ -38,8 +38,8 @@ for name, jobid in body_dec.items():
   print "Getting %s (%s)..." % (name, jobid)
   data = grab_url('http://%s:%d/job/dtg/?id=%s' % (sys.argv[1], int(sys.argv[2]), jobid))
 
-  cat = name[0:name.rfind("_")]
-  run = name[name.rfind("_") + 1:]
+  cat = name[0:name.rfind("/")]
+  run = name[name.rfind("/") + 1:]
   print cat
   try:
     mkdir_p(sys.argv[3] + "/" + cat)
