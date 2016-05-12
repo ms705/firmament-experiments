@@ -23,7 +23,7 @@ def plot_cdf(plot_file_name, cdf_vals, label_axis, labels, log_scale=False,
              bin_width=1000, unit='sec'):
     colors = ['b', 'g', 'r', 'y', 'm', 'y', 'k']
     if FLAGS.paper_mode:
-        plt.figure(figsize=(3.33, 2.22))
+        plt.figure(figsize=(1.75, 1.17))
         set_paper_rcs()
     else:
         plt.figure()
@@ -97,9 +97,10 @@ def plot_cdf(plot_file_name, cdf_vals, label_axis, labels, log_scale=False,
             time_val *= 10
         plt.xticks(x_ticks, [str(x / to_time_unit) for x in x_ticks])
     else:
+        max_cdf_val = 50000000
         plt.xlim(0, max_cdf_val)
-        plt.xticks(range(0, max_cdf_val, 5000000),
-                   [str(x / to_time_unit) for x in range(0, max_cdf_val, 5000000)])
+        plt.xticks(range(0, max_cdf_val, 10000000),
+                   [str(x / to_time_unit) for x in range(0, max_cdf_val, 10000000)])
     plt.ylim(0, 1.0)
     plt.yticks(np.arange(0.0, 1.01, 0.2),
                [str(x) for x in np.arange(0.0, 1.01, 0.2)])
@@ -107,8 +108,8 @@ def plot_cdf(plot_file_name, cdf_vals, label_axis, labels, log_scale=False,
     plt.ylabel('CDF of runtimes')
     plt.xlabel(label_axis)
 
-    plt.legend(loc='upper left', frameon=False, handlelength=1.5,
-               handletextpad=0.2)
+    plt.legend(loc='upper left', frameon=False, handlelength=1.0,
+               handletextpad=0.05, fontsize='small', borderaxespad=0.1)
 
     plt.savefig("%s.pdf" % plot_file_name,
                 format="pdf", bbox_inches="tight")

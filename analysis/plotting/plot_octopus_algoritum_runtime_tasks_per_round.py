@@ -69,7 +69,7 @@ def plot_timeline(plot_file_name, runtimes, setups):
                ["%u" % x for x in range(0, max_x_val + 1, 1000)],
                rotation=30, ha='right')
     plt.xlim(0, max_x_val)
-    plt.xlabel('Tasks per scheduling round')
+    plt.xlabel('Tasks in arriving job')
 
     plt.legend(loc=2, frameon=False, handlelength=1.5, handletextpad=0.1,
                numpoints=1)

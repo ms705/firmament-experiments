@@ -58,19 +58,28 @@ def plot_timeline(plot_file_name, all_x_vals, all_y_vals, labels, unit='sec'):
     for index in range(0, len(all_x_vals)):
         max_x_val = max(max_x_val, np.max(all_x_vals[index]))
         max_y_val = max(max_y_val, np.max(all_y_vals[index]))
-        plt.plot(all_x_vals[index], [x / 1000 / 1000 for x in all_y_vals[index]],
-                 label=labels[index],
-                 marker=markers[labels[index]],
-                 color=colors[labels[index]],
-                 mfc='none', mec=colors[labels[index]],
-                 mew=1.0, lw=1.0)
+        if labels[index] != 'Relaxation only':
+            plt.plot(all_x_vals[index], [x / 1000 / 1000 for x in all_y_vals[index]],
+                     label=labels[index],
+                     marker=markers[labels[index]],
+                     color=colors[labels[index]],
+                     mfc='none', mec=colors[labels[index]],
+                     mew=1.0, lw=1.0, markevery=2)
+        else:
+            plt.plot(all_x_vals[index], [x / 1000 / 1000 for x in all_y_vals[index]],
+                     label=labels[index],
+                     marker=markers[labels[index]],
+                     color=colors[labels[index]],
+                     mfc='none', mec=colors[labels[index]],
+                     mew=1.0, lw=1.0, markevery=1)
+
     plt.ylabel('Algorithm runtime [sec]')
     plt.ylim(0, max_y_val / 1000 / 1000 + 1)
 
     plt.xlim(FLAGS.runtimes_after_timestamp, max_x_val)
     plt.xticks(range(FLAGS.runtimes_after_timestamp, max_x_val, 1000000000),
                [str(x / 1000 / 1000) for x in range(FLAGS.runtimes_after_timestamp, max_x_val, 1000000000)])
-    plt.xlabel('Time [' + unit + ']')
+    plt.xlabel('Simulation Time [' + unit + ']')
     plt.legend(loc='upper left', frameon=False, handlelength=1.5,
                handletextpad=0.2, numpoints=1)
     plt.savefig("%s.pdf" % plot_file_name,

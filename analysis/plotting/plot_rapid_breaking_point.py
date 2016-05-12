@@ -125,7 +125,7 @@ def main(argv):
                  marker='o', mfc='none', mec='y', mew=1.0, lw=1.0)
 
 
-    plt.ylabel('Response time [ms]')
+    plt.ylabel('Task response time [ms]')
     plt.ylim(0, 5000)
     plt.xlim(0, 5000)
 

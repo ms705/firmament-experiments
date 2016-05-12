@@ -33,7 +33,7 @@ def get_total_runtime(trace_path):
 
 def plot_scalability(plot_file_name, setups, runtimes,
                      x_label="Cluster size [machines]",
-                     y_label="Scheduling latency [s]"):
+                     y_label="Scheduling latency [sec]"):
     if FLAGS.paper_mode:
         plt.figure(figsize=(3.33, 2.22))
         set_paper_rcs()
@@ -47,7 +47,7 @@ def plot_scalability(plot_file_name, setups, runtimes,
     #plt.errorbar(range(1, len(setups) + 1), [np.mean(x) for x in runtimes],
     #             yerr=[np.std(x) for x in runtimes], marker="x")
     plt.xlim(0.5, len(setups) + 0.5)
-    plt.ylim(ymin=0)
+    plt.ylim(0, 100)
     plt.xticks(range(1, len(setups) + 1),
                ["%u" % (float(x) * 12500) for x in setups],
                rotation=30, ha='right')

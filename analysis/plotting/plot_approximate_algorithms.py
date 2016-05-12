@@ -22,7 +22,7 @@ def plot_timeline(plot_file_name, x_vals, y_vals, labels, log_scale):
     colors = {'cycle cancelling':'r', 'Cost scaling':'b', 'Relaxation':'g',
               'succ. shortest':'c'}
     if FLAGS.paper_mode:
-        plt.figure(figsize=(3.33, 2.22))
+        plt.figure(figsize=(3, 2))
         set_paper_rcs()
     else:
         plt.figure()

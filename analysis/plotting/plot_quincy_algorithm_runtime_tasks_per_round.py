@@ -59,7 +59,7 @@ def plot_timeline(plot_file_name, runtimes, setups):
     utilization = [float(144339 + x) / 161256 * 100 for x in setups]
     plt.xticks(setups,
                ["%.2f" % x for x in utilization], rotation=30, ha='right')
-    plt.xlabel('Cluster utilization [\%]')
+    plt.xlabel('Cluster slot utilization [\%]')
 
     plt.legend(loc=2, frameon=False, handlelength=1.5, handletextpad=0.1,
                numpoints=1)
