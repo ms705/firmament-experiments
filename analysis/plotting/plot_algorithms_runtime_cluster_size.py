@@ -117,7 +117,7 @@ def main(argv):
     runtimes['Cycle cancelling'].append(FLAGS.max_runtime + 1000000000)
 
     if FLAGS.paper_mode:
-        plt.figure(figsize=(3, 2))
+        plt.figure(figsize=(2.4, 1.6))
         set_paper_rcs()
     else:
         plt.figure()
