@@ -49,7 +49,7 @@ def plot_scalability(plot_file_name, setups, runtimes,
     plt.xlim(0.5, len(setups) + 0.5)
     plt.ylim(0, 100)
     plt.xticks(range(1, len(setups) + 1),
-               ["%u" % (float(x) * 12500) for x in setups],
+               ["%u" % (round(float(x) * 12500)) for x in setups],
                rotation=30, ha='right')
     plt.xlabel(x_label)
     plt.ylabel(y_label)
@@ -69,7 +69,9 @@ def main(argv):
 
     runtimes = []
     for t in trace_paths:
-      runtimes.append(get_total_runtime(t))
+        trace_runtimes = get_total_runtime(t)
+        runtimes.append(trace_runtimes)
+        print t, np.mean(trace_runtimes)
     plot_scalability('quincy_scalability', labels, runtimes)
 
 

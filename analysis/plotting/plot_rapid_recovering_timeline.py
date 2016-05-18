@@ -74,6 +74,8 @@ def plot_timeline(plot_file_name, all_x_vals, all_y_vals, labels, unit='sec'):
                      mew=1.0, lw=1.0, markevery=1)
 
     plt.ylabel('Algorithm runtime [sec]')
+    plt.yticks(range(0, max_y_val / 1000 / 1000 + 1, 40),
+               range(0, max_y_val / 1000 / 1000 + 1, 40))
     plt.ylim(0, max_y_val / 1000 / 1000 + 1)
 
     plt.xlim(FLAGS.runtimes_after_timestamp, max_x_val)

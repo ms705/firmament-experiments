@@ -48,8 +48,8 @@ ssh ganymede.cl.cam.ac.uk '/mnt/data/icg27/firmament-experiments/analysis/plotti
 ssh ganymede.cl.cam.ac.uk '/mnt/data/icg27/firmament-experiments/analysis/plotting/generate_task_percentage_local_input.sh'
 
 
-# Quincy machine hogging (Figure 18)
-# TODO
+# Rapid vs Sparrow net cost model (Figure 18)
+ssh ganymede.cl.cam.ac.uk '/mnt/data/icg27/firmament-experiments/analysis/plotting/generate_net_task_response_time.sh'
 
 # Copy the PDFs
 scp ganymede.cl.cam.ac.uk:/mnt/data/icg27/firmament-experiments/analysis/plotting/*.pdf ./
