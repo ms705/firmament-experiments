@@ -1,0 +1,33 @@
+baselines/
+
+coco/
+ + caelum_600s_0 -- 
+ + caelum_600s_1 -- 
+ + caelum_600s_2 -- 
+ + caelum_600s_3 -- 
+ + caelum_600s_4 -- 600s on caelum cluster, reservation + waves, no CPU pinning, 2 Hz stats, cpu_spin at 2s instead of 60s
+ + caelum_3600s_0 -- 3600s on caelum cluster, some failures?
+ + caelum_3600s_1 -- 3600s on caelum cluster, some failures?
+ + caelum_3600s_2 -- 3600s on caelum cluster, no CPU pinning, 100Hz stats, failures due to disk space (10)
+ + caelum_3600s_3 -- 3600s on caelum cluster, not quite fixed resource fit, no CPU pinning, 10 Hz stats, no failures
+ + caelum_3600s_4 -- 3600s on caelum cluster, not quite fixed resource fit, no CPU pinning, 2 Hz stats, no failures
+ + caelum_3600s_5 -- 3600s on caelum cluster, fixed resource fit, no CPU pinning, 2 Hz stats, no failures
+ + caelum_3600s_6 -- 3600s on caelum cluster, reservation + waves, no CPU pinning, 2 Hz stats, no failures
+
+mesos/
+ + test_3600s_0   -- 3600s on SRG cluster, with failures due to disk space
+ + test_3600s_1   -- 3600s on SRG cluster, no failures
+ + caelum_3600s_0 -- 3600s on caelum cluster, no failures
+
+simple/
+ + test_600s_0    -- 600s on SRG cluster
+ + test_3600s_0   -- 3600s on SRG cluster, no failures
+ + caelum_3600s_0 -- 3600s on caelum cluster, no CPU pinning, 2 Hz stats, 1 failed mem_stream early on
+
+whare_mcs/
+ + test_600s_0   -- 600s on SRG cluster
+ + test_3600s_0  -- 3600s on SRG cluster, with failures
+ + test_3600s_1  -- 3600s on SRG cluster, with failures
+ + test_3600s_2  -- 3600s on SRG cluster, with failures
+ + test_3600s_3  -- 3600s on SRG cluster, no failures
+ + caelum_3600s_0  -- 3600s on caelum cluster, some failed io_stream tasks
