@@ -42,9 +42,9 @@ def get_scheduler_runtimes(trace_path, column_index):
 
 
 def plot_timeline(plot_file_name, all_x_vals, all_y_vals, labels, unit='sec'):
-    markers = {'Rapid':'x', 'Cost scaling only':'o', 'Relaxation only':'+',
+    markers = {'Rapid':'x', 'Quincy (Cost scaling)':'o', 'Relaxation only':'+',
                'succ. shortest':'^'}
-    colors = {'Rapid':'r', 'Cost scaling only':'b', 'Relaxation only':'g',
+    colors = {'Rapid':'r', 'Quincy (Cost scaling)':'b', 'Relaxation only':'g',
               'succ. shortest':'c'}
     if FLAGS.paper_mode:
         plt.figure(figsize=(3.33, 2.22))
@@ -72,17 +72,26 @@ def plot_timeline(plot_file_name, all_x_vals, all_y_vals, labels, unit='sec'):
                      color=colors[labels[index]],
                      mfc='none', mec=colors[labels[index]],
                      mew=1.0, lw=1.0, markevery=1)
-
+    max_y_val = 200000001
+    max_x_val = 4000000001
     plt.ylabel('Algorithm runtime [sec]')
     plt.yticks(range(0, max_y_val / 1000 / 1000 + 1, 40),
                range(0, max_y_val / 1000 / 1000 + 1, 40))
     plt.ylim(0, max_y_val / 1000 / 1000 + 1)
 
+
+    plt.axvspan(1425626250, 1762088834, lw=0, color='0.8')
+    plt.axvspan(2139708317, 3076590575, lw=0, color='0.8')
+
+    # plt.annotate('oversubscribed', xy=(0.6, 0.9), xycoords='axes fraction',
+    #              xytext=(20, 0), textcoords='offset points',
+    #              arrowprops=dict(arrowstyle="->"), ha='left')
+
     plt.xlim(FLAGS.runtimes_after_timestamp, max_x_val)
-    plt.xticks(range(FLAGS.runtimes_after_timestamp, max_x_val, 1000000000),
-               [str(x / 1000 / 1000) for x in range(FLAGS.runtimes_after_timestamp, max_x_val, 1000000000)])
+    plt.xticks(range(FLAGS.runtimes_after_timestamp, max_x_val, 500000000),
+               [str(x / 1000 / 1000) for x in range(FLAGS.runtimes_after_timestamp, max_x_val, 500000000)])
     plt.xlabel('Simulation Time [' + unit + ']')
-    plt.legend(loc='upper left', frameon=False, handlelength=1.5,
+    plt.legend(loc='upper left', frameon=False, handlelength=1.0,
                handletextpad=0.2, numpoints=1)
     plt.savefig("%s.pdf" % plot_file_name,
                 format="pdf", bbox_inches="tight")

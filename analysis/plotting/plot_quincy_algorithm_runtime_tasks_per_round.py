@@ -35,30 +35,58 @@ def get_scheduler_runtimes(trace_path, column_index):
 
 
 def plot_timeline(plot_file_name, runtimes, setups):
-    colors = ['b', 'g', 'r', 'c', 'm', 'y', 'k']
-    markers = ['o', '+', '^', 'v']
+    colors = {'Incremental cost scaling':'k', 'Cost scaling':'b',
+              'Relaxation':'g'}
+    markers = {'Incremental cost scaling':'^', 'Cost scaling':'o',
+              'Relaxation':'+'}
     if FLAGS.paper_mode:
         plt.figure(figsize=(3.33, 2.22))
         set_paper_rcs()
     else:
         plt.figure()
         set_rcs()
-    index = 0
     max_y_val = 0
-    for algo, algo_runtimes in runtimes.items():
+    if 'Relaxation' in runtimes:
+        algo = 'Relaxation'
+        algo_runtimes = runtimes[algo]
         max_y_val = max(max_y_val, np.max(algo_runtimes))
         plt.plot(setups,
                  [y / 1000.0 / 1000.0 for y in algo_runtimes],
-                 label=algo, color=colors[index], marker=markers[index],
-                 mfc='none', mec=colors[index], mew=1.0, lw=1.0)
-        index = index + 1
+                 label=algo, color=colors[algo], marker=markers[algo],
+                 mfc='none', mec=colors[algo], mew=1.0, lw=1.0)
+
+    if 'Cost scaling' in runtimes:
+        algo = 'Cost scaling'
+        algo_runtimes = runtimes[algo]
+        max_y_val = max(max_y_val, np.max(algo_runtimes))
+        plt.plot(setups,
+                 [y / 1000.0 / 1000.0 for y in algo_runtimes],
+                 label=algo, color=colors[algo], marker=markers[algo],
+                 mfc='none', mec=colors[algo], mew=1.0, lw=1.0)
+
+    if 'Incremental cost scaling' in runtimes:
+        algo = 'Incremental cost scaling'
+        algo_runtimes = runtimes[algo]
+        max_y_val = max(max_y_val, np.max(algo_runtimes))
+        plt.plot(setups,
+                 [y / 1000.0 / 1000.0 for y in algo_runtimes],
+                 label=algo, color=colors[algo], marker=markers[algo],
+                 mfc='none', mec=colors[algo], mew=1.0, lw=1.0)
+
     plt.ylabel('Algorithm runtime [sec]')
     plt.ylim(0, max_y_val / 1000.0 / 1000.0 + 5)
     max_x_val = setups[-1]
     plt.xlim(2500, max_x_val)
+    plt.yticks(range(0, 400000001, 50000000), range(0, 401, 50))
+    plt.ylim(0, max_y_val)
     utilization = [float(144339 + x) / 161256 * 100 for x in setups]
-    plt.xticks(setups,
-               ["%.2f" % x for x in utilization], rotation=30, ha='right')
+    print setups
+    x_ticks_vals = []
+    for utilization in range(91, 101, 3):
+        x_ticks_vals.append(utilization * 161256 / 100 - 144339)
+    plt.xticks(x_ticks_vals, range(91, 101, 3))
+    # plt.xticks(setups,
+    #            ["%.2f" % x for x in utilization], rotation=30, ha='right')
     plt.xlabel('Cluster slot utilization [\%]')
 
     plt.legend(loc=2, frameon=False, handlelength=1.5, handletextpad=0.1,
@@ -82,7 +110,12 @@ def main(argv):
         # XXX(malte): hack to deal with cs2 not providing this info
         if algo_runtime[0] != 18446744073709551615:
             avg_runtime = np.mean(algo_runtime)
-            if 'cost_scaling' in trace_path:
+            if 'incremental_cost_scaling' in trace_path:
+                if 'Incremental cost scaling' in runtimes:
+                    runtimes['Incremental cost scaling'].append(avg_runtime)
+                else:
+                    runtimes['Incremental cost scaling'] = [avg_runtime]
+            elif 'cost_scaling' in trace_path:
                 if 'Cost scaling' in runtimes:
                     runtimes['Cost scaling'].append(avg_runtime)
                 else:

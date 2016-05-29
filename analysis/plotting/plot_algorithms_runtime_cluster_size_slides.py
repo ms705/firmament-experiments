@@ -35,9 +35,9 @@ def get_scheduler_runtimes(trace_path, column_index):
 
 
 def plot_timeline(plot_file_name, runtimes, setups):
-    markers = {'Cycle cancelling':'x', 'Cost scaling':'o', 'Relaxation':'+',
+    markers = {'Cycle canceling':'x', 'Cost scaling':'o', 'Relaxation':'+',
                'Succ. shortest':'^'}
-    colors = {'Cycle cancelling':'r', 'Cost scaling':'b', 'Relaxation':'g',
+    colors = {'Cycle canceling':'r', 'Cost scaling':'b', 'Relaxation':'g',
               'Succ. shortest':'c'}
     if FLAGS.paper_mode:
         plt.figure(figsize=(3.33, 2.22))
@@ -46,7 +46,7 @@ def plot_timeline(plot_file_name, runtimes, setups):
         plt.figure()
         set_rcs()
     setup_vals = [long(round(float(x) * 12500)) for x in setups]
-    algo_order = ['Relaxation', 'Cost scaling', 'Succ. shortest', 'Cycle cancelling']
+    algo_order = ['Relaxation', 'Cost scaling', 'Succ. shortest', 'Cycle canceling']
     for algo in algo_order:
         algo_runtimes = runtimes[algo]
         plt.plot(setup_vals[:len(algo_runtimes)],
@@ -107,10 +107,10 @@ def main(argv):
                 else:
                     runtimes['Succ. shortest'] = [avg_runtime]
             elif 'cycle_cancelling' in trace_path:
-                if 'Cycle cancelling' in runtimes:
-                    runtimes['Cycle cancelling'].append(avg_runtime)
+                if 'Cycle canceling' in runtimes:
+                    runtimes['Cycle canceling'].append(avg_runtime)
                 else:
-                    runtimes['Cycle cancelling'] = [avg_runtime]
+                    runtimes['Cycle canceling'] = [avg_runtime]
             else:
                 print 'Error: Unexpected algorithm'
     print runtimes

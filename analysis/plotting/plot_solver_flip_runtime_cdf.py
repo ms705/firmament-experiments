@@ -24,7 +24,7 @@ gflags.DEFINE_integer('number_runs_in_cost_scaling', 2,
 
 def plot_cdf(plot_file_name, cdf_vals, label_axis, labels, log_scale=False,
              bin_width=1000, unit='ms'):
-    colors = ['b', 'y', 'g', 'c', 'm', 'y', 'k']
+    colors = ['y', 'b', 'g', 'c', 'm', 'y', 'k']
     if FLAGS.paper_mode:
         plt.figure(figsize=(3.33, 2.22))
         set_paper_rcs()
@@ -114,16 +114,6 @@ def plot_cdf(plot_file_name, cdf_vals, label_axis, labels, log_scale=False,
     plt.legend(loc=4, frameon=False, handlelength=1.5, handletextpad=0.2)
 
     plt.savefig("%s.pdf" % plot_file_name,
-                format="pdf", bbox_inches="tight")
-
-    plt.ylim(0, 0.99)
-    plt.xlim(100000, max_perc99);
-    plt.savefig("%s-99th.pdf" % plot_file_name,
-                format="pdf", bbox_inches="tight")
-
-    plt.ylim(0, 0.9)
-    plt.xlim(100000, max_perc90);
-    plt.savefig("%s-90th.pdf" % plot_file_name,
                 format="pdf", bbox_inches="tight")
 
 
