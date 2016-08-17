@@ -42,10 +42,10 @@ def get_scheduler_runtimes(trace_path, column_index):
 
 
 def plot_timeline(plot_file_name, all_x_vals, all_y_vals, labels, unit='sec'):
-    markers = {'Rapid':'x', 'Quincy (Cost scaling)':'o', 'Relaxation only':'+',
-               'succ. shortest':'^'}
-    colors = {'Rapid':'r', 'Quincy (Cost scaling)':'b', 'Relaxation only':'g',
-              'succ. shortest':'c'}
+    markers = {'Firmament':'x', 'Quincy (Cost scaling)':'o',
+               'Relaxation only':'+', 'succ. shortest':'^'}
+    colors = {'Firmament':'r', 'Quincy (Cost scaling)':'b',
+              'Relaxation only':'g', 'succ. shortest':'c'}
     if FLAGS.paper_mode:
         plt.figure(figsize=(3.33, 2.22))
         set_paper_rcs()

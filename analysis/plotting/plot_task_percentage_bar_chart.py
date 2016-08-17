@@ -214,7 +214,7 @@ def plot_barchart(plot_file_name, percentage_local_data, ylabel, xlabels):
             label=xlabels[1], color=colors[1])
 
     plt.ylim(0, 100)
-    plt.xticks([1, 2], ['14\% (Quincy)', '2\% (Rapid)'])
+    plt.xticks([1, 2], ['Quincy 14\%', 'Firmament 2\%'])
     plt.yticks(range(0, 101, 20), range(0, 101, 20))
     plt.xlabel('Preference threshold')
     plt.ylabel(ylabel)

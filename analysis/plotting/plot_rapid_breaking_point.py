@@ -100,8 +100,9 @@ def main(argv):
         x_vals = [5000 - long(x) for x in labels]
         print x_vals
         print total_runtime
-        plt.plot(x_vals, total_runtime, color='r', label='Rapid 100 machines',
-                 marker='v', mfc='none', mec='r', mew=1.0, lw=1.0)
+        plt.plot(x_vals, total_runtime, color='r',
+                 label='Firmament 100 machines', marker='v', mfc='none',
+                 mec='r', mew=1.0, lw=1.0)
 
     if FLAGS.rapid_1000_nodes_traces != '':
         rapid_1000_nodes_traces = FLAGS.rapid_1000_nodes_traces.split(',')
@@ -121,8 +122,9 @@ def main(argv):
         x_vals = [5000 - long(x) for x in labels]
         print x_vals
         print total_runtime
-        plt.plot(x_vals, total_runtime, color='y', label='Rapid 1000 machines',
-                 marker='o', mfc='none', mec='y', mew=1.0, lw=1.0)
+        plt.plot(x_vals, total_runtime, color='y',
+                 label='Firmament 1000 machines', marker='o', mfc='none',
+                 mec='y', mew=1.0, lw=1.0)
 
 
     plt.ylabel('Task response time [ms]')
