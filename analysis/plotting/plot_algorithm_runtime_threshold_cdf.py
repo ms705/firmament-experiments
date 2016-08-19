@@ -21,7 +21,7 @@ gflags.DEFINE_integer('runtimes_after_timestamp', 0,
 
 def plot_cdf(plot_file_name, cdf_vals, label_axis, labels, log_scale=False,
              bin_width=1000, unit='sec'):
-    colors = ['b', 'g', 'r', 'y', 'm', 'y', 'k']
+    colors = ['r', 'y', 'b', 'g', 'm', 'y', 'k']
     if FLAGS.paper_mode:
         plt.figure(figsize=(1.75, 1.17))
         set_paper_rcs()
@@ -97,7 +97,7 @@ def plot_cdf(plot_file_name, cdf_vals, label_axis, labels, log_scale=False,
             time_val *= 10
         plt.xticks(x_ticks, [str(x / to_time_unit) for x in x_ticks])
     else:
-        max_cdf_val = 50000000
+        max_cdf_val = 48000000
         plt.xlim(0, max_cdf_val)
         plt.xticks(range(0, max_cdf_val, 10000000),
                    [str(x / to_time_unit) for x in range(0, max_cdf_val, 10000000)])

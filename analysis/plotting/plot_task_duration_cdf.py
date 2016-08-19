@@ -68,7 +68,7 @@ def get_scheduling_delays(trace_path):
 
 def plot_cdf(plot_file_name, cdf_vals, label_axis, labels, log_scale=False,
              bin_width=1000, unit='ms'):
-    colors = ['r', 'k', 'g', 'c', 'm', 'y', 'k']
+    colors = ['k', 'r', 'g', 'c', 'm', 'y', 'k']
     if FLAGS.paper_mode:
         plt.figure(figsize=(3.33, 2.22))
         set_paper_rcs()
@@ -132,7 +132,7 @@ def plot_cdf(plot_file_name, cdf_vals, label_axis, labels, log_scale=False,
     else:
         print 'Error: unknown time unit'
         exit(1)
-    max_cdf_val = 30000001
+    max_cdf_val = 65000001
     if log_scale:
         plt.xscale("log")
         plt.xlim(0, max_cdf_val)

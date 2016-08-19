@@ -30,13 +30,13 @@ ssh ganymede.cl.cam.ac.uk '/mnt/data/icg27/firmament-experiments/analysis/plotti
 # Solver flipping (Figure 12)
 ssh ganymede.cl.cam.ac.uk '/mnt/data/icg27/firmament-experiments/analysis/plotting/generate_quincy_solver_flip_runtime.sh'
 
-# Rapid vs just running relax/cost_scaling at 97% utilization (Figure 13)
+# Firmament vs just running relax/cost_scaling at 97% utilization (Figure 13)
 ssh ganymede.cl.cam.ac.uk '/mnt/data/icg27/firmament-experiments/analysis/plotting/generate_rapid_recovering_timeline.sh'
 
-# Rapid vs Quincy at 90% utilization (Figure 14)
+# Firmament vs Quincy at 90% utilization (Figure 14)
 ssh ganymede.cl.cam.ac.uk '/mnt/data/icg27/firmament-experiments/analysis/plotting/generate_quincy_task_placement.sh'
 
-# Rapid breaking point (Figure 15)
+# Firmament breaking point (Figure 15)
 ssh ganymede.cl.cam.ac.uk '/mnt/data/icg27/firmament-experiments/analysis/plotting/generate_rapid_breaking_point.sh'
 
 # Google speedup (Figure 16)
@@ -48,7 +48,7 @@ ssh ganymede.cl.cam.ac.uk '/mnt/data/icg27/firmament-experiments/analysis/plotti
 ssh ganymede.cl.cam.ac.uk '/mnt/data/icg27/firmament-experiments/analysis/plotting/generate_task_percentage_local_input.sh'
 
 
-# Rapid vs Sparrow net cost model (Figure 18)
+# Firmament vs Sparrow net cost model (Figure 18)
 ssh ganymede.cl.cam.ac.uk '/mnt/data/icg27/firmament-experiments/analysis/plotting/generate_net_task_response_time.sh'
 
 # Copy the PDFs

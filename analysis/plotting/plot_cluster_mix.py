@@ -31,17 +31,17 @@ workload_labels = { 'cpu_spin': "\\texttt{cpu\_spin}, 60s",
                     'io_stream_write': "\\texttt{io\_stream}, seq.\ write."
                   }
 
-setup_labels = { "simple": "Queue/random first fit", 
+setup_labels = { "simple": "Random",
                  "whare-m": "Firmament/Whare-M",
                  "whare-mcs": "Firmament/Whare-MCs",
-                 "coco": "Firmament/CoCo",
+                 "coco": "Firmament",
                  "mesos": "Mesos",
                  "k8s" : "Kubernetes" }
 
 #colors = { 'simple': '0.5', 'whare-mcs': 'r', 'mesos': 'b', 'coco': 'g' }
 colors = [ '0.5', 'b', 'r', 'g', 'y', 'c', 'm', 'k' ]
 
-setup_colors = { "simple": "0.5", 
+setup_colors = { "simple": "0.5",
                  "whare-m": "y",
                  "whare-mcs": "r",
                  "coco": "g",
@@ -167,14 +167,16 @@ def plot_box_whisker_chart(data, setups, labels, ylabel, scale, outname,
                            ylim=(-1, -1), normed=False):
   fig, ax = plt.subplots(figsize=(6, 4))
   i = 0
+  data_len = 3
+
   for setup, v in sorted(data.items(), key=lambda k: setups.index(k[0])):
     bp = percentile_box_plot(ax, v, color=colors[i], index_base=i,
-                             index_step=len(data))
+                             index_step=data_len)
     plt.plot(-1, -1, label=translate_setup_name(setup), color=colors[i],
              lw=1.0)
     i += 1
   for i in range(0, len(data['simple'])):
-    plt.axvline(i * len(data) + len(data) - 0.5, ls='-', color='k')
+    plt.axvline(i * data_len + data_len - 0.5, ls='-', color='k')
 
   ax.legend(frameon=False, loc="upper center", ncol=6,
             bbox_to_anchor=(0.0, 1.02, 1.0, 0.1), handletextpad=0.2,
@@ -188,8 +190,8 @@ def plot_box_whisker_chart(data, setups, labels, ylabel, scale, outname,
       plt.ylim(ymin=1)
   else:
     plt.ylim(ylim[0], ylim[1])
-  plt.xlim(-0.5, len(data) * (len(data['simple']) - 1) + len(data) - 0.5)
-  plt.xticks(np.arange(len(data) / 2.0, len(data) * len(labels), len(data)),
+  plt.xlim(-0.5, data_len * (len(data['simple']) - 1) + data_len - 0.5)
+  plt.xticks(np.arange(data_len / 2.0, data_len * len(labels), data_len),
              [translate_workload_name(x) for x in labels], rotation=15,
              ha='right')
   plt.yscale(scale)
@@ -366,7 +368,7 @@ def load_workload_data_from_dir(directory, setup):
   return { 'runtimes': normalized_workload_runtimes, 'cpi': workload_cpi,
            'cache-misses': workload_cache_misses, 'ipma': workload_ipma,
            'waittimes': workload_waittimes }
- 
+
 
 ############################################################################
 
@@ -401,7 +403,7 @@ i = 0
 for d in inputdirs:
   print "====================================================================="
   print d
-  
+
   if not "mesos" in labels[i]:
     results = load_workload_data_from_dir(d, labels[i])
     print_overview(results)
