@@ -1,0 +1,14 @@
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: sssp-tw-vertices4
+spec:
+  template:
+    metadata:
+      name: hdfsget
+    spec:
+      containers:
+      - name: hdfsget
+        image: firmament/experiments
+        command: ["/bin/sh", "-c", "echo '10.0.0.10 caelum10g-101\n10.0.0.14 caelum10g-105\n10.0.0.15 caelum10g-106\n10.0.0.16 caelum10g-107\n10.0.0.18 caelum10g-109\n10.0.0.23 caelum10g-204\n10.0.0.27 caelum10g-208\n10.0.0.28 caelum10g-209\n10.0.0.29 caelum10g-210\n10.0.0.30 caelum10g-211\n10.0.0.31 caelum10g-212\n10.0.0.32 caelum10g-213\n10.0.0.34 caelum10g-301\n10.0.0.35 caelum10g-302\n10.0.0.36 caelum10g-303\n10.0.0.37 caelum10g-304\n10.0.0.38 caelum10g-305\n10.0.0.39 caelum10g-306\n10.0.0.40 caelum10g-307\n10.0.0.41 caelum10g-308\n10.0.0.42 caelum10g-309\n10.0.0.43 caelum10g-310\n10.0.0.44 caelum10g-311\n10.0.0.45 caelum10g-312\n10.0.0.46 caelum10g-313\n10.0.0.47 caelum10g-314\n10.0.0.48 caelum10g-401\n10.0.0.49 caelum10g-402\n10.0.0.50 caelum10g-403\n10.0.0.51 caelum10g-404\n10.0.0.52 caelum10g-405\n10.0.0.53 caelum10g-406\n10.0.0.54 caelum10g-407\n10.0.0.55 caelum10g-408\n10.0.0.56 caelum10g-409\n10.0.0.57 caelum10g-410\n10.0.0.58 caelum10g-411\n10.0.0.59 caelum10g-412\n10.0.0.60 caelum10g-413\n10.0.0.61 caelum10g-414' >> /etc/hosts && /usr/bin/hadoop fs -get /input/sssp_tw_vertices_splits2/sssp_tw_vertices4.in"]
+      restartPolicy: Never

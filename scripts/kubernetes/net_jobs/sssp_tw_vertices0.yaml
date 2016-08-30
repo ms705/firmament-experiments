@@ -1,7 +1,7 @@
 apiVersion: batch/v1
 kind: Job
 metadata:
-  name: hdfsget
+  name: sssp-tw-vertices0
 spec:
   template:
     metadata:
