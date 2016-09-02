@@ -20,6 +20,8 @@ gflags.DEFINE_string('trace_labels', '',
                      ', separated list of labels to use for trace files.')
 gflags.DEFINE_string('ideal_runtimes_path', '',
                      'path the the file containing the ideal runtimes.')
+gflags.DEFINE_string('docker_results_file', '',
+                     'path to the file containing Docker results.')
 
 SUBMIT_EVENT = 0
 SCHEDULE_EVENT = 1
@@ -194,7 +196,19 @@ def main(argv):
 
     for trace_path in trace_paths:
         trace_delays = get_scheduling_delays(trace_path)
+        print 'Number of tasks: ', len(trace_delays)
         delays.append(trace_delays)
+
+    if FLAGS.docker_results_file != '':
+        docker_file = open(FLAGS.docker_results_file)
+        csv_reader = csv.reader(docker_file)
+        docker_runtimes = []
+        for row in csv_reader:
+            docker_runtimes.append(long(row[0]))
+        print 'Number of docker tasks: ', len(docker_runtimes)
+        delays.append(docker_runtimes)
+        labels.append('Docker Swarm')
+        docker_file.close()
 
     plot_cdf('scheduling_delay_cdf', delays, "Task response time [sec]",
              labels, log_scale=False, bin_width=10000, unit='sec')
