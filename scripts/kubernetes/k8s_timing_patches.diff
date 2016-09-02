@@ -1,0 +1,98 @@
+diff --git a/pkg/api/unversioned/time.go b/pkg/api/unversioned/time.go
+index df94bbe..055ed3d 100644
+--- a/pkg/api/unversioned/time.go
++++ b/pkg/api/unversioned/time.go
+@@ -79,6 +79,12 @@ func (t Time) Rfc3339Copy() Time {
+ 	return Time{copied}
+ }
+ 
++// Rfc3339Copy returns a copy of the Time at second-level precision.
++func (t Time) Rfc3339NanoCopy() Time {
++	copied, _ := time.Parse(time.RFC3339Nano, t.Format(time.RFC3339Nano))
++	return Time{copied}
++}
++
+ // UnmarshalJSON implements the json.Unmarshaller interface.
+ func (t *Time) UnmarshalJSON(b []byte) error {
+ 	if len(b) == 4 && string(b) == "null" {
+@@ -89,7 +95,7 @@ func (t *Time) UnmarshalJSON(b []byte) error {
+ 	var str string
+ 	json.Unmarshal(b, &str)
+ 
+-	pt, err := time.Parse(time.RFC3339, str)
++	pt, err := time.Parse(time.RFC3339Nano, str)
+ 	if err != nil {
+ 		return err
+ 	}
+@@ -110,7 +116,7 @@ func (t *Time) UnmarshalQueryParameter(str string) error {
+ 		return nil
+ 	}
+ 
+-	pt, err := time.Parse(time.RFC3339, str)
++	pt, err := time.Parse(time.RFC3339Nano, str)
+ 	if err != nil {
+ 		return err
+ 	}
+@@ -126,7 +132,7 @@ func (t Time) MarshalJSON() ([]byte, error) {
+ 		return []byte("null"), nil
+ 	}
+ 
+-	return json.Marshal(t.UTC().Format(time.RFC3339))
++	return json.Marshal(t.UTC().Format(time.RFC3339Nano))
+ }
+ 
+ // MarshalQueryParameter converts to a URL query parameter value
+@@ -136,7 +142,7 @@ func (t Time) MarshalQueryParameter() (string, error) {
+ 		return "", nil
+ 	}
+ 
+-	return t.UTC().Format(time.RFC3339), nil
++	return t.UTC().Format(time.RFC3339Nano), nil
+ }
+ 
+ // Fuzz satisfies fuzz.Interface.
+diff --git a/pkg/kubectl/describe.go b/pkg/kubectl/describe.go
+index faa0ef9..539569a 100644
+--- a/pkg/kubectl/describe.go
++++ b/pkg/kubectl/describe.go
+@@ -509,6 +509,7 @@ func describePod(pod *api.Pod, events *api.EventList) (string, error) {
+ 		fmt.Fprintf(out, "Name:\t%s\n", pod.Name)
+ 		fmt.Fprintf(out, "Namespace:\t%s\n", pod.Namespace)
+ 		fmt.Fprintf(out, "Node:\t%s\n", pod.Spec.NodeName+"/"+pod.Status.HostIP)
++		fmt.Fprintf(out, "Creation Time:\t%s\n", pod.ObjectMeta.CreationTimestamp.Time.Format(time.RFC3339Nano))
+ 		if pod.Status.StartTime != nil {
+ 			fmt.Fprintf(out, "Start Time:\t%s\n", pod.Status.StartTime.Time.Format(time.RFC1123Z))
+ 		}
+@@ -973,7 +974,7 @@ func describeStatus(stateName string, state api.ContainerState, out io.Writer) {
+ 	switch {
+ 	case state.Running != nil:
+ 		fmt.Fprintf(out, "    %s:\tRunning\n", stateName)
+-		fmt.Fprintf(out, "      Started:\t%v\n", state.Running.StartedAt.Time.Format(time.RFC1123Z))
++		fmt.Fprintf(out, "      Started:\t%v\n", state.Running.StartedAt.Time.Format(time.RFC3339Nano))
+ 	case state.Waiting != nil:
+ 		fmt.Fprintf(out, "    %s:\tWaiting\n", stateName)
+ 		if state.Waiting.Reason != "" {
+@@ -991,8 +992,8 @@ func describeStatus(stateName string, state api.ContainerState, out io.Writer) {
+ 		if state.Terminated.Signal > 0 {
+ 			fmt.Fprintf(out, "      Signal:\t%d\n", state.Terminated.Signal)
+ 		}
+-		fmt.Fprintf(out, "      Started:\t%s\n", state.Terminated.StartedAt.Time.Format(time.RFC1123Z))
+-		fmt.Fprintf(out, "      Finished:\t%s\n", state.Terminated.FinishedAt.Time.Format(time.RFC1123Z))
++		fmt.Fprintf(out, "      Started:\t%s\n", state.Terminated.StartedAt.Time.Format(time.RFC3339Nano))
++		fmt.Fprintf(out, "      Finished:\t%s\n", state.Terminated.FinishedAt.Time.Format(time.RFC3339Nano))
+ 	default:
+ 		fmt.Fprintf(out, "    %s:\tWaiting\n", stateName)
+ 	}
+diff --git a/pkg/kubelet/status/status_manager.go b/pkg/kubelet/status/status_manager.go
+index 337058d..ede84e9 100644
+--- a/pkg/kubelet/status/status_manager.go
++++ b/pkg/kubelet/status/status_manager.go
+@@ -506,7 +506,7 @@ func (m *manager) needsReconcile(uid types.UID, status api.PodStatus) bool {
+ // TODO(random-liu): Remove timestamp related logic after apiserver supports nanosecond or makes it consistent.
+ func normalizeStatus(pod *api.Pod, status *api.PodStatus) *api.PodStatus {
+ 	normalizeTimeStamp := func(t *unversioned.Time) {
+-		*t = t.Rfc3339Copy()
++		*t = t.Rfc3339NanoCopy()
+ 	}
+ 	normalizeContainerState := func(c *api.ContainerState) {
+ 		if c.Running != nil {
