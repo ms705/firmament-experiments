@@ -147,7 +147,6 @@ def plot_cdf(plot_file_name, cdf_vals, label_axis, labels, log_scale=False,
     else:
         print 'Error: unknown time unit'
         exit(1)
-    max_cdf_val = 30000001
     if log_scale:
         plt.xscale("log")
         plt.xlim(0, max_cdf_val)
