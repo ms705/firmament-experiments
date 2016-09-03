@@ -206,7 +206,7 @@ def main(argv):
             docker_runtimes.append(long(row[0]))
         print 'Number of docker tasks: ', len(docker_runtimes)
         delays.append(docker_runtimes)
-        labels.append('Docker Swarm')
+        labels.append('Docker SwarmKit')
         docker_file.close()
 
     plot_cdf('scheduling_delay_cdf', delays, "Task response time [sec]",
