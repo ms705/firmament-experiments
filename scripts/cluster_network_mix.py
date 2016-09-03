@@ -71,15 +71,17 @@ def main(argv):
         events.put((i, build_swarm_job_cmd("pagerank_uk_edges%d" % (index), r"""/hdfs_get caelum10g-301 8020 /input/pagerank_uk-2007-05_edges_splits16/pagerank_uk-2007-05_edges%d.in" """ % (task_index))))
       index = index + 1
 
-  # About 1.4GB of input (14). Each task takes about 6-8 seconds.
-  index = 0
-  for i in range(8000, 96000, 8000):
-    for task_index in range(0, 14):
-      if FLAGS.cluster_manager == 'kubernetes':
-        events.put((i, "kubectl create -f /home/srguser/firmament-experiments/scripts/kubernetes/net_jobs/lineitem%d.yaml" % (task_index)))
-      elif FLAGS.cluster_manager == 'swarm':
-        events.put((i, build_swarm_job_cmd("lineitem%d" % (index), r"""/hdfs_get caelum10g-301 8020 /input/lineitem_splits14/lineitem%d.in" """ % (task_index))))
-      index = index + 1
+  # We don't submit lineitem tasks as well because we would end up
+  # oversubscribing the network too much.
+  # # About 1.4GB of input (14). Each task takes about 6-8 seconds.
+  # index = 0
+  # for i in range(8000, 96000, 8000):
+  #   for task_index in range(0, 14):
+  #     if FLAGS.cluster_manager == 'kubernetes':
+  #       events.put((i, "kubectl create -f /home/srguser/firmament-experiments/scripts/kubernetes/net_jobs/lineitem%d.yaml" % (task_index)))
+  #     elif FLAGS.cluster_manager == 'swarm':
+  #       events.put((i, build_swarm_job_cmd("lineitem%d" % (index), r"""/hdfs_get caelum10g-301 8020 /input/lineitem_splits14/lineitem%d.in" """ % (task_index))))
+  #     index = index + 1
 
 
   start_time = datetime.now()
