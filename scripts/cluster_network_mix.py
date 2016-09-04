@@ -46,7 +46,7 @@ def main(argv):
   for i in range(0, 96000, 8000):
     for task_index in range(0, 2):
       if FLAGS.cluster_manager == 'kubernetes':
-        events.put((i, "kubectl create -f /home/srguser/firmament-experiments/scripts/kubernetes/net_jobs/task_runtime_events%d.yaml" % (task_index)))
+        events.put((i, "kubectl create -f /home/srguser/firmament-experiments/scripts/kubernetes/net_jobs/task_runtime_events%d.yaml" % (index)))
       elif FLAGS.cluster_manager == 'swarm':
         events.put((i, build_swarm_job_cmd("task_runtime_events%d" % (index), r"""/hdfs_get caelum10g-301 8020 /input/test_data/task_runtime_events.csv" """)))
       index = index + 1
@@ -56,7 +56,7 @@ def main(argv):
   for i in range(2000, 96000, 8000):
     for task_index in range(0, 8):
       if FLAGS.cluster_manager == 'kubernetes':
-        events.put((i, "kubectl create -f /home/srguser/firmament-experiments/scripts/kubernetes/net_jobs/sssp_tw_edges%d.yaml" % (task_index)))
+        events.put((i, "kubectl create -f /home/srguser/firmament-experiments/scripts/kubernetes/net_jobs/sssp_tw_edges%d.yaml" % (index)))
       elif FLAGS.cluster_manager == 'swarm':
         events.put((i, build_swarm_job_cmd("sssp_tw_edges%d" % (index), r"""/hdfs_get caelum10g-301 8020 /input/sssp_tw_edges_splits8/sssp_tw_edges%d.in" """ % (task_index))))
       index = index + 1
@@ -66,7 +66,7 @@ def main(argv):
   for i in range(6000, 96000, 8000):
     for task_index in range(0, 16):
       if FLAGS.cluster_manager == 'kubernetes':
-        events.put((i, "kubectl create -f /home/srguser/firmament-experiments/scripts/kubernetes/net_jobs/pagerank_uk_edges%d.yaml" % (task_index)))
+        events.put((i, "kubectl create -f /home/srguser/firmament-experiments/scripts/kubernetes/net_jobs/pagerank_uk_edges%d.yaml" % (index)))
       elif FLAGS.cluster_manager == 'swarm':
         events.put((i, build_swarm_job_cmd("pagerank_uk_edges%d" % (index), r"""/hdfs_get caelum10g-301 8020 /input/pagerank_uk-2007-05_edges_splits16/pagerank_uk-2007-05_edges%d.in" """ % (task_index))))
       index = index + 1
@@ -78,7 +78,7 @@ def main(argv):
   # for i in range(8000, 96000, 8000):
   #   for task_index in range(0, 14):
   #     if FLAGS.cluster_manager == 'kubernetes':
-  #       events.put((i, "kubectl create -f /home/srguser/firmament-experiments/scripts/kubernetes/net_jobs/lineitem%d.yaml" % (task_index)))
+  #       events.put((i, "kubectl create -f /home/srguser/firmament-experiments/scripts/kubernetes/net_jobs/lineitem%d.yaml" % (index)))
   #     elif FLAGS.cluster_manager == 'swarm':
   #       events.put((i, build_swarm_job_cmd("lineitem%d" % (index), r"""/hdfs_get caelum10g-301 8020 /input/lineitem_splits14/lineitem%d.in" """ % (task_index))))
   #     index = index + 1
