@@ -9,6 +9,7 @@ import matplotlib
 matplotlib.use("agg")
 import os, sys
 import matplotlib.pyplot as plt
+import process_mesos_masterlog
 from utils import *
 from datetime import datetime
 
@@ -26,6 +27,8 @@ gflags.DEFINE_string('docker_results_file', '',
                      'path to the file containing Docker results.')
 gflags.DEFINE_string('kubernetes_results_file', '',
                      'path to the file containing Kubernetes results.')
+gflags.DEFINE_string('mesos_log_file', '',
+                     'path to the file containing Mesos master log.')
 
 SUBMIT_EVENT = 0
 SCHEDULE_EVENT = 1
@@ -227,6 +230,19 @@ def main(argv):
         delays.append(k8s_runtimes)
         labels.append('Kubernetes')
         k8s_file.close()
+
+    if FLAGS.mesos_log_file != '':
+        raw_runtimes, raw_waittimes = process_mesos_masterlog.parse_master_log(FLAGS.mesos_log_file)
+        mesos_response = []
+        for task, runtime in raw_runtimes.iteritems():
+            mesos_response.append(int((runtime + raw_waittimes[task]) * 1000000))
+#        runtimes_in_sec = raw_runtimes.values()
+#        mesos_runtimes = []
+#        for runtime in runtimes_in_sec:
+#            mesos_runtimes.append(int(runtime * 1000000))
+        delays.append(mesos_response)
+        labels.append('Mesos')
+
 
     plot_cdf('scheduling_delay_cdf', delays, "Task response time [sec]",
              labels, log_scale=False, bin_width=10000, unit='sec')
