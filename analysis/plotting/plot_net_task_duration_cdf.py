@@ -1,6 +1,8 @@
 # Copyright (c) 2016, Ionel Gog
 
 import csv
+import datetime
+import dateutil.parser
 import gflags
 import math
 import matplotlib
@@ -22,6 +24,8 @@ gflags.DEFINE_string('ideal_runtimes_path', '',
                      'path the the file containing the ideal runtimes.')
 gflags.DEFINE_string('docker_results_file', '',
                      'path to the file containing Docker results.')
+gflags.DEFINE_string('kubernetes_results_file', '',
+                     'path to the file containing Kubernetes results.')
 
 SUBMIT_EVENT = 0
 SCHEDULE_EVENT = 1
@@ -204,10 +208,25 @@ def main(argv):
         docker_runtimes = []
         for row in csv_reader:
             docker_runtimes.append(long(row[0]))
-        print 'Number of docker tasks: ', len(docker_runtimes)
+        print 'Number of Docker tasks: ', len(docker_runtimes)
         delays.append(docker_runtimes)
         labels.append('Docker SwarmKit')
         docker_file.close()
+
+    if FLAGS.kubernetes_results_file != '':
+        k8s_file = open(FLAGS.kubernetes_results_file)
+        csv_reader = csv.reader(k8s_file)
+        k8s_runtimes = []
+        for row in csv_reader:
+            created = dateutil.parser.parse(row[0])
+            created_time = int(created.strftime("%s")) * 1000000 + created.microsecond
+            finished = dateutil.parser.parse(row[2])
+            finished_time = int(finished.strftime("%s")) * 1000000 + finished.microsecond
+            k8s_runtimes.append(finished_time - created_time)
+        print 'Number of Kubernetes tasks: ', len(k8s_runtimes)
+        delays.append(k8s_runtimes)
+        labels.append('Kubernetes')
+        k8s_file.close()
 
     plot_cdf('scheduling_delay_cdf', delays, "Task response time [sec]",
              labels, log_scale=False, bin_width=10000, unit='sec')
