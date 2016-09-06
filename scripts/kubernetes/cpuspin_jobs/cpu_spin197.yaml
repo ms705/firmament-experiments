@@ -1,0 +1,14 @@
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: cpuspin197
+spec:
+  template:
+    metadata:
+      name: cpuspin
+    spec:
+      containers:
+      - name: cpuspin
+        image: firmament/libhdfs3
+        command: ["/bin/sh", "-c", "/cpu_spin 7"]
+      restartPolicy: Never
