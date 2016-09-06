@@ -51,6 +51,18 @@ def get_scheduling_delays(trace_path):
     tasks_submitted = set([])
     task_scheduled = {}
     tasks_on_machine = {}
+
+    blacklisted_tasks = set([])
+    try:
+        csv_file = open(trace_path + "/blacklisted_tasks.csv")
+        csv_reader = csv.reader(csv_file)
+        for row in csv_reader:
+            task_id = long(row[0])
+            blacklisted_tasks.add(task_id)
+        csv_file.close()
+    except IOError:
+        print 'No blacklisted_tasks file'
+
     for num_file in range(0, FLAGS.num_files_to_process, 1):
         csv_file = open(trace_path + "/task_events/part-" +
                         '{:05}'.format(num_file) + "-of-00500.csv")
@@ -58,6 +70,8 @@ def get_scheduling_delays(trace_path):
         for row in csv_reader:
             timestamp = long(row[0])
             task_id = (long(row[2]), long(row[3]))
+            if long(row[3]) in blacklisted_tasks:
+                continue
             machine = row[4]
             event_type = int(row[5])
             if event_type == SUBMIT_EVENT:
@@ -165,8 +179,8 @@ def plot_cdf(plot_file_name, cdf_vals, label_axis, labels, log_scale=False,
         plt.xticks(x_ticks, [str(x / to_time_unit) for x in x_ticks])
     else:
         plt.xlim(0, max_cdf_val)
-        plt.xticks(range(0, max_cdf_val, 5000000),
-                   [str(x / time_val) for x in range(0, max_cdf_val, 5000000)])
+        plt.xticks(range(0, max_cdf_val, 20000000),
+                   [str(x / time_val) for x in range(0, max_cdf_val, 20000000)])
     plt.ylim(0, 1.0)
     plt.yticks(np.arange(0.0, 1.01, 0.2),
                [str(x) for x in np.arange(0.0, 1.01, 0.2)])
