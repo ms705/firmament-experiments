@@ -15,6 +15,7 @@ FLAGS = gflags.FLAGS
 gflags.DEFINE_string('cluster_manager', 'swarm',
                      'Cluster manager to use: swarm | kubernetes')
 
+
 def build_swarm_job_cmd(name, cmd):
   docker_base_cmd = "docker service create --replicas 1 --restart-condition=none --name"
   docker_image = " firmament/libhdfs3"
@@ -42,14 +43,20 @@ def main(argv):
 
   events = Queue.PriorityQueue()
 
+  spin_index = 0
   index = 0
   for i in range(0, 96000, 8000):
     for task_index in range(0, 2):
       if FLAGS.cluster_manager == 'kubernetes':
         events.put((i, "kubectl create -f /home/srguser/firmament-experiments/scripts/kubernetes/net_jobs/task_runtime_events%d.yaml" % (index)))
+        events.put((i, "kubectl create -f /home/srguser/firmament-experiments/scripts/kubernetes/cpuspin_jobs/cpu_spin%d.yaml" % (spin_index)))
+        events.put((i, "kubectl create -f /home/srguser/firmament-experiments/scripts/kubernetes/cpuspin_jobs/cpu_spin%d.yaml" % (spin_index + 1)))
       elif FLAGS.cluster_manager == 'swarm':
         events.put((i, build_swarm_job_cmd("task_runtime_events%d" % (index), r"""/hdfs_get caelum10g-301 8020 /input/test_data/task_runtime_events.csv" """)))
+        events.put((i, build_swarm_job_cmd("cpu_spin%d" % (spin_index), r"""/cpu_spin 7" """)))
+        events.put((i, build_swarm_job_cmd("cpu_spin%d" % (spin_index + 1), r"""/cpu_spin 7" """)))
       index = index + 1
+      spin_index = spin_index + 2
 
   # About 3.7GB of input (8)
   index = 0
@@ -57,9 +64,14 @@ def main(argv):
     for task_index in range(0, 8):
       if FLAGS.cluster_manager == 'kubernetes':
         events.put((i, "kubectl create -f /home/srguser/firmament-experiments/scripts/kubernetes/net_jobs/sssp_tw_edges%d.yaml" % (index)))
+        events.put((i, "kubectl create -f /home/srguser/firmament-experiments/scripts/kubernetes/cpuspin_jobs/cpu_spin%d.yaml" % (spin_index)))
+        events.put((i, "kubectl create -f /home/srguser/firmament-experiments/scripts/kubernetes/cpuspin_jobs/cpu_spin%d.yaml" % (spin_index + 1)))
       elif FLAGS.cluster_manager == 'swarm':
         events.put((i, build_swarm_job_cmd("sssp_tw_edges%d" % (index), r"""/hdfs_get caelum10g-301 8020 /input/sssp_tw_edges_splits8/sssp_tw_edges%d.in" """ % (task_index))))
+        events.put((i, build_swarm_job_cmd("cpu_spin%d" % (spin_index), r"""/cpu_spin 7" """)))
+        events.put((i, build_swarm_job_cmd("cpu_spin%d" % (spin_index + 1), r"""/cpu_spin 7" """)))
       index = index + 1
+      spin_index = spin_index + 2
 
   # About 3.9GB of input (16). Each task takes about 6-8 seconds.
   index = 0
@@ -67,9 +79,14 @@ def main(argv):
     for task_index in range(0, 16):
       if FLAGS.cluster_manager == 'kubernetes':
         events.put((i, "kubectl create -f /home/srguser/firmament-experiments/scripts/kubernetes/net_jobs/pagerank_uk_edges%d.yaml" % (index)))
+        events.put((i, "kubectl create -f /home/srguser/firmament-experiments/scripts/kubernetes/cpuspin_jobs/cpu_spin%d.yaml" % (spin_index)))
+        events.put((i, "kubectl create -f /home/srguser/firmament-experiments/scripts/kubernetes/cpuspin_jobs/cpu_spin%d.yaml" % (spin_index + 1)))
       elif FLAGS.cluster_manager == 'swarm':
         events.put((i, build_swarm_job_cmd("pagerank_uk_edges%d" % (index), r"""/hdfs_get caelum10g-301 8020 /input/pagerank_uk-2007-05_edges_splits16/pagerank_uk-2007-05_edges%d.in" """ % (task_index))))
+        events.put((i, build_swarm_job_cmd("cpu_spin%d" % (spin_index), r"""/cpu_spin 7" """)))
+        events.put((i, build_swarm_job_cmd("cpu_spin%d" % (spin_index + 1), r"""/cpu_spin 7" """)))
       index = index + 1
+      spin_index = spin_index + 2
 
   # We don't submit lineitem tasks as well because we would end up
   # oversubscribing the network too much.
@@ -81,7 +98,10 @@ def main(argv):
   #       events.put((i, "kubectl create -f /home/srguser/firmament-experiments/scripts/kubernetes/net_jobs/lineitem%d.yaml" % (index)))
   #     elif FLAGS.cluster_manager == 'swarm':
   #       events.put((i, build_swarm_job_cmd("lineitem%d" % (index), r"""/hdfs_get caelum10g-301 8020 /input/lineitem_splits14/lineitem%d.in" """ % (task_index))))
+  #       events.put((i, build_swarm_job_cmd("cpu_spin%d" % (spin_index), r"""/cpu_spin 7" """)))
+  #       events.put((i, build_swarm_job_cmd("cpu_spin%d" % (spin_index + 1), r"""/cpu_spin 7" """)))
   #     index = index + 1
+  #     spin_index = spin_index + 2
 
 
   start_time = datetime.now()
