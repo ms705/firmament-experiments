@@ -14,7 +14,7 @@ def parse_master_log(input_file):
   task_waittimes = {}
   total_tasks = 0
   for line in open(input_file).readlines():
-    match = re.match("I[0-9]+ ([0-9\:\.]+) [0-9]+ .+\] Added framework ([A-Za-z\_\-0-9]+)", line)
+    match = re.match("I[0-9]+ ([0-9\:\.]+)[ ]* [0-9]+ .+\] Added framework ([A-Za-z\_\-0-9]+)", line)
     if match:
       event_time = datetime.strptime(match.group(1), "%H:%M:%S.%f")
       event_task = match.group(2)
@@ -22,7 +22,7 @@ def parse_master_log(input_file):
         task_events[event_task] = {}
       task_events[event_task]['submit'] = event_time
 
-    match = re.match("I[0-9]+ ([0-9\:\.]+) [0-9]+ .+\] Status update ([A-Z_]+) .+ for task ([A-Za-z\_\-0-9]+) of framework ([A-Za-z\_\-0-9]+) .*", line)
+    match = re.match("I[0-9]+ ([0-9\:\.]+)[ ]* [0-9]+ .+\] Status update ([A-Z_]+) .+ for task ([A-Za-z\_\-0-9]+) of framework ([A-Za-z\_\-0-9]+) .*", line)
     if match:
       event_time = datetime.strptime(match.group(1), "%H:%M:%S.%f")
       event_task = match.group(4)
