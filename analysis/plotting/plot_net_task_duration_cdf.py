@@ -29,6 +29,9 @@ gflags.DEFINE_string('kubernetes_results_file', '',
                      'path to the file containing Kubernetes results.')
 gflags.DEFINE_string('mesos_log_file', '',
                      'path to the file containing Mesos master log.')
+gflags.DEFINE_string('sparrow_results_file', '',
+                     'path to the file containing Sparrow results.')
+
 
 SUBMIT_EVENT = 0
 SCHEDULE_EVENT = 1
@@ -257,6 +260,16 @@ def main(argv):
         delays.append(mesos_response)
         labels.append('Mesos')
 
+    if FLAGS.sparrow_results_file != '':
+        sparrow_file = open(FLAGS.sparrow_results_file)
+        csv_reader = csv.reader(sparrow_file)
+        sparrow_runtimes = []
+        for row in csv_reader:
+            sparrow_runtimes.append(long(row[0]))
+        print 'Number of Sparrow tasks: ', len(sparrow_runtimes)
+        delays.append(sparrow_runtimes)
+        labels.append('Sparrow')
+        sparrow_file.close()
 
     plot_cdf('scheduling_delay_cdf', delays, "Task response time [sec]",
              labels, log_scale=False, bin_width=10000, unit='sec')
