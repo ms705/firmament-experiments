@@ -141,7 +141,7 @@ public class ShellCommandBackend implements BackendService.Iface {
                                   "/input/pagerank_uk-2007-05_edges_splits16/pagerank_uk-2007-05_edges" +
                                   Integer.toString(this.taskType - 10) + ".in");
         } else {
-          LOG.error("Unrecognized task type!");
+          LOG.error("Unrecognized task type: " + this.taskType);
         }
         Process p = pb.start();
         p.waitFor();

@@ -60,16 +60,7 @@ class SparrowClient:
       task_spec.taskId = str(job_id * 100000) + str(i)
       task_spec.preference = sparrow_types_thrift.TPlacementPreference()
       # Task type: 0 = CPU spin, 1 = HDFS get
-      if job_type == 0:
-        task_spec.message = chr(0) + chr(0) + chr(0) + chr(0)
-      elif job_type < 10:
-        task_spec.message = chr(0) + chr(0) + chr(0) + chr(job_type)
-      elif job_type < 20:
-        task_spec.message = chr(0) + chr(0) + chr(1) + chr(job_type - 10)
-      elif job_type < 26:
-        task_spec.message = chr(0) + chr(0) + chr(2) + chr(job_type - 20)
-      else:
-        print "Error: Unexpected job type"
+      task_spec.message = chr(0) + chr(0) + chr(0) + chr(job_type)
       task_specs.append(task_spec)
     request.tasks = task_specs
 
@@ -80,42 +71,43 @@ class SparrowClient:
 
   def replay_workload(self):
     events = Queue.PriorityQueue()
-
+    index = 0
     for i in range(0, 96000, 8000):
       for task_index in range(0, 2):
-        events.put((i, 1))
-        events.put((i, 0))
-        events.put((i, 0))
-    for i in range(2000, 96000, 80000):
+        events.put((i, (index, 1)))
+        events.put((i, (index + 1, 0)))
+        events.put((i, (index + 2, 0)))
+        index += 3
+    for i in range(2000, 96000, 8000):
       for task_index in range(0, 8):
-        events.put((i, 2 + task_index));
-        events.put((i, 0))
-        events.put((i, 0))
+        events.put((i, (index, 2 + task_index)));
+        events.put((i, (index + 1, 0)))
+        events.put((i, (index + 2, 0)))
+        index += 3
     for i in range(6000, 96000, 8000):
       for task_index in range(0, 16):
-        events.put((i, 10 + task_index));
-        events.put((i, 0))
-        events.put((i, 0))
+        events.put((i, (index, 10 + task_index)));
+        events.put((i, (index + 1, 0)))
+        events.put((i, (index + 2, 0)))
+        index += 3
 
     start_time = datetime.now()
     threads = []
-    task_index = 0
     while events.empty() is False:
-      (run_at_time, job) = events.get()
+      (run_at_time, (task_index, task_type)) = events.get()
       time_diff = datetime.now() - start_time
       time_now_ms = (time_diff.days * 24 * 60 * 60 + time_diff.seconds) * 1000 + time_diff.microseconds / 1000
       if run_at_time <= time_now_ms:
         print '... Running at: ', time_now_ms
-        run_thread = threading.Thread(target=self.submit_job, args=(task_index, job, 1))
-        task_index = task_index + 1
+        run_thread = threading.Thread(target=self.submit_job, args=(task_index, task_type, 1))
         run_thread.start()
         if run_thread.is_alive():
-          print "... running (%s)" % (job)
+          print "... running (%s)" % (task_index)
           threads.append(run_thread)
         else:
           print "... ERROR"
       else:
-        events.put((run_at_time, job))
+        events.put((run_at_time, (task_index, task_type)))
 
     for thread in threads:
       if thread.is_alive():
