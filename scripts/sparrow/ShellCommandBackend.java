@@ -17,7 +17,11 @@
 package edu.berkeley.sparrow.examples;
 
 import java.io.IOException;
+import java.io.BufferedReader;
+import java.io.InputStreamReader;
 import java.nio.ByteBuffer;
+import java.util.ArrayList;
+import java.util.Map;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -116,31 +120,40 @@ public class ShellCommandBackend implements BackendService.Iface {
 
     @Override
     public void run() {
-      long startTime = System.currentTimeMillis();
+      long startTime = System.nanoTime();
       String cmd = "";
-      String args = "";
       try {
         // Run the actual task binary. We use a hack here: the message field in the Sparrow
         // task request indicates what binary to run.
+        ProcessBuilder pb = null;
         if (this.taskType == 0) {
           // CPU spin for 7 sec
-          cmd = "cpu_spin";
-          args = "7";
+          pb = new ProcessBuilder("cpu_spin", "7");
         } else if (this.taskType == 1) {
-          // HDFS file load
-          cmd = "hdfs_get";
-          args = "";
+          pb = new ProcessBuilder("hdfs_get", "caelum10g-301", "8020",
+                                  "/input/test_data/task_runtime_events.csv");
+        } else if (this.taskType >= 2 && this.taskType <= 9) {
+          pb = new ProcessBuilder("hdfs_get", "caelum10g-301", "8020",
+                                  "/input/sssp_tw_edges_splits8/sssp_tw_edges" +
+                                  Integer.toString(this.taskType - 2) + ".in");
+        } else if (this.taskType >= 10 && this.taskType <= 25) {
+          pb = new ProcessBuilder("hdfs_get", "caelum10g-301", "8020",
+                                  "/input/pagerank_uk-2007-05_edges_splits16/pagerank_uk-2007-05_edges" +
+                                  Integer.toString(this.taskType - 10) + ".in");
         } else {
           LOG.error("Unrecognized task type!");
         }
-        Process p = new ProcessBuilder(cmd, args).start();
+        Process p = pb.start();
         p.waitFor();
       } catch (InterruptedException e) {
         LOG.error("Interrupted while sleeping: " + e.getMessage());
       } catch (IOException e) {
         LOG.error("IOException trying to run task: " + e.getMessage());
       }
-      LOG.debug("Task completed in " + (System.currentTimeMillis() - startTime) + "ms");
+      long duration = (System.nanoTime() - startTime) / 1000;
+      if (this.taskType > 0) {
+        LOG.debug("Task " + this.taskId.getTaskId() + " completed in " + duration);
+      }
       finishedTasks.add(taskId);
     }
   }
