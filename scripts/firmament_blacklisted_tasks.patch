@@ -1,0 +1,21 @@
+diff --git a/src/engine/coordinator.cc b/src/engine/coordinator.cc
+index 3cd8665..3ae8a92 100644
+--- a/src/engine/coordinator.cc
++++ b/src/engine/coordinator.cc
+@@ -693,6 +693,7 @@ void Coordinator::HandleTaskStateChange(
+   TaskDescriptor* td_ptr = FindPtrOrNull(*task_table_, msg.id());
+   CHECK(td_ptr) << "Received task state change message for task "
+                 << msg.id();
++  LOG(INFO) << "TASK BLACKLIST " << td_ptr->uid() << " " << td_ptr->binary();
+   if (td_ptr->state() == TaskDescriptor::FAILED ||
+       td_ptr->state() == TaskDescriptor::ABORTED) {
+     LOG(ERROR) << "Spurious task state change: Task  " << msg.id() << " has "
+@@ -874,7 +875,7 @@ void Coordinator::AddJobsTasksToTables(TaskDescriptor* td, JobID_t job_id) {
+   // the job ID in the job submission, which passes it in.
+   td->set_job_id(to_string(job_id));
+   // Set the submission timestamp for the task.
+-  td->set_submit_time(time_manager_->GetCurrentTimestamp());
++  td->set_submit_time(time_manager_->GetCurrentTimestamp() - 800000);
+   // Insert task into task table
+   VLOG(1) << "Adding task " << td->uid() << " to task table.";
+   if (!InsertIfNotPresent(task_table_.get(), td->uid(), td)) {
