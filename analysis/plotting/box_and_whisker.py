@@ -61,11 +61,15 @@ def percentile_box_plot(ax, data, indexer=None, index_base=1, index_step=1,
         return scoreatpercentile(vector, w)
 
     for index, x in indexed_data:
+        if type(color) is list:
+            colour = color[index]
+        else:
+            colour = color
         bp = boxplotter(scoreatpercentile(x, 50),
                         scoreatpercentile(x, box_top),
                         scoreatpercentile(x, box_bottom),
                         get_whisk(x, whisker_top),
                         get_whisk(x, whisker_bottom),
                         scoreatpercentile(x, 100))
-        bp.draw_on(ax, index, box_color=color, median_color=color,
-                   whisker_color=color)
+        bp.draw_on(ax, index, box_color=colour, median_color=colour,
+                   whisker_color=colour)
