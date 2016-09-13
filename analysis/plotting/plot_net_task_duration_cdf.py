@@ -31,6 +31,7 @@ gflags.DEFINE_string('mesos_log_file', '',
                      'path to the file containing Mesos master log.')
 gflags.DEFINE_string('sparrow_results_file', '',
                      'path to the file containing Sparrow results.')
+gflags.DEFINE_integer('xticks_increment', 20000000, 'Space between xticks.')
 
 
 SUBMIT_EVENT = 0
@@ -182,8 +183,8 @@ def plot_cdf(plot_file_name, cdf_vals, label_axis, labels, log_scale=False,
         plt.xticks(x_ticks, [str(x / to_time_unit) for x in x_ticks])
     else:
         plt.xlim(0, max_cdf_val)
-        plt.xticks(range(0, max_cdf_val, 20000000),
-                   [str(x / time_val) for x in range(0, max_cdf_val, 20000000)])
+        plt.xticks(range(0, max_cdf_val, FLAGS.xticks_increment),
+                   [str(x / time_val) for x in range(0, max_cdf_val, FLAGS.xticks_increment)])
     plt.ylim(0, 1.0)
     plt.yticks(np.arange(0.0, 1.01, 0.2),
                [str(x) for x in np.arange(0.0, 1.01, 0.2)])
@@ -193,16 +194,6 @@ def plot_cdf(plot_file_name, cdf_vals, label_axis, labels, log_scale=False,
     plt.legend(loc=4, frameon=False, handlelength=2.5, handletextpad=0.2)
 
     plt.savefig("%s.pdf" % plot_file_name,
-                format="pdf", bbox_inches="tight")
-
-    plt.ylim(0, 0.99)
-    plt.xlim(0, max_perc99);
-    plt.savefig("%s-99th.pdf" % plot_file_name,
-                format="pdf", bbox_inches="tight")
-
-    plt.ylim(0, 0.9)
-    plt.xlim(0, max_perc90);
-    plt.savefig("%s-90th.pdf" % plot_file_name,
                 format="pdf", bbox_inches="tight")
 
 
@@ -271,7 +262,7 @@ def main(argv):
         labels.append('Sparrow')
         sparrow_file.close()
 
-    plot_cdf('scheduling_delay_cdf', delays, "Task response time [sec]",
+    plot_cdf('task_response_time_cdf', delays, "Task response time [sec]",
              labels, log_scale=False, bin_width=10000, unit='sec')
 
 
