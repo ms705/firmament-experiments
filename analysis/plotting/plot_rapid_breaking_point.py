@@ -29,12 +29,12 @@ SCHEDULE_EVENT = 1
 
 
 def get_placement_delays(trace_path):
-    delays = []
     task_submit_time = {}
     tasks_scheduled = set([])
     tasks_submitted = set([])
     csv_file = open(trace_path)
     csv_reader = csv.reader(csv_file)
+    delays = {}
     for row in csv_reader:
         if len(row) <= 5:
             break
@@ -54,7 +54,12 @@ def get_placement_delays(trace_path):
                 if submit_time != 0 and timestamp != submit_time and task_id not in tasks_scheduled:
                     tasks_scheduled.add(task_id)
                     # Add the event because it's not a migration.
-                    delays.append(timestamp - submit_time)
+                    (job_id, task_index) = task_id
+                    if job_id in delays:
+                        if delays[job_id] < timestamp - submit_time:
+                            delays[job_id] = timestamp - submit_time
+                    else:
+                        delays[job_id] = timestamp - submit_time
             else:
                 print ("Error: schedule event before submit event for task "
                        "(%s, %s)" % (row[2], row[3]))
@@ -62,7 +67,7 @@ def get_placement_delays(trace_path):
     csv_file.close()
     print trace_path, 'tasks submitted:', len(tasks_submitted)
     print trace_path, 'task scheduled:', len(tasks_scheduled)
-    return delays
+    return delays.values()
 
 
 def main(argv):
@@ -127,7 +132,7 @@ def main(argv):
                  mec='y', mew=1.0, lw=1.0)
 
 
-    plt.ylabel('Task response time [ms]')
+    plt.ylabel('Job response time [ms]')
     plt.ylim(0, 5000)
     plt.xlim(0, 5000)
 
