@@ -40,8 +40,7 @@ ssh ganymede.cl.cam.ac.uk '/mnt/data/icg27/firmament-experiments/analysis/plotti
 ssh ganymede.cl.cam.ac.uk '/mnt/data/icg27/firmament-experiments/analysis/plotting/generate_rapid_breaking_point.sh'
 
 # Google speedup (Figure 16)
-# TODO
-ssh ganymede.cl.cam.ac.uk '/mnt/data/icg27/firmament-experiments/analysis/plotting/'
+ssh ganymede.cl.cam.ac.uk '/mnt/data/icg27/firmament-experiments/analysis/plotting/generate_google_speedup_box_and_whiskers.sh'
 
 # Percentage data locality (Figure 17)
 ssh ganymede.cl.cam.ac.uk '/mnt/data/icg27/firmament-experiments/analysis/plotting/generate_algorithm_runtime_preference_threshold.sh'

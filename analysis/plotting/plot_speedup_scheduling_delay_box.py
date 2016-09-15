@@ -7,7 +7,13 @@ import matplotlib
 matplotlib.use("agg")
 import os, sys
 import matplotlib.pyplot as plt
+import numpy as np
 from utils import *
+from process_synthetic_experiments import *
+from matplotlib import pylab
+from scipy.stats import scoreatpercentile
+from box_and_whisker import *
+
 
 FLAGS = gflags.FLAGS
 gflags.DEFINE_integer('num_files_to_process', 1,
@@ -97,16 +103,51 @@ def get_scheduling_delays(trace_path):
 
             if event_type == SUBMIT_EVENT:
                 if seen_last_scheduler_run:
-                    delays.append(FLAGS.runtime / runtime_factor - timestamp)
+#                    delays.append(FLAGS.runtime / runtime_factor - timestamp)
+                    my_index = 0
                 else:
                     if task_id in scheduled_tasks:
                         delays.append(timestamps[timestamp_index] - timestamp +
                                       runtimes[timestamp_index])
-                    else:
-                        delays.append(FLAGS.runtime / runtime_factor - timestamp)
+                    # else:
+                    #     delays.append(FLAGS.runtime / runtime_factor - timestamp)
 
         csv_file.close()
     return delays
+
+
+def plot_scheduling_delays(delays, labels, colors):
+    if FLAGS.paper_mode:
+        plt.figure(figsize=(3.33, 2.22))
+        set_paper_rcs()
+    else:
+        plt.figure()
+        set_rcs()
+
+    ax = plt.gca()
+    bp = percentile_box_plot(ax, delays, color=colors)
+
+    plt.plot(-1, -1, label='Firmament', color='r', lw=1.0)
+    plt.plot(-1, -1, label='Relaxation', color='g', lw=1.0)
+    plt.plot(-1, -1, label='Cost scaling', color='b', lw=1.0)
+
+    for i in range(2, len(delays), 2):
+        plt.axvline(i + 0.5, ls='-', color='k')
+
+    ax.legend(frameon=False, loc="upper center", ncol=6,
+              bbox_to_anchor=(0.0, 1.02, 1.0, 0.1), handletextpad=0.2,
+              columnspacing=0.2)
+
+    #plt.errorbar(range(1, len(setups) + 1), [np.mean(x) for x in runtimes],
+    #             yerr=[np.std(x) for x in runtimes], marker="x")
+    plt.xlim(0.5, len(delays) + 0.5)
+    plt.ylim(ymin=0, ymax=30)
+    plt.xticks([x * 2 + 1.5 for x in range(0, len(labels))], labels)
+    plt.yticks(range(0, 20000001, 3000000), range(0, 21, 3))
+    plt.ylabel("Scheduling delay [sec]")
+    plt.xlabel("Speedup")
+    plt.savefig("google_speedup_scheduling_delay_box_whiskers.pdf",
+                format="pdf", bbox_inches="tight")
 
 
 def main(argv):
@@ -120,10 +161,10 @@ def main(argv):
     for trace_path in trace_paths:
         trace_delays = get_scheduling_delays(trace_path)
         if 'rapid' in trace_path:
-            if 'rapid' in delays:
-                delays['rapid'].append(trace_delays)
+            if 'Firmament' in delays:
+                delays['Firmament'].append(trace_delays)
             else:
-                delays['rapid'] = [trace_delays]
+                delays['Firmament'] = [trace_delays]
         elif 'cost_scaling' in trace_path:
             if 'cost scaling' in delays:
                 delays['cost scaling'].append(trace_delays)
@@ -138,9 +179,6 @@ def main(argv):
             print 'Error: Unexpected algorithm'
             exit(1)
 
-    markers = {'rapid':'x', 'cost scaling':'o', 'relax':'+'}
-    colors = {'rapid':'r', 'cost scaling':'b', 'relax':'g'}
-
     if FLAGS.paper_mode:
         plt.figure(figsize=(3.33, 2.22))
         set_paper_rcs()
@@ -148,29 +186,27 @@ def main(argv):
         plt.figure()
         set_rcs()
 
-    for algo, speedup_delays in delays.items():
-        delays_98percentile = []
-        delays_90percentile = []
-        for delays in speedup_delays:
-            delays_90percentile.append(np.percentile(delays, 90) / 1000 / 1000)
-            delays_98percentile.append(np.percentile(delays, 98) / 1000 / 1000)
-        print algo, "90percentile", delays_90percentile
-        print algo, "98percentile", delays_98percentile
-        plt.plot(speedups[:len(delays_98percentile)], delays_90percentile,
-                 marker=markers[algo], color=colors[algo], mfc='none', mew=1.0,
-                 mec=colors[algo], label=algo + ' 90th')
-        plt.plot(speedups[:len(delays_98percentile)], delays_98percentile,
-                 marker=markers[algo], color=colors[algo], mfc='none', mew=1.0,
-                 mec=colors[algo], linestyle='--', label=algo + ' 98th')
-
-    plt.ylabel('Scheduling delay at percentile [sec]')
-    plt.ylim(0, 20)
-    plt.xticks(speedups, speedups)
-    plt.xlabel('Speedup')
-    plt.legend(loc='lower right', frameon=False, handlelength=1.5,
-               handletextpad=0.1, numpoints=1)
-    plt.savefig("google_speedup_scheduling_delay.pdf",
-                format="pdf", bbox_inches="tight")
+    delay_list = []
+    labels = []
+    colors = ['k']
+    for speedup_index in range(0, len(speedups)):
+        labels.append(str(speedups[speedup_index]) + 'x')
+        for algo, speedup_delays in delays.items():
+            delay_list.append(speedup_delays[speedup_index])
+            if algo == 'Firmament':
+                colors.append('r')
+            elif algo == 'cost scaling':
+                colors.append('b')
+            elif algo == 'relax':
+                colors.append('g')
+            else:
+                print 'Error: unknown algorithm ', algo
+    print len(delay_list)
+    print labels
+    print colors
+    # plt.legend(loc='lower right', frameon=False, handlelength=1.5,
+    #            handletextpad=0.1, numpoints=1)
+    plot_scheduling_delays(delay_list, labels, colors)
 
 
 if __name__ == '__main__':
