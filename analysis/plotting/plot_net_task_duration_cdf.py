@@ -108,7 +108,9 @@ def get_scheduling_delays(trace_path):
 
 def plot_cdf(plot_file_name, cdf_vals, label_axis, labels, log_scale=False,
              bin_width=1000, unit='ms'):
-    colors = ['y', 'r', 'k', 'g', 'c', 'm', 'y', 'k']
+    colors = {'Idle (isolation)' : 'y', 'Firmament' : 'r',
+              'Docker SwarmKit' : 'k', 'Kubernetes' : 'g', 'Mesos' : 'c',
+              'Sparrow' : 'm'}
     if FLAGS.paper_mode:
         plt.figure(figsize=(3.33, 2.22))
         set_paper_rcs()
@@ -116,7 +118,7 @@ def plot_cdf(plot_file_name, cdf_vals, label_axis, labels, log_scale=False,
         plt.figure()
         set_rcs()
 
-    max_cdf_val = 0
+    max_cdf_val = 216000000
     max_perc90 = 0
     max_perc99 = 0
     index = 0
@@ -155,15 +157,16 @@ def plot_cdf(plot_file_name, cdf_vals, label_axis, labels, log_scale=False,
         num_bins = bin_range / bin_width
         (n, bins, patches) = plt.hist(vals, bins=num_bins, log=False,
                                       normed=True, cumulative=True,
-                                      histtype="step", color=colors[index])
+                                      histtype="step", color=colors[labels[index]])
         # hack to add line to legend
         plt.plot([-100], [-100], label=labels[index],
-                 color=colors[index], linestyle='solid', lw=1.0)
+                 color=colors[labels[index]], linestyle='solid', lw=1.0)
         # hack to remove vertical bar
         patches[0].set_xy(patches[0].get_xy()[:-1])
 
         index += 1
 
+    print max_cdf_val
     time_val = 1000
     if unit is 'ms':
         time_val = 1000 # 1 ms
@@ -208,10 +211,11 @@ def main(argv):
     delays = []
     delays.append(get_ideal_runtimes(FLAGS.ideal_runtimes_path))
 
-    for trace_path in trace_paths:
-        trace_delays = get_scheduling_delays(trace_path)
-        print 'Number of tasks: ', len(trace_delays)
-        delays.append(trace_delays)
+    if FLAGS.trace_paths != '':
+        for trace_path in trace_paths:
+            trace_delays = get_scheduling_delays(trace_path)
+            print 'Number of tasks: ', len(trace_delays)
+            delays.append(trace_delays)
 
     if FLAGS.docker_results_file != '':
         docker_file = open(FLAGS.docker_results_file)
