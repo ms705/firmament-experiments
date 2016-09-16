@@ -4,6 +4,6 @@ python plot_incremental_cost_scaling_runtime_cdf.py --trace_paths=/mnt/data/icg2
 
 mv algorithm_runtimes_cdf.pdf quincy_incremental_cost_scaling_runtimes_cdf.pdf
 
-python plot_incremental_cost_scaling_runtime_cdf.py --trace_paths=/mnt/data/icg27/firmament_simulations/octopus/google_14400_sec_95_utilization_octopus_preemption_flowlessly_cost_scaling/,/mnt/data/icg27/firmament_simulations/octopus/google_14400_sec_95_utilization_octopus_preemption_flowlessly_incremental_cost_scaling/ --trace_labels="Cost scaling, Incremental cost scaling" --runtimes_after_timestamp=10000000 --paper_mode
+python plot_incremental_cost_scaling_runtime_cdf.py --trace_paths=/mnt/data/icg27/firmament_simulations/octopus/google_86400_sec_13pus_octopus_flowlessly_cost_scaling/,/mnt/data/icg27/firmament_simulations/octopus/google_86400_sec_13pus_octopus_flowlessly_incremental_cost_scaling/ --trace_labels="Cost scaling, Incremental cost scaling" --runtimes_after_timestamp=10000000 --paper_mode
 
 mv algorithm_runtimes_cdf.pdf octopus_incremental_cost_scaling_runtimes_cdf.pdf
