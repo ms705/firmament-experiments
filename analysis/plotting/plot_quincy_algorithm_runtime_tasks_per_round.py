@@ -77,8 +77,7 @@ def plot_timeline(plot_file_name, runtimes, setups):
     plt.ylim(0, max_y_val / 1000.0 / 1000.0 + 5)
     max_x_val = setups[-1]
     plt.xlim(2500, max_x_val)
-    plt.yticks(range(0, 400000001, 50000000), range(0, 401, 50))
-    plt.ylim(0, max_y_val)
+    plt.yticks(range(0, 401, 50), range(0, 401, 50))
     utilization = [float(144339 + x) / 161256 * 100 for x in setups]
     print setups
     x_ticks_vals = []
