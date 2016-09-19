@@ -109,7 +109,7 @@ def get_scheduling_delays(trace_path):
 
 def plot_cdf(plot_file_name, cdf_vals, label_axis, labels, log_scale=False,
              bin_width=1000, unit='ms'):
-    colors = {'Idle (isolation)' : 'y', 'Firmament' : 'r',
+    colors = {'Ideal (isolation)' : 'y', 'Firmament' : 'r',
               'Docker SwarmKit' : 'k', 'Kubernetes' : 'g', 'Mesos' : 'c',
               'Sparrow' : 'm'}
     if FLAGS.paper_mode:
