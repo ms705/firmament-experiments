@@ -112,13 +112,13 @@ def plot_cdf(plot_file_name, cdf_vals, label_axis, labels, log_scale=False,
               'Docker SwarmKit' : 'k', 'Kubernetes' : 'g', 'Mesos' : 'c',
               'Sparrow' : 'm'}
     if FLAGS.paper_mode:
-        plt.figure(figsize=(3.33, 2.22))
+        plt.figure(figsize=(3, 2))
         set_paper_rcs()
     else:
         plt.figure()
         set_rcs()
 
-    max_cdf_val = 216000000
+    max_cdf_val = 0
     max_perc90 = 0
     max_perc99 = 0
     index = 0

@@ -47,7 +47,7 @@ def plot_timeline(plot_file_name, all_x_vals, all_y_vals, labels, unit='sec'):
     colors = {'Firmament':'r', 'Quincy (Cost scaling)':'b',
               'Relaxation only':'g', 'succ. shortest':'c'}
     if FLAGS.paper_mode:
-        plt.figure(figsize=(3.33, 2.22))
+        plt.figure(figsize=(3, 2))
         set_paper_rcs()
     else:
         plt.figure()

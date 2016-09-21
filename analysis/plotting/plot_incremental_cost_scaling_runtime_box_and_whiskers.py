@@ -38,7 +38,7 @@ def get_scheduler_runtimes(trace_path, column_index):
 def plot_runtimes(runtimes, labels):
     colors = ['y', 'b', 'm', 'b', 'm']
     if FLAGS.paper_mode:
-        plt.figure(figsize=(3.33, 2.22))
+        plt.figure(figsize=(3, 2))
         set_paper_rcs()
     else:
         plt.figure()

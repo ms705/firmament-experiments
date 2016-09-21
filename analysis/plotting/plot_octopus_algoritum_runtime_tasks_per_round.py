@@ -43,7 +43,7 @@ def plot_timeline(plot_file_name, runtimes, setups):
     colors = {'cycle cancelling':'r', 'Cost scaling':'b', 'Relaxation':'g',
               'succ. shortest':'c'}
     if FLAGS.paper_mode:
-        plt.figure(figsize=(3.33, 2.22))
+        plt.figure(figsize=(3, 2))
         set_paper_rcs()
     else:
         plt.figure()
@@ -66,8 +66,7 @@ def plot_timeline(plot_file_name, runtimes, setups):
     plt.ylabel('Algorithm runtime [sec]')
     max_x_val = setups[-1]
     plt.xticks(range(0, max_x_val + 1, 1000),
-               ["%u" % x for x in range(0, max_x_val + 1, 1000)],
-               rotation=30, ha='right')
+               ["%u" % x for x in range(0, max_x_val + 1, 1000)])
     plt.xlim(0, max_x_val)
     plt.xlabel('Tasks in arriving job')
 

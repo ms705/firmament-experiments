@@ -40,7 +40,7 @@ def plot_timeline(plot_file_name, runtimes, setups):
     colors = {'Cycle canceling':'r', 'Cost scaling':'b', 'Relaxation':'g',
               'Succ. shortest':'c'}
     if FLAGS.paper_mode:
-        plt.figure(figsize=(3.33, 2.22))
+        plt.figure(figsize=(3, 2))
         set_paper_rcs()
     else:
         plt.figure()
@@ -52,7 +52,7 @@ def plot_timeline(plot_file_name, runtimes, setups):
         plt.plot(setup_vals[:len(algo_runtimes)],
                  [y / 1000.0 / 1000.0 for y in algo_runtimes],
                  label=algo, color=colors[algo], marker=markers[algo],
-                 mfc='none', mew=1.0, mec=colors[algo])
+                 mfc='none', mew=1.0, mec=colors[algo], lw=1.0)
 
     plt.yscale("log")
     plt.ylabel('Average algorithm runtime')

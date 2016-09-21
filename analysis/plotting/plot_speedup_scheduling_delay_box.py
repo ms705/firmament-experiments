@@ -103,14 +103,15 @@ def get_scheduling_delays(trace_path):
 
             if event_type == SUBMIT_EVENT:
                 if seen_last_scheduler_run:
-#                    delays.append(FLAGS.runtime / runtime_factor - timestamp)
+#                    delays.append()
                     my_index = 0
                 else:
                     if task_id in scheduled_tasks:
                         delays.append(timestamps[timestamp_index] - timestamp +
                                       runtimes[timestamp_index])
-                    # else:
-                    #     delays.append(FLAGS.runtime / runtime_factor - timestamp)
+                    else:
+                        if timestamp_index + 1 < timestamp_len and timestamps[timestamp_index + 1] * runtime_factor < FLAGS.runtime:
+                            delays.append(1000000000)
 
         csv_file.close()
     return delays
@@ -118,7 +119,7 @@ def get_scheduling_delays(trace_path):
 
 def plot_scheduling_delays(delays, labels, colors):
     if FLAGS.paper_mode:
-        plt.figure(figsize=(3.33, 2.22))
+        plt.figure(figsize=(3, 2))
         set_paper_rcs()
     else:
         plt.figure()
@@ -129,7 +130,7 @@ def plot_scheduling_delays(delays, labels, colors):
 
     plt.plot(-1, -1, label='Firmament', color='r', lw=1.0)
     plt.plot(-1, -1, label='Relaxation', color='g', lw=1.0)
-    plt.plot(-1, -1, label='Cost scaling', color='b', lw=1.0)
+#    plt.plot(-1, -1, label='Cost scaling', color='b', lw=1.0)
 
     for i in range(2, len(delays), 2):
         plt.axvline(i + 0.5, ls='-', color='k')
@@ -144,8 +145,8 @@ def plot_scheduling_delays(delays, labels, colors):
     plt.ylim(ymin=0, ymax=30)
     plt.xticks([x * 2 + 1.5 for x in range(0, len(labels))], labels)
     plt.yticks(range(0, 20000001, 3000000), range(0, 21, 3))
-    plt.ylabel("Scheduling delay [sec]")
-    plt.xlabel("Speedup")
+    plt.ylabel("Task placement latency [sec]")
+    plt.xlabel("Google trace speedup")
     plt.savefig("google_speedup_scheduling_delay_box_whiskers.pdf",
                 format="pdf", bbox_inches="tight")
 
