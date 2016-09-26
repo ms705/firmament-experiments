@@ -1,5 +1,9 @@
 #!/bin/bash
 
+function usage() {
+  echo "usage: ./$(basename $0) [ -r|--experiment-root <path> ]"
+}
+
 while [[ $# -ge 1 ]]; do
   key="$1"
 
@@ -9,7 +13,7 @@ while [[ $# -ge 1 ]]; do
       shift # past argument
       ;;
       -h|--help)
-      echo "usage: ./$(basename $0) [ -r|--experiment-root <path> ]"
+      usage
       exit 0
       ;;
       *)
@@ -18,6 +22,11 @@ while [[ $# -ge 1 ]]; do
   esac
   shift # past argument or value
 done
+
+if [[ ${EXPERIMENTS_ROOT} == "" ]]; then
+  usage
+  exit 1
+fi
 
 python plot_net_task_duration_cdf.py \
   --trace_paths=${EXPERIMENTS_ROOT}/results/caelum_40_machines_net_cost_model/net_cost_model_2x_cpuspin_idle/ \
