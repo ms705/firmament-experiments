@@ -111,6 +111,12 @@ def plot_cdf(plot_file_name, cdf_vals, label_axis, labels, log_scale=False,
     colors = {'Idle (isolation)' : 'y', 'Firmament' : 'r',
               'Docker SwarmKit' : 'k', 'Kubernetes' : 'g', 'Mesos' : 'c',
               'Sparrow' : 'm'}
+    linestyles = {'Idle (isolation)' : 'dotted', 'Firmament' : 'solid',
+                  'Docker SwarmKit' : 'dotted', 'Kubernetes' : 'solid',
+                  'Mesos' : 'dotted', 'Sparrow' : 'solid'}
+    markers = {'Idle (isolation)' : 'o', 'Firmament' : 'v',
+               'Docker SwarmKit' : '^', 'Kubernetes' : '+',
+               'Mesos' : '*', 'Sparrow' : 's'}
     if FLAGS.paper_mode:
         plt.figure(figsize=(3, 2))
         set_paper_rcs()
@@ -153,17 +159,15 @@ def plot_cdf(plot_file_name, cdf_vals, label_axis, labels, log_scale=False,
         max_perc99 = max(max_perc99, perc99)
         print " 99th: %f" % (perc99)
 
-        bin_range = max_val - min_val
-        num_bins = bin_range / bin_width
-        (n, bins, patches) = plt.hist(vals, bins=num_bins, log=False,
-                                      normed=True, cumulative=True,
-                                      histtype="step", color=colors[labels[index]])
-        # hack to add line to legend
-        plt.plot([-100], [-100], label=labels[index],
-                 color=colors[labels[index]], linestyle='solid', lw=1.0)
-        # hack to remove vertical bar
-        patches[0].set_xy(patches[0].get_xy()[:-1])
-
+        perc_vals = [np.min(vals) / 1000.0 / 1000.0]
+        for perc in range(1, 101):
+            perc_vals.append(np.percentile(vals, perc) / 1000.0 / 1000.0)
+        print perc_vals
+        plt.plot(perc_vals, [float(x) / 100.0 for x in range(0, 101)],
+                 label=labels[index], color=colors[labels[index]],
+                 linestyle=linestyles[labels[index]], lw=1.0,
+                 marker=markers[labels[index]], markevery=30, mew=0.8, ms=3,
+                 mfc='none', mec=colors[labels[index]])
         index += 1
 
     print max_cdf_val
@@ -175,19 +179,9 @@ def plot_cdf(plot_file_name, cdf_vals, label_axis, labels, log_scale=False,
     else:
         print 'Error: unknown time unit'
         exit(1)
-    if log_scale:
-        plt.xscale("log")
-        plt.xlim(0, max_cdf_val)
-        to_time_unit = time_val
-        x_ticks = []
-        while time_val <= max_cdf_val:
-            x_ticks.append(time_val)
-            time_val *= 10
-        plt.xticks(x_ticks, [str(x / to_time_unit) for x in x_ticks])
-    else:
-        plt.xlim(0, max_cdf_val)
-        plt.xticks(range(0, max_cdf_val, FLAGS.xticks_increment),
-                   [str(x / time_val) for x in range(0, max_cdf_val, FLAGS.xticks_increment)])
+    plt.xlim(0, max_cdf_val / time_val)
+    plt.xticks([x / time_val for x in range(0, max_cdf_val, FLAGS.xticks_increment)],
+               [str(x / time_val) for x in range(0, max_cdf_val, FLAGS.xticks_increment)])
     plt.ylim(0, 1.0)
     plt.yticks(np.arange(0.0, 1.01, 0.2),
                [str(x) for x in np.arange(0.0, 1.01, 0.2)])
