@@ -55,7 +55,7 @@ def plot_timeline(plot_file_name, runtimes, setups):
                  mfc='none', mew=1.0, mec=colors[algo], lw=1.0)
 
     plt.yscale("log")
-    plt.ylabel('Average algorithm runtime')
+    plt.ylabel('Average algorithm runtime [$\\log_{10}$]')
     plt.yticks([10**x for x in range(-3, 3)],
                ["1ms", "10ms", "100ms", "1s", "10s", "100s"])
     plt.ylim(0.0003, FLAGS.max_runtime / 1000.0 / 1000.0)

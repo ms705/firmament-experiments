@@ -32,6 +32,7 @@ gflags.DEFINE_string('mesos_log_file', '',
 gflags.DEFINE_string('sparrow_results_file', '',
                      'path to the file containing Sparrow results.')
 gflags.DEFINE_integer('xticks_increment', 20000000, 'Space between xticks.')
+gflags.DEFINE_integer('max_x_value', 0, 'Maximum value on x-axis [0 = unset].')
 
 
 SUBMIT_EVENT = 0
@@ -124,7 +125,6 @@ def plot_cdf(plot_file_name, cdf_vals, label_axis, labels, log_scale=False,
         plt.figure()
         set_rcs()
 
-    max_cdf_val = 0
     max_perc90 = 0
     max_perc99 = 0
     index = 0
@@ -137,7 +137,7 @@ def plot_cdf(plot_file_name, cdf_vals, label_axis, labels, log_scale=False,
         min_val = np.min(vals)
         print "MIN: %ld" % (min_val)
         max_val = np.max(vals)
-        max_cdf_val = max(max_val, max_cdf_val)
+        max_x_val = max(max_val, FLAGS.max_x_value)
         print "MAX: %ld" % (max_val)
         stddev = np.std(vals)
         print "STDDEV: %f" % (stddev)
@@ -170,7 +170,6 @@ def plot_cdf(plot_file_name, cdf_vals, label_axis, labels, log_scale=False,
                  mfc='none', mec=colors[labels[index]])
         index += 1
 
-    print max_cdf_val
     time_val = 1000
     if unit is 'ms':
         time_val = 1000 # 1 ms
@@ -179,9 +178,19 @@ def plot_cdf(plot_file_name, cdf_vals, label_axis, labels, log_scale=False,
     else:
         print 'Error: unknown time unit'
         exit(1)
-    plt.xlim(0, max_cdf_val / time_val)
-    plt.xticks([x / time_val for x in range(0, max_cdf_val, FLAGS.xticks_increment)],
-               [str(x / time_val) for x in range(0, max_cdf_val, FLAGS.xticks_increment)])
+    if log_scale:
+        plt.xscale("log")
+        plt.xlim(0, max_x_val)
+        to_time_unit = time_val
+        x_ticks = []
+        while time_val <= max_x_val:
+            x_ticks.append(time_val)
+            time_val *= 10
+        plt.xticks(x_ticks, [str(x / to_time_unit) for x in x_ticks])
+    else:
+        plt.xlim(0, max_x_val)
+        plt.xticks(range(0, max_x_val, FLAGS.xticks_increment),
+                   [str(x / time_val) for x in range(0, max_x_val, FLAGS.xticks_increment)])
     plt.ylim(0, 1.0)
     plt.yticks(np.arange(0.0, 1.01, 0.2),
                [str(x) for x in np.arange(0.0, 1.01, 0.2)])
