@@ -65,7 +65,7 @@ def plot_timeline(plt, axes, start_index, end_index, runtimes, setups, first_run
     if first_run:
         plt.yticks([10**x for x in range(-3, 3)],
                    ["1ms", "10ms", "100ms", "1s", "10s", "100s"])
-        plt.ylabel('Algorithm runtime')
+        plt.ylabel('Average algorithm runtime [$\\log_{10}$]')
     else:
         plt.yticks([10**x for x in range(-3, 3)],
                    ["", "", "", "", "", ""])
