@@ -44,7 +44,8 @@ def plot_runtimes(runtimes, labels):
         plt.figure()
         set_rcs()
     ax = plt.gca()
-    bp = percentile_box_plot(ax, runtimes, color=colors)
+    bp = percentile_box_plot(ax, runtimes, color=colors, box_lw=1.0,
+                             median_lw=1.5)
     plt.plot(-1, -1, label='Cost scaling', color='b', lw=1.0)
     plt.plot(-1, -1, label='Incremental cost scaling', color='m', lw=1.0)
 
@@ -52,13 +53,12 @@ def plot_runtimes(runtimes, labels):
         plt.axvline(i + 0.5, ls='-', color='k')
 
     ax.legend(frameon=False, loc="upper center", ncol=6,
-              bbox_to_anchor=(0.0, 1.02, 1.0, 0.1), handletextpad=0.2,
+              bbox_to_anchor=(0.0, 1.04, 1.0, 0.1), handletextpad=0.2,
               columnspacing=0.2)
 
     plt.xlim(0.5, 2 * len(labels) + 0.5)
-    plt.ylim(ymin=0,ymax=58000000)
     plt.xticks([x * 2 + 1.5 for x in range(0, len(labels))], labels)
-    plt.yticks(range(0, 58000001, 10000000), range(0, 58, 10))
+    plt.yticks(range(0, 60000001, 10000000), range(0, 61, 10))
     plt.xlabel("Scheduling policy")
     plt.ylabel("Algorithm runtime [sec]")
     plt.savefig("incremental_cost_scaling_box_whiskers.pdf",
