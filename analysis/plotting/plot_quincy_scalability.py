@@ -33,7 +33,7 @@ def get_total_runtime(trace_path):
 
 def plot_scalability(plot_file_name, setups, runtimes,
                      x_label="Cluster size [machines]",
-                     y_label="Scheduling latency [sec]"):
+                     y_label="Algorithm runtime [sec]"):
     if FLAGS.paper_mode:
         plt.figure(figsize=(3.33, 2.22))
         set_paper_rcs()

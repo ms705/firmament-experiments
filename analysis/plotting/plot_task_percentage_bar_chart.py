@@ -29,6 +29,8 @@ BYTES_TO_GB = 1073741824
 BLOCK_SIZE_BYTES = 1073741824
 BLOCK_ADD = 0
 BLOCK_REMOVE = 1
+MACHINE_ADD = 0
+MACHINE_REMOVE = 1
 
 SCHEDULE_EVENT = 1
 
@@ -72,10 +74,32 @@ def get_block_locations(trace_path):
     return block_locations
 
 
-def get_task_locality(trace_path, task_blocks, blocks_locations):
+def get_machine_rack(trace_path):
+    machines_racks_file = open(trace_path + "/machines_to_racks/machines_to_racks.csv")
+    machines_racks_reader = csv.reader(machines_racks_file)
+    machine_rack = {}
+    for row in machines_racks_reader:
+        if len(row) < 4:
+            print 'Reached truncated row'
+            break
+        event_type = int(row[1])
+        machine_id = long(row[2])
+        rack_id = long(row[3])
+        if event_type == MACHINE_ADD:
+            machine_rack[machine_id] = rack_id
+        else:
+            print 'Reached unexpected event type'
+            break
+    machines_racks_file.close()
+    return machine_rack
+
+
+def get_task_locality(trace_path, task_blocks, blocks_locations, machine_rack):
     task_locality = []
+    rack_locality = []
     tasks_scheduled = set([])
     total_local_data = 0
+    total_rack_data = 0
     unique_blocks = set([])
     for num_file in range(0, FLAGS.num_files_to_process, 1):
         csv_file = open(trace_path + "/task_events/part-" +
@@ -97,6 +121,7 @@ def get_task_locality(trace_path, task_blocks, blocks_locations):
                 machine_id = long(row[4])
                 tasks_scheduled.add(task_id)
                 local_data_size = 0
+                rack_data_size = 0
                 total_data_size = 0
                 num_local_blocks = 0
                 for block_id in task_blocks[task_id]:
@@ -116,14 +141,19 @@ def get_task_locality(trace_path, task_blocks, blocks_locations):
                             total_local_data += block_size
                             num_local_blocks += 1
                             break
+                        if machine_id in machine_rack and block_machine_id in machine_rack:
+                            if machine_rack[machine_id] == machine_rack[block_machine_id]:
+                                rack_data_size += block_size
+                                total_rack_data += block_size
                 if total_data_size > 0:
                     task_locality.append(long(float(local_data_size) / float(total_data_size) * 100.0))
+                    rack_locality.append(long(float(rack_data_size) / float(total_data_size) * 100.0))
 #                    print total_data_size, local_data_size
 #                    print len(task_blocks[task_id]), num_local_blocks
 
         csv_file.close()
     total_dfs_data = len(unique_blocks) * BLOCK_SIZE_BYTES
-    return (total_dfs_data, total_local_data, task_locality)
+    return (total_dfs_data, total_local_data, total_rack_data, task_locality, rack_locality)
 
 
 def plot_cdf(plot_file_name, cdf_vals, label_axis, labels, log_scale=False,
@@ -200,7 +230,7 @@ def plot_cdf(plot_file_name, cdf_vals, label_axis, labels, log_scale=False,
 def plot_barchart(plot_file_name, percentage_local_data, ylabel, xlabels):
     colors = ['b', 'r', 'g', 'c', 'm', 'y', 'k']
     if FLAGS.paper_mode:
-        plt.figure(figsize=(1.66, 1.11))
+        plt.figure(figsize=(1.75, 1.11))
         set_paper_rcs()
     else:
         plt.figure()
@@ -232,13 +262,19 @@ def main(argv):
     trace_paths = FLAGS.trace_paths.split(',')
     labels = FLAGS.trace_labels.split(',')
     task_localities = []
+    rack_localities = []
     percentage_data_local = []
+    percentage_data_rack = []
+    machine_rack = {}
     for trace_path in trace_paths:
         task_blocks = get_task_inputs(trace_path)
         block_locations = get_block_locations(trace_path)
-        (total_dfs_size, total_local_data, task_locality) = get_task_locality(trace_path, task_blocks, block_locations)
+#        machine_rack = get_machine_rack(trace_path)
+        (total_dfs_size, total_local_data, total_rack_data, task_locality, rack_locality) = get_task_locality(trace_path, task_blocks, block_locations, machine_rack)
         percentage_data_local.append(total_local_data * 100 / total_dfs_size)
+        percentage_data_rack.append(total_rack_data * 100 / total_dfs_size)
         task_localities.append(task_locality)
+        rack_localities.append(rack_locality)
 
     plot_barchart('task_percentage_local_bar_chart', percentage_data_local,
                   'Data read locally [\%]', labels)

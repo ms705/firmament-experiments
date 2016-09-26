@@ -32,7 +32,7 @@ SCHEDULE_EVENT = 1
 EVICT_EVENT = 2
 
 
-def get_scheduling_delays(trace_path):
+def get_placement_latencies(trace_path):
     print 'Reading ', trace_path
     runtime_factor = 1
     found_factor = False
@@ -47,25 +47,10 @@ def get_scheduling_delays(trace_path):
         print 'Error processing', trace_path
         exit(1)
 
-    csv_file = open(trace_path + "/scheduler_events/scheduler_events.csv")
-    csv_reader = csv.reader(csv_file)
-    timestamps = []
-    runtimes = []
-    for row in csv_reader:
-        timestamp = long(row[0])
-        if timestamp > FLAGS.runtimes_after_timestamp / runtime_factor:
-            timestamps.append(long(row[0]))
-            runtimes.append(long(row[2]))
-    csv_file.close()
-
-    timestamp_len = len(timestamps)
-    timestamp_index = 0
-    # If a task is evicted and scheduled again then we will have
-    # two or more scheduling delays for it.
-    delays = []
-    seen_last_scheduler_run = False
-
-    scheduled_tasks = set([])
+    latencies = []
+    task_submit_time = {}
+    tasks_scheduled = set([])
+    tasks_submitted = set([])
     for num_file in range(0, FLAGS.num_files_to_process, 1):
         csv_file = open(trace_path + "/task_events/part-" +
                         '{:05}'.format(num_file) + "-of-00500.csv")
@@ -78,46 +63,25 @@ def get_scheduling_delays(trace_path):
                 break
             if timestamp <= FLAGS.runtimes_after_timestamp / runtime_factor:
                 continue
-            if event_type == SCHEDULE_EVENT:
-                scheduled_tasks.add(task_id)
-        csv_file.close()
-
-    for num_file in range(0, FLAGS.num_files_to_process, 1):
-        csv_file = open(trace_path + "/task_events/part-" +
-                        '{:05}'.format(num_file) + "-of-00500.csv")
-        csv_reader = csv.reader(csv_file)
-        for row in csv_reader:
-            timestamp = long(row[0])
-            task_id = (long(row[2]), long(row[3]))
-            event_type = int(row[5])
-            if timestamp > FLAGS.runtime / runtime_factor:
-                break
-            if timestamp <= FLAGS.runtimes_after_timestamp / runtime_factor:
-                continue
-
-            while not seen_last_scheduler_run and timestamps[timestamp_index] < timestamp:
-                timestamp_index = timestamp_index + 1
-                if timestamp_index >= timestamp_len or timestamps[timestamp_index] * runtime_factor > FLAGS.runtime:
-                    seen_last_scheduler_run = True
-                    break
-
             if event_type == SUBMIT_EVENT:
-                if seen_last_scheduler_run:
-#                    delays.append()
-                    my_index = 0
+                tasks_submitted.add(task_id)
+                task_submit_time[task_id] = timestamp
+            elif event_type == SCHEDULE_EVENT:
+                if task_id in task_submit_time:
+                    submit_time = task_submit_time[task_id]
+                    if submit_time != 0 and timestamp != submit_time and task_id not in tasks_scheduled:
+                        tasks_scheduled.add(task_id)
+                        # Add the event because it's not a migration.
+                        latencies.append(timestamp - submit_time)
                 else:
-                    if task_id in scheduled_tasks:
-                        delays.append(timestamps[timestamp_index] - timestamp +
-                                      runtimes[timestamp_index])
-                    else:
-                        if timestamp_index + 1 < timestamp_len and timestamps[timestamp_index + 1] * runtime_factor < FLAGS.runtime:
-                            delays.append(1000000000)
-
+                    print ("Error: schedule event before submit event for task "
+                           "(%s, %s)" % (row[2], row[3]))
+                    exit(1)
         csv_file.close()
-    return delays
+    return latencies
 
 
-def plot_scheduling_delays(delays, labels, colors):
+def plot_placement_latencies(latencies, labels, colors):
     if FLAGS.paper_mode:
         plt.figure(figsize=(3, 2))
         set_paper_rcs()
@@ -126,13 +90,19 @@ def plot_scheduling_delays(delays, labels, colors):
         set_rcs()
 
     ax = plt.gca()
-    bp = percentile_box_plot(ax, delays, color=colors)
+    bp = percentile_box_plot(ax, latencies, color=colors)
+
+    for lat in latencies:
+        perc90 = np.percentile(lat, 90)
+        perc99 = np.percentile(lat, 99)
+        max_val = np.max(lat)
+        print perc90, perc99, max_val
 
     plt.plot(-1, -1, label='Firmament', color='r', lw=1.0)
     plt.plot(-1, -1, label='Relaxation', color='g', lw=1.0)
 #    plt.plot(-1, -1, label='Cost scaling', color='b', lw=1.0)
 
-    for i in range(2, len(delays), 2):
+    for i in range(2, len(latencies), 2):
         plt.axvline(i + 0.5, ls='-', color='k')
 
     ax.legend(frameon=False, loc="upper center", ncol=6,
@@ -141,13 +111,13 @@ def plot_scheduling_delays(delays, labels, colors):
 
     #plt.errorbar(range(1, len(setups) + 1), [np.mean(x) for x in runtimes],
     #             yerr=[np.std(x) for x in runtimes], marker="x")
-    plt.xlim(0.5, len(delays) + 0.5)
+    plt.xlim(0.5, len(latencies) + 0.5)
     plt.ylim(ymin=0, ymax=30)
     plt.xticks([x * 2 + 1.5 for x in range(0, len(labels))], labels)
     plt.yticks(range(0, 20000001, 3000000), range(0, 21, 3))
     plt.ylabel("Task placement latency [sec]")
     plt.xlabel("Google trace speedup")
-    plt.savefig("google_speedup_scheduling_delay_box_whiskers.pdf",
+    plt.savefig("google_speedup_placement_latency_box_whiskers.pdf",
                 format="pdf", bbox_inches="tight")
 
 
@@ -158,24 +128,24 @@ def main(argv):
         print('%s\\nUsage: %s ARGS\\n%s' % (e, sys.argv[0], FLAGS))
     trace_paths = FLAGS.trace_paths.split(',')
     speedups = [long(x) for x in FLAGS.speedups.split(',')]
-    delays = {}
+    latencies = {}
     for trace_path in trace_paths:
-        trace_delays = get_scheduling_delays(trace_path)
+        placement_latencies = get_placement_latencies(trace_path)
         if 'rapid' in trace_path:
-            if 'Firmament' in delays:
-                delays['Firmament'].append(trace_delays)
+            if 'Firmament' in latencies:
+                latencies['Firmament'].append(placement_latencies)
             else:
-                delays['Firmament'] = [trace_delays]
+                latencies['Firmament'] = [placement_latencies]
         elif 'cost_scaling' in trace_path:
-            if 'cost scaling' in delays:
-                delays['cost scaling'].append(trace_delays)
+            if 'cost scaling' in latencies:
+                latencies['cost scaling'].append(placement_latencies)
             else:
-                delays['cost scaling'] = [trace_delays]
+                latencies['cost scaling'] = [placement_latencies]
         elif 'relax' in trace_path:
-            if 'relax' in delays:
-                delays['relax'].append(trace_delays)
+            if 'relax' in latencies:
+                latencies['relax'].append(placement_latencies)
             else:
-                delays['relax'] = [trace_delays]
+                latencies['relax'] = [placement_latencies]
         else:
             print 'Error: Unexpected algorithm'
             exit(1)
@@ -187,13 +157,13 @@ def main(argv):
         plt.figure()
         set_rcs()
 
-    delay_list = []
+    latencies_list = []
     labels = []
     colors = ['k']
     for speedup_index in range(0, len(speedups)):
         labels.append(str(speedups[speedup_index]) + 'x')
-        for algo, speedup_delays in delays.items():
-            delay_list.append(speedup_delays[speedup_index])
+        for algo, speedup_latencies in latencies.items():
+            latencies_list.append(speedup_latencies[speedup_index])
             if algo == 'Firmament':
                 colors.append('r')
             elif algo == 'cost scaling':
@@ -202,12 +172,10 @@ def main(argv):
                 colors.append('g')
             else:
                 print 'Error: unknown algorithm ', algo
-    print len(delay_list)
-    print labels
-    print colors
+    print len(latencies_list)
     # plt.legend(loc='lower right', frameon=False, handlelength=1.5,
     #            handletextpad=0.1, numpoints=1)
-    plot_scheduling_delays(delay_list, labels, colors)
+    plot_placement_latencies(latencies_list, labels, colors)
 
 
 if __name__ == '__main__':
