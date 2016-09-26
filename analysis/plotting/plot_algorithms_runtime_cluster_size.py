@@ -39,6 +39,9 @@ def plot_timeline(plot_file_name, runtimes, setups):
                'Succ. shortest':'^'}
     colors = {'Cycle canceling':'r', 'Cost scaling':'b', 'Relaxation':'g',
               'Succ. shortest':'c'}
+    order = {'Cycle canceling': 0, 'Succ. shortest': 1, 'Cost scaling': 2,
+             'Relaxation': 3}
+
     if FLAGS.paper_mode:
         plt.figure(figsize=(3, 2))
         set_paper_rcs()
@@ -47,15 +50,22 @@ def plot_timeline(plot_file_name, runtimes, setups):
         set_rcs()
     setup_vals = [long(round(float(x) * 12500)) for x in setups]
     algo_order = ['Relaxation', 'Cost scaling', 'Succ. shortest', 'Cycle canceling']
+    handles = []
     for algo in algo_order:
         algo_runtimes = runtimes[algo]
-        plt.plot(setup_vals[:len(algo_runtimes)],
-                 [y / 1000.0 / 1000.0 for y in algo_runtimes],
-                 label=algo, color=colors[algo], marker=markers[algo],
-                 mfc='none', mew=1.0, mec=colors[algo], lw=1.0)
+        handle, = plt.plot(setup_vals[:len(algo_runtimes)],
+                           [y[1] / 1000.0 / 1000.0 for y in algo_runtimes],
+                           label=algo, color=colors[algo], marker=markers[algo],
+                           mfc='none', mew=1.0, mec=colors[algo], lw=1.0)
+        #plt.errorbar(setup_vals[:len(algo_runtimes)],
+        #             [y[1] / 1000.0 / 1000.0 for y in algo_runtimes],
+        #             yerr=([y[0] / 1000.0 / 1000.0 for y in algo_runtimes],
+        #                   [y[2] / 1000.0 / 1000.0 for y in algo_runtimes]),
+        #             color=colors[algo], lw=0.25)
+        handles.append((handle, algo))
 
     plt.yscale("log")
-    plt.ylabel('Average algorithm runtime [$\\log_{10}$]')
+    plt.ylabel('Avg.\ algorithm runtime [$\\log_{10}$]')
     plt.yticks([10**x for x in range(-3, 3)],
                ["1ms", "10ms", "100ms", "1s", "10s", "100s"])
     plt.ylim(0.0003, FLAGS.max_runtime / 1000.0 / 1000.0)
@@ -70,8 +80,9 @@ def plot_timeline(plot_file_name, runtimes, setups):
     plt.xlim(0, 12500)
     plt.xlabel('Cluster size [machines]')
 
-    plt.legend(loc='lower right', frameon=False, handlelength=1.5,
-               handletextpad=0.1, numpoints=1)
+    leg_entries = sorted(handles, key=lambda k: order[k[1]])
+    plt.legend(zip(*leg_entries)[0], zip(*leg_entries)[1], loc='lower right',
+               frameon=False, handlelength=1.5, handletextpad=0.1, numpoints=1)
     plt.savefig("%s.pdf" % plot_file_name,
                 format="pdf", bbox_inches="tight")
 
@@ -91,26 +102,30 @@ def main(argv):
         # XXX(malte): hack to deal with cs2 not providing this info
         if algo_runtime[0] != 18446744073709551615:
             avg_runtime = np.mean(algo_runtime)
+            med_runtime = np.median(algo_runtime)
+            perc_1st_runtime = np.percentile(algo_runtime, 1)
+            perc_99th_runtime = np.percentile(algo_runtime, 99)
+            runtime_tuple = (perc_1st_runtime, med_runtime, perc_99th_runtime)
             if 'cost_scaling' in trace_path:
                 if 'Cost scaling' in runtimes:
-                    runtimes['Cost scaling'].append(avg_runtime)
+                    runtimes['Cost scaling'].append(runtime_tuple)
                 else:
-                    runtimes['Cost scaling'] = [avg_runtime]
+                    runtimes['Cost scaling'] = [runtime_tuple]
             elif 'relax' in trace_path:
                 if 'Relaxation' in runtimes:
-                    runtimes['Relaxation'].append(avg_runtime)
+                    runtimes['Relaxation'].append(runtime_tuple)
                 else:
-                    runtimes['Relaxation'] = [avg_runtime]
+                    runtimes['Relaxation'] = [runtime_tuple]
             elif 'successive_shortest' in trace_path:
                 if 'Succ. shortest' in runtimes:
-                    runtimes['Succ. shortest'].append(avg_runtime)
+                    runtimes['Succ. shortest'].append(runtime_tuple)
                 else:
-                    runtimes['Succ. shortest'] = [avg_runtime]
+                    runtimes['Succ. shortest'] = [runtime_tuple]
             elif 'cycle_cancelling' in trace_path:
                 if 'Cycle canceling' in runtimes:
-                    runtimes['Cycle canceling'].append(avg_runtime)
+                    runtimes['Cycle canceling'].append(runtime_tuple)
                 else:
-                    runtimes['Cycle canceling'] = [avg_runtime]
+                    runtimes['Cycle canceling'] = [runtime_tuple]
             else:
                 print 'Error: Unexpected algorithm'
     print runtimes
