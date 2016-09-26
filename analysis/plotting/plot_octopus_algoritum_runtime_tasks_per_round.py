@@ -49,7 +49,7 @@ def plot_timeline(plot_file_name, runtimes, setups):
         plt.figure()
         set_rcs()
     max_y_val = 0
-    for algo, algo_runtimes in runtimes.items():
+    for algo, algo_runtimes in reversed(runtimes.items()):
 #        max_y_val = max(max_y_val, np.max(algo_runtimes))
         runtimes_in_sec = [[x / 1000 / 1000 for x in y] for y in algo_runtimes]
         plt.errorbar(setups,

@@ -46,6 +46,7 @@ def plot_timeline(plot_file_name, runtimes, setups):
         plt.figure()
         set_rcs()
     max_y_val = 0
+
     if 'Relaxation' in runtimes:
         algo = 'Relaxation'
         algo_runtimes = runtimes[algo]
@@ -77,13 +78,13 @@ def plot_timeline(plot_file_name, runtimes, setups):
     plt.ylim(0, max_y_val / 1000.0 / 1000.0 + 5)
     max_x_val = setups[-1]
     plt.xlim(2500, max_x_val)
-    plt.yticks(range(0, 401, 50), range(0, 401, 50))
+    plt.yticks(range(0, 451, 50), range(0, 451, 50))
     utilization = [float(144339 + x) / 161256 * 100 for x in setups]
     print setups
     x_ticks_vals = []
-    for utilization in range(91, 101, 3):
+    for utilization in range(91, 101, 1):
         x_ticks_vals.append(utilization * 161256 / 100 - 144339)
-    plt.xticks(x_ticks_vals, range(91, 101, 3))
+    plt.xticks(x_ticks_vals, range(91, 101, 1))
     # plt.xticks(setups,
     #            ["%.2f" % x for x in utilization], rotation=30, ha='right')
     plt.xlabel('Cluster slot utilization [\%]')
