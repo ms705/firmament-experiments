@@ -34,46 +34,42 @@ def get_scheduler_runtimes(trace_path, column_index):
     return runtimes
 
 
-def plot_timeline(plot_file_name, runtimes, setups):
-    markers = {'Cycle canceling':'x', 'Cost scaling':'o', 'Relaxation':'+',
+def plot_timeline(plt, axes, start_index, end_index, runtimes, setups, first_run):
+    markers = {'Cycle cancelling':'x', 'Cost scaling':'o', 'Relaxation':'+',
                'Succ. shortest':'^'}
-    colors = {'Cycle canceling':'r', 'Cost scaling':'b', 'Relaxation':'g',
+    colors = {'Cycle cancelling':'r', 'Cost scaling':'b', 'Relaxation':'g',
               'Succ. shortest':'c'}
-    if FLAGS.paper_mode:
-        plt.figure(figsize=(3, 2))
-        set_paper_rcs()
-    else:
-        plt.figure()
-        set_rcs()
-    setup_vals = [long(round(float(x) * 12500)) for x in setups]
-    algo_order = ['Relaxation', 'Cost scaling', 'Succ. shortest', 'Cycle canceling']
-    for algo in algo_order:
-        algo_runtimes = runtimes[algo]
-        plt.plot(setup_vals[:len(algo_runtimes)],
-                 [y / 1000.0 / 1000.0 for y in algo_runtimes],
-                 label=algo, color=colors[algo], marker=markers[algo],
-                 mfc='none', mew=1.0, mec=colors[algo], lw=1.0)
+    a = plt.axes(axes)
+    print setups
+    for algo, algo_runtimes in runtimes.items():
+        if len(algo_runtimes) > start_index:
+            plt.plot(range(start_index, start_index + len(algo_runtimes[start_index:end_index])),
+                     [y / 1000.0 / 1000.0 for y in algo_runtimes[start_index:end_index]],
+                     label=algo, color=colors[algo], marker=markers[algo],
+                     mfc='none', mew=1.0, mec=colors[algo])
 
     plt.yscale("log")
-    plt.ylabel('Average algorithm runtime [$\\log_{10}$]')
-    plt.yticks([10**x for x in range(-3, 3)],
-               ["1ms", "10ms", "100ms", "1s", "10s", "100s"])
-    plt.ylim(0.0003, FLAGS.max_runtime / 1000.0 / 1000.0)
-    x_ticks = []
-    index = 0
-    for x in setup_vals:
-        if index < 1 or index > 2:
-            x_ticks.append(setup_vals[index])
-        index += 1
-    plt.xticks(x_ticks, [str(x) for x in x_ticks], rotation=30,
-               ha='right')
-    plt.xlim(0, 12500)
-    plt.xlabel('Cluster size [machines]')
 
-    plt.legend(loc='lower right', frameon=False, handlelength=1.5,
-               handletextpad=0.1, numpoints=1)
-    plt.savefig("%s.pdf" % plot_file_name,
-                format="pdf", bbox_inches="tight")
+    plt.xlim(start_index - 0.5, end_index - 0.5)
+    xt_vals = ["%u" % (float(x) * 12500) for x in setups[start_index:end_index]]
+    index = 0
+    while index < len(xt_vals):
+        print xt_vals[index]
+        if int(xt_vals[index]) == 449:
+            xt_vals[index] = 450
+        index += 1
+    plt.xticks(range(start_index, end_index),
+               xt_vals, rotation=30, ha='center')
+
+    plt.ylim(0.0003, FLAGS.max_runtime / 1000.0 / 1000.0)
+    if first_run:
+        plt.yticks([10**x for x in range(-3, 3)],
+                   ["1ms", "10ms", "100ms", "1s", "10s", "100s"])
+        plt.ylabel('Average algorithm runtime [$\\log_{10}$]')
+    else:
+        plt.yticks([10**x for x in range(-3, 3)],
+                   ["", "", "", "", "", ""])
+    #     plt.tick_params(axis='y',which='both',left='off')
 
 
 def main(argv):
@@ -107,15 +103,38 @@ def main(argv):
                 else:
                     runtimes['Succ. shortest'] = [avg_runtime]
             elif 'cycle_cancelling' in trace_path:
-                if 'Cycle canceling' in runtimes:
-                    runtimes['Cycle canceling'].append(avg_runtime)
+                if 'Cycle cancelling' in runtimes:
+                    runtimes['Cycle cancelling'].append(avg_runtime)
                 else:
-                    runtimes['Cycle canceling'] = [avg_runtime]
+                    runtimes['Cycle cancelling'] = [avg_runtime]
             else:
                 print 'Error: Unexpected algorithm'
     print runtimes
-    plot_timeline('algorithms_scalability', runtimes,
-                  [float(x) for x in setups])
+    runtimes['Cycle cancelling'].append(FLAGS.max_runtime + 1000000000)
+    runtimes['Cycle cancelling'].append(FLAGS.max_runtime + 1000000000)
+    runtimes['Cycle cancelling'].append(FLAGS.max_runtime + 1000000000)
+    runtimes['Cycle cancelling'].append(FLAGS.max_runtime + 1000000000)
+    runtimes['Cycle cancelling'].append(FLAGS.max_runtime + 1000000000)
+
+    if FLAGS.paper_mode:
+        plt.figure(figsize=(2.4, 1.6))
+        set_paper_rcs()
+    else:
+        plt.figure()
+        set_rcs()
+
+    start_index = 0
+    end_index = 4
+    plot_timeline(plt, [0.0, 0.0, 0.44, 1.0], start_index, end_index, runtimes, [float(x) for x in setups], True)
+    start_index = 4
+    end_index = 9
+    plot_timeline(plt, [0.44, 0., .56, 1.], start_index, end_index, runtimes, [float(x) for x in setups], False)
+
+    plt.xlabel('Cluster size [machines]', x=0.1)
+    plt.legend(loc='lower right', frameon=False, handlelength=1.5,
+               handletextpad=0.1, numpoints=1)
+    plt.savefig("algorithms_scalability.pdf", format="pdf", bbox_inches="tight")
+
 
 
 if __name__ == '__main__':
