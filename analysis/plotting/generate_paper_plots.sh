@@ -18,6 +18,10 @@ ssh ganymede.cl.cam.ac.uk 'python /mnt/data/icg27/firmament-experiments/analysis
 # Quincy incremental cost scaling (Figure 10)
 ssh ganymede.cl.cam.ac.uk '/mnt/data/icg27/firmament-experiments/analysis/plotting/generate_incremental_cost_scaling_runtime_box_and_whiskers.sh'
 
+# Solver optimizations (Figure 12)
+ssh ganymede.cl.cam.ac.uk '/mnt/data/icg27/firmament-experiments/analysis/plotting/generate_octopus_relax_optimizations.sh'
+ssh ganymede.cl.cam.ac.uk '/mnt/data/icg27/firmament-experiments/analysis/plotting/generate_quincy_incremental_optimizations.sh'
+
 # Solver flipping (Figure 13)
 ssh ganymede.cl.cam.ac.uk '/mnt/data/icg27/firmament-experiments/analysis/plotting/generate_quincy_solver_flip_runtime.sh'
 

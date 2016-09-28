@@ -23,7 +23,7 @@ def plot_cdf(plot_file_name, cdf_vals, label_axis, labels, log_scale=False,
              bin_width=1000, unit='sec'):
     colors = ['r', 'y', 'b', 'g', 'm', 'y', 'k']
     if FLAGS.paper_mode:
-        plt.figure(figsize=(1.75, 1.17))
+        plt.figure(figsize=(3, 2))
         set_paper_rcs()
     else:
         plt.figure()

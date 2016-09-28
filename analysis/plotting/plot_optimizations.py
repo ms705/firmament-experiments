@@ -23,7 +23,7 @@ gflags.DEFINE_bool('log_scale', False, '')
 def plot_scalability(plot_file_name, runtimes, xlabel, x_labels, y_label,
                      given_color):
     if FLAGS.paper_mode:
-        plt.figure(figsize=(1.66, 1.11))
+        plt.figure(figsize=(1.4, 0.93))
         set_paper_rcs()
     else:
         plt.figure()
@@ -37,7 +37,7 @@ def plot_scalability(plot_file_name, runtimes, xlabel, x_labels, y_label,
     plt.xlim(0.5, len(x_labels) + 0.5)
     plt.ylim(ymin=0)
     plt.xticks(range(1, len(x_labels) + 1), x_labels, ha='center')
-    plt.yticks(range(0, 60000001, 10000000), range(0, 61, 10))
+    plt.yticks(range(0, 60000001, 15000000), range(0, 61, 15))
     plt.ylabel(y_label)
     plt.xlabel(xlabel)
     plt.savefig("%s.pdf" % plot_file_name,
