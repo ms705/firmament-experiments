@@ -47,7 +47,7 @@ def plot_scalability(plot_file_name, setups, runtimes,
     #plt.errorbar(range(1, len(setups) + 1), [np.mean(x) for x in runtimes],
     #             yerr=[np.std(x) for x in runtimes], marker="x")
     plt.xlim(0.5, len(setups) + 0.5)
-    plt.ylim(0, 100)
+    plt.ylim(0, 103)
     plt.xticks(range(1, len(setups) + 1),
                ["%u" % (round(float(x) * 12500)) for x in setups],
                rotation=30, ha='right')
@@ -55,7 +55,7 @@ def plot_scalability(plot_file_name, setups, runtimes,
     plt.ylabel(y_label)
 
     plt.savefig("%s.pdf" % plot_file_name,
-                format="pdf", bbox_inches="tight")
+                format="pdf", bbox_inches="tight", pad_inches=0.002)
 
 
 def main(argv):

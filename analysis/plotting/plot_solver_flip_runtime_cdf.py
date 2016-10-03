@@ -108,7 +108,7 @@ def plot_cdf(plot_file_name, cdf_vals, label_axis, labels, log_scale=False,
     plt.ylim(0, 1.0)
     plt.yticks(np.arange(0.0, 1.01, 0.2),
                [str(x) for x in np.arange(0.0, 1.01, 0.2)])
-    plt.ylabel('CDF of runtimes')
+    plt.ylabel('CDF of algorithm runtimes')
     plt.xlabel(label_axis)
 
     plt.legend(loc=4, frameon=False, handlelength=1.5, handletextpad=0.2)

@@ -151,7 +151,7 @@ def plot_cdf(plot_file_name, cdf_vals, label_axis, labels, log_scale=False,
     plt.ylabel('CDF of task placement latency')
     plt.xlabel(label_axis)
 
-    plt.legend(loc=4, frameon=False, handlelength=2.5, handletextpad=0.2)
+    plt.legend(loc=4, frameon=False, handlelength=1.2, handletextpad=0.2)
 
     plt.savefig("%s.pdf" % plot_file_name,
                 format="pdf", bbox_inches="tight")

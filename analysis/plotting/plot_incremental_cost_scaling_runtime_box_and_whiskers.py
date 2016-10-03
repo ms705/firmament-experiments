@@ -58,6 +58,7 @@ def plot_runtimes(runtimes, labels):
 
     plt.xlim(0.5, 2 * len(labels) + 0.5)
     plt.xticks([x * 2 + 1.5 for x in range(0, len(labels))], labels)
+    plt.ylim(0, 60000000)
     plt.yticks(range(0, 60000001, 10000000), range(0, 61, 10))
     plt.xlabel("Scheduling policy")
     plt.ylabel("Algorithm runtime [sec]")

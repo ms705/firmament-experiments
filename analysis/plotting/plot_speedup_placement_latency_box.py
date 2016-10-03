@@ -99,14 +99,14 @@ def plot_placement_latencies(latencies, labels, colors):
         print perc90, perc99, max_val
 
     plt.plot(-1, -1, label='Firmament', color='r', lw=1.0)
-    plt.plot(-1, -1, label='Relaxation', color='g', lw=1.0)
+    plt.plot(-1, -1, label='Relaxation only', color='g', lw=1.0)
 #    plt.plot(-1, -1, label='Cost scaling', color='b', lw=1.0)
 
     for i in range(2, len(latencies), 2):
         plt.axvline(i + 0.5, ls='-', color='k')
 
     ax.legend(frameon=False, loc="upper center", ncol=6,
-              bbox_to_anchor=(0.0, 1.02, 1.0, 0.1), handletextpad=0.2,
+              bbox_to_anchor=(0.0, 1.04, 1.0, 0.1), handletextpad=0.2,
               columnspacing=0.2)
 
     #plt.errorbar(range(1, len(setups) + 1), [np.mean(x) for x in runtimes],

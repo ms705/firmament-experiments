@@ -42,9 +42,9 @@ def get_scheduler_runtimes(trace_path, column_index):
 
 
 def plot_timeline(plot_file_name, all_x_vals, all_y_vals, labels, unit='sec'):
-    markers = {'Firmament':'x', 'Quincy (Cost scaling)':'o',
+    markers = {'Firmament':'x', 'Cost scaling (Quincy)':'o',
                'Relaxation only':'+', 'succ. shortest':'^'}
-    colors = {'Firmament':'r', 'Quincy (Cost scaling)':'b',
+    colors = {'Firmament':'r', 'Cost scaling (Quincy)':'b',
               'Relaxation only':'g', 'succ. shortest':'c'}
     if FLAGS.paper_mode:
         plt.figure(figsize=(3, 2))

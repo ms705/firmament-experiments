@@ -111,7 +111,7 @@ def main(argv):
     print algo_runtimes
     plot_scalability('optimizations_box_and_whiskers',
                      algo_runtimes, xlabel, labels,
-                     "Algorithm runtime [sec]", given_color)
+                     "Alg. runtime [sec]", given_color)
 
 
 if __name__ == '__main__':
