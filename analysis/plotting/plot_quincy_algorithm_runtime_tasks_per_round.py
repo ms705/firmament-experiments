@@ -75,7 +75,7 @@ def plot_timeline(plot_file_name, runtimes, setups):
                  mfc='none', mec=colors[algo], mew=1.0, lw=1.0)
 
     plt.ylabel('Algorithm runtime [sec]')
-    plt.ylim(0, max_y_val / 1000.0 / 1000.0 + 5)
+    plt.ylim(0, max_y_val / 1000.0 / 1000.0 + 35)
     max_x_val = setups[-1]
     plt.xlim(2500, max_x_val)
     plt.yticks(range(0, 451, 50), range(0, 451, 50))

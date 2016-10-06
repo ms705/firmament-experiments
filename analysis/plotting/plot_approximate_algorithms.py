@@ -43,7 +43,7 @@ def plot_timeline(plot_file_name, x_vals, y_vals, labels, log_scale):
     if log_scale:
         plt.yscale("log")
     else:
-        plt.ylim(0, 6000)
+        plt.ylim(0, 5200)
 
     plt.xlim(0, max_x_val / 1000 / 1000)
     plt.xlabel('Algorithm runtime [sec]')

@@ -63,7 +63,7 @@ def plot_runtimes(runtimes, labels):
     plt.xlabel("Scheduling policy")
     plt.ylabel("Algorithm runtime [sec]")
     plt.savefig("incremental_cost_scaling_box_whiskers.pdf",
-                format="pdf", bbox_inches="tight")
+                format="pdf", bbox_inches="tight", pad_inches=0.003)
 
 
 

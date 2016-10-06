@@ -31,7 +31,7 @@ gflags.DEFINE_string('mesos_log_file', '',
                      'path to the file containing Mesos master log.')
 gflags.DEFINE_string('sparrow_results_file', '',
                      'path to the file containing Sparrow results.')
-gflags.DEFINE_integer('xticks_increment', 20000000, 'Space between xticks.')
+gflags.DEFINE_integer('xticks_increment', 20, 'Space between xticks.')
 gflags.DEFINE_integer('max_x_value', 0, 'Maximum value on x-axis [0 = unset].')
 
 
@@ -107,8 +107,7 @@ def get_scheduling_delays(trace_path):
     return delays
 
 
-def plot_cdf(plot_file_name, cdf_vals, label_axis, labels, log_scale=False,
-             bin_width=1000, unit='ms'):
+def plot_cdf(plot_file_name, cdf_vals, label_axis, labels, bin_width=1000):
     colors = {'Idle (isolation)' : 'y', 'Firmament' : 'r',
               'Docker SwarmKit' : 'k', 'Kubernetes' : 'g', 'Mesos' : 'c',
               'Sparrow' : 'm'}
@@ -170,27 +169,10 @@ def plot_cdf(plot_file_name, cdf_vals, label_axis, labels, log_scale=False,
                  mfc='none', mec=colors[labels[index]])
         index += 1
 
-    time_val = 1000
-    if unit is 'ms':
-        time_val = 1000 # 1 ms
-    elif unit is 'sec':
-        time_val = 1000 * 1000 # 1 sec
-    else:
-        print 'Error: unknown time unit'
-        exit(1)
-    if log_scale:
-        plt.xscale("log")
-        plt.xlim(0, max_x_val)
-        to_time_unit = time_val
-        x_ticks = []
-        while time_val <= max_x_val:
-            x_ticks.append(time_val)
-            time_val *= 10
-        plt.xticks(x_ticks, [str(x / to_time_unit) for x in x_ticks])
-    else:
-        plt.xlim(0, max_x_val)
-        plt.xticks(range(0, max_x_val, FLAGS.xticks_increment),
-                   [str(x / time_val) for x in range(0, max_x_val, FLAGS.xticks_increment)])
+    max_x_val /= 1000 * 1000
+    plt.xlim(0, max_x_val)
+    plt.xticks(range(0, max_x_val, FLAGS.xticks_increment),
+               [str(x) for x in range(0, max_x_val, FLAGS.xticks_increment)])
     plt.ylim(0, 1.0)
     plt.yticks(np.arange(0.0, 1.01, 0.2),
                [str(x) for x in np.arange(0.0, 1.01, 0.2)])
@@ -270,7 +252,7 @@ def main(argv):
         sparrow_file.close()
 
     plot_cdf('task_response_time_cdf', delays, "Task response time [sec]",
-             labels, log_scale=False, bin_width=10000, unit='sec')
+             labels, bin_width=10000)
 
 
 if __name__ == '__main__':

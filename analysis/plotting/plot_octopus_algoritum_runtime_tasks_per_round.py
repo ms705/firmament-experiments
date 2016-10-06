@@ -50,8 +50,8 @@ def plot_timeline(plot_file_name, runtimes, setups):
         set_rcs()
     max_y_val = 0
     for algo, algo_runtimes in reversed(runtimes.items()):
-#        max_y_val = max(max_y_val, np.max(algo_runtimes))
         runtimes_in_sec = [[x / 1000 / 1000 for x in y] for y in algo_runtimes]
+        max_y_val = max(max_y_val, np.max(runtimes_in_sec))
         plt.errorbar(setups,
                      [np.mean(vals) for vals in runtimes_in_sec],
                      yerr=[np.std(vals) for vals in runtimes_in_sec],
@@ -67,7 +67,10 @@ def plot_timeline(plot_file_name, runtimes, setups):
     max_x_val = setups[-1]
     plt.xticks(range(0, max_x_val + 1, 1000),
                ["%u" % x for x in range(0, max_x_val + 1, 1000)])
+    plt.yticks(range(0, max_y_val, 5),
+               [str(x) for x in range(0, max_y_val, 5)])
     plt.xlim(0, max_x_val)
+    print max_y_val
     plt.xlabel('Tasks in arriving job')
 
     plt.legend(loc=2, frameon=False, handlelength=1.5, handletextpad=0.1,

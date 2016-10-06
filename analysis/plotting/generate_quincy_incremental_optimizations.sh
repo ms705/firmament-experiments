@@ -1,7 +1,7 @@
 #!/bin/bash
 
 cd /mnt/data/icg27/firmament-experiments/analysis/plotting/
-python plot_optimizations.py --trace_paths=/mnt/data/icg27/firmament_simulations/quincy/google_14400_sec_95_utilization_quincy_preemption_bounded_1024MB_flowlessly_incremental_cost_scaling_without_task_removal/,/mnt/data/icg27/firmament_simulations/quincy/google_14400_sec_95_utilization_quincy_preemption_bounded_1024MB_flowlessly_incremental_cost_scaling/ --trace_labels='Without TR,With TR' --runtimes_after_timestamp=999999 --paper_mode
+python plot_optimizations.py --trace_paths=/mnt/data/icg27/firmament_simulations/quincy/google_14400_sec_95_utilization_quincy_preemption_bounded_1024MB_flowlessly_incremental_cost_scaling_without_task_removal/,/mnt/data/icg27/firmament_simulations/quincy/google_14400_sec_95_utilization_quincy_preemption_bounded_1024MB_flowlessly_incremental_cost_scaling/ --trace_labels='No TR,TR' --runtimes_after_timestamp=999999 --paper_mode
 mv optimizations_box_and_whiskers.pdf cost_scaling_optimization_box_and_whiskers.pdf
 
 #python plot_incremental_optimizations.py --trace_paths=/mnt/data/icg27/firmament_simulations/quincy/google_14400_sec_95_utilization_quincy_preemption_bounded_1024MB_flowlessly_incremental_cost_scaling_without_task_removal/,/mnt/data/icg27/firmament_simulations/quincy/google_14400_sec_95_utilization_quincy_preemption_bounded_1024MB_flowlessly_incremental_cost_scaling/ --trace_labels="Cost scaling,Cost scaling + task removal" --runtimes_after_timestamp=1000000 --paper_mode
