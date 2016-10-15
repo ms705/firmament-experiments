@@ -81,37 +81,39 @@ def get_placement_latencies(trace_path):
     return latencies
 
 
-def plot_placement_latencies(latencies, labels, colors):
+def plot_placement_latencies(latencies, labels, colors, schedulers):
     if FLAGS.paper_mode:
         plt.figure(figsize=(3, 2))
         set_paper_rcs()
     else:
         plt.figure()
         set_rcs()
-
+    indices = {'cost scaling' : 1, 'relax' : 2, 'firmament' : 3}
     ax = plt.gca()
-    bp = percentile_box_plot(ax, latencies, color=colors)
 
-    for lat in latencies:
-        perc90 = np.percentile(lat, 90)
-        perc99 = np.percentile(lat, 99)
-        max_val = np.max(lat)
-        print perc90, perc99, max_val
-
-    plt.plot(-1, -1, label='Firmament', color='r', lw=1.0)
-    plt.plot(-1, -1, label='Relaxation only', color='g', lw=1.0)
+    for algo, all_latencies_vals in latencies.items():
+        print len(all_latencies_vals)
+        bp = percentile_box_plot(ax, all_latencies_vals, color=colors[algo],
+                                 index_base=indices[algo], index_step=3)
+    ax.tick_params(length=2)
+#    if 'Cost scaling (Quincy)' in schedulers:
     plt.plot(-1, -1, label='Cost scaling (Quincy)', color='b', lw=1.0)
+#    if 'Relaxation' in schedulers:
+    plt.plot(-1, -1, label='Relaxation', color='g', lw=1.0)
+#    if 'Firmament' in schedulers:
+    plt.plot(-1, -1, label='Firmament', color='r', lw=1.0)
 
-    for i in range(3, len(latencies), 3):
+
+    for i in range(3, 3 * len(labels), 3):
         plt.axvline(i + 0.5, ls='-', color='k')
 
     ax.legend(frameon=False, loc="upper center", ncol=6,
               bbox_to_anchor=(0.0, 1.04, 1.0, 0.1), handletextpad=0.2,
-              columnspacing=0.2)
+              handlelength=0.7, columnspacing=0.2)
 
     #plt.errorbar(range(1, len(setups) + 1), [np.mean(x) for x in runtimes],
     #             yerr=[np.std(x) for x in runtimes], marker="x")
-    plt.xlim(0.5, len(latencies) + 0.5)
+    plt.xlim(0.5, 3 * len(labels) + 0.5)
     plt.ylim(ymin=0, ymax=50)
     plt.xticks([x * 3 + 2.25 for x in range(0, len(labels))], labels)
     plt.yticks(range(0, 60000001, 10000000), range(0, 61, 10))
@@ -132,10 +134,10 @@ def main(argv):
     for trace_path in trace_paths:
         placement_latencies = get_placement_latencies(trace_path)
         if 'rapid' in trace_path:
-            if 'Firmament' in latencies:
-                latencies['Firmament'].append(placement_latencies)
+            if 'firmament' in latencies:
+                latencies['firmament'].append(placement_latencies)
             else:
-                latencies['Firmament'] = [placement_latencies]
+                latencies['firmament'] = [placement_latencies]
         elif 'cost_scaling' in trace_path:
             if 'cost scaling' in latencies:
                 latencies['cost scaling'].append(placement_latencies)
@@ -157,25 +159,31 @@ def main(argv):
         plt.figure()
         set_rcs()
 
-    latencies_list = []
+    latencies_dict = {}
     labels = []
-    colors = ['k']
+    colors = {}
+    schedulers = set([])
     for speedup_index in range(0, len(speedups)):
         labels.append(str(speedups[speedup_index]) + 'x')
         for algo, speedup_latencies in latencies.items():
-            latencies_list.append(speedup_latencies[speedup_index])
-            if algo == 'Firmament':
-                colors.append('r')
+            if algo not in latencies_dict:
+                latencies_dict[algo] = [speedup_latencies[speedup_index]]
+            else:
+                latencies_dict[algo].append(speedup_latencies[speedup_index])
+            if algo == 'firmament':
+                colors[algo] = 'r'
+                schedulers.add('Firmament')
             elif algo == 'cost scaling':
-                colors.append('b')
+                colors[algo] = 'b'
+                schedulers.add('Cost scaling (Quincy)')
             elif algo == 'relax':
-                colors.append('g')
+                colors[algo] = 'g'
+                schedulers.add('Relaxation')
             else:
                 print 'Error: unknown algorithm ', algo
-    print len(latencies_list)
     # plt.legend(loc='lower right', frameon=False, handlelength=1.5,
     #            handletextpad=0.1, numpoints=1)
-    plot_placement_latencies(latencies_list, labels, colors)
+    plot_placement_latencies(latencies_dict, labels, colors, schedulers)
 
 
 if __name__ == '__main__':
